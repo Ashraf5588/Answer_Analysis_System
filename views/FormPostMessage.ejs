@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Success</title>
+</head>
+
+<link rel="stylesheet" href="/form.css">
+<body id="formsuccessbody">
+ <center>
+  <div class="sccuesscontainer">
+   
+    <h1><center>Thank You! Form Submitted Successfully. <br> Have a nice day.
+    </center></h1>
+   
+
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+    <lord-icon
+        src="https://cdn.lordicon.com/lomfljuq.json"
+        trigger="in"
+        colors="primary:#e8e230"
+        style="width:250px;height:250px">
+    </lord-icon>
+   
+  </div>
+  
+ </center>
+
+
+  
+<script>
+  const current = window.location.pathname;
+  
+  if(current==="/admin/subject" || current==="/admin/class")
+{
+
+
+    setTimeout(() => {
+      window.location.href = '/admin';
+    }, 1000); 
+  }
+  else
+{
+  setTimeout(() => {
+      window.location.href = '/';
+    }, 1000); 
+}
+</script> 
+
+</body>
+</html>

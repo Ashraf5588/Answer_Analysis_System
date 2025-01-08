@@ -1,0 +1,47 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+nav ul{
+  display: flex;
+  text-decoration: none;
+  gap: 2%;
+  background-color: darkblue;
+  height: 4rem;
+  line-height: 1.9;
+  padding-right: 1.7%;
+  
+  
+
+  justify-content: end;
+}
+
+a
+{
+text-decoration: none;
+color: white;
+}
+ul li 
+{
+  font-size: 20px;
+  list-style: none;
+  
+ 
+
+
+  padding-left: 3%;
+  margin-top: 0.6%;
+}
+ul li:hover{
+  color: orange;
+}
+.active 
+{
+  color: orange;
+  border-bottom: 3px solid orange;
+}
+.fa-person-chalkboard
+{
+font-size: 20px;
+}

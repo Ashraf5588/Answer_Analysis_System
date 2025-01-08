@@ -1,0 +1,45 @@
+
+  <!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class</title>
+    
+    <link rel="stylesheet" href="/class.css">
+    <link rel="stylesheet" href="/nav.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Agbalumo&family=Alexandria:wght@100..900&family=Lexend:wght@100..900&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Agbalumo&family=Alexandria:wght@100..900&family=Lexend:wght@100..900&family=Manrope:wght@200..800&display=swap');
+    </style>
+   
+</head>
+<body>
+  <%- include('./partials/nav',{currentPage:'home'}) %>
+  <header>
+    <center><h1 id="firstheading">Answer Evaluation <span id="firstspan">System</span></h1></center></header>
+   <center><h3><span class="subheading">A system designed to analyze the performance of a student</span></h3></center>
+   <div class="report">
+   <center><h2>Choose Class</h2></center>
+  </div>
+   
+<div class="subjectcontainer">
+
+<div class="subcol1">
+  <% studentClassdata.forEach((studentclass)=>{ %>
+
+ 
+<a href="/
+<%=controller.trim()%>/
+<%=subject.trim()%>/
+<%=studentclass.studentClass.trim()%>/
+<%=studentclass.section.trim()%>
+">
+  <div id="fours" class="subjectdiv"> <div class="logo" id="logo1"><i class="fa-solid fa-chalkboard-user" style="color:#ffc400;"></i></div><span class="spansubject" id="spanmath">Class <%=studentclass.studentClass%> (<%= studentclass.section %>)</span></div></a>
+<%})%>
+  </div>
+
+</body>
+</html>

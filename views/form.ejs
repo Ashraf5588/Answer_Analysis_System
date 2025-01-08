@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/form.css">
+    <link rel="stylesheet" href="/nav.css">
+</head>
+<body>
+    <%- include('./partials/nav',{currentPage:'home'}) %>
+    <center><h1 id="firstheading">Answer Evaluation <span id="firstspan">System</span></h1></center>
+    <center><h3><span class="subheading">A system designed to analyze the performance of a student</span></h3></center> 
+    <br><br><center><div id="math" class="subject"> <div class="logo" id="logo1"><i class="fa-solid fa-clipboard" ></i></div><span class="spansubject" id="spanmath"><%= subjectname %></span></div></center><br><br>
+
+    
+
+<form action="/forms/<%=subjectname %>" method="POST">
+    
+<div class="personal">
+    <center><h1>Personal <span class="info" style="color: #ebbb46;">Info</span></h1></center> <br>
+    <input type="text" name="name" id="name" placeholder="Name" required>
+    <input type="roll" name="roll" id="roll" placeholder="Roll.No." required>
+    <!-- <input type="number" name="studentClass" id="class" placeholder="Class" required> -->
+     <input type="text" name="studentClass" id="studentClass" 
+     value = "<%=studentClass%>" required>
+     <input type="text" name="section" id="section" value="<%=section%>">
+    <!-- <input type="section" name="section" id="section" placeholder="section" required> -->
+   
+    <input type="text" name="subject" id="subject" value = "<%= subjectname%>"required>
+    <input type="text" name="terminal" id="terminal" 
+    value ="<%= terminal%>"required>
+</div><br><br><br> <hr> 
+    
+    <center><h1>Qustion <span class="info" style="color: #ebbb46;">Info</span></h1></center>
+<% question_list = ['a','b','c','d'] %>
+
+    <% for (let i = 1; i <= 20; i++){
+        for(j=1;j<=4;j++)
+        { %>
+
+       
+    <div class="questions">
+    <span class="spanquestion">Question Number</span> <span id="qno"> <b><%= i+'.'+question_list[j-1] %></span></b><br>
+    <span class="ansradio">
+    <label for="correct<%= i+question_list[j-1] %>" style="color: rgb(45, 224, 99);">correct</label>
+    <input type="radio" id="correct<%= i+question_list[j-1] %>" value="correct" name="q<%= i+question_list[j-1] %>">
+    </span>
+    <span class="ansradio"></span>
+    <label for="incorrect<%= i+question_list[j-1] %>" style="color: rgb(224, 45, 45);">Incorrect</label>
+    <input type="radio" id="incorrect<%= i+question_list[j-1] %>"  value="incorrect" name="q<%= i+question_list[j-1] %>" >
+</span>
+<span class="ansradio">
+    <label for="notattempt<%= i+question_list[j-1] %>" style="color: rgb(255, 221, 0);">Not attempt</label>
+    <input type="radio" id="notattempt<%= i+question_list[j-1] %>" value="notattempt" name="q<%= i+question_list[j-1] %>">
+</span><hr> <br><br>
+<!-- <span class="ansradio">
+    <label for="fullmarks<%= i %>">Full Marks:</label>
+    <input type="number" name="fm<%= i %>" id="fullmarks<%= i %>">
+</span>
+<span class="ansradio">
+    <label for="obtainmarks<%= i %>">Obtain Marks:</label>
+    <input type="number" name="om<%= i %>" id="obtainmarks<%= i %>">
+</span><br> -->
+    <!-- <textarea name="incorrect<%= i %>" id="incorrectAns<%= i %>" placeholder="Incorrect Ans here"></textarea>&ensp;&ensp; -->
+</div>
+<%}%>
+    <%}%> 
+   <center> <input type="submit" id="submit"></center>                                                                        
+</form> <br><br>
+
+
+
+
+    <script src="form.js"></script>
+    <script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
+</body>
+</html>

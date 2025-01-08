@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Agbalumo&family=Alexandria:wght@100..900&family=Lexend:wght@100..900&family=Manrope:wght@200..800&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+   
+    
+}
+@font-face {
+    font-family: 'Alexandria Regular';
+    font-style: normal;
+    font-weight:300;
+    src: local('Alexandria Regular'), url('Alexandria[wght].woff') format('woff');
+    }
+    body{
+      font-family: Alexandria Regular;
+    }
+
+table{
+  width: 70%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 25px;
+}
+th{
+  background-color: orange;
+  height: 3rem;
+  border-left: 0;
+  border-right: 0;
+  font-weight: 1000;
+}
+tr
+{
+  border:2px solid rgb(202, 200, 200);
+  border-left: 0;
+  border-right: 0;
+  height: 2rem;
+  font-weight: 500;
+}
+.addbutton,#subjectedit,#classedit
+{
+  width: 15%;
+  height: 2rem;
+  border-radius: 5px;
+  margin-bottom: 5%;
+  background-color: orange;
+  border: 1px solid gainsboro;
+  font-size: 20px;
+  text-align: center;
+}
+.addbutton:hover 
+{
+  background-color:rgb(228, 218, 33);
+  transition:all 0.3s ease-in-out;
+  font-size: 18px;
+  color: white;
+}
+.addbutton:hover .fa-plus
+{
+ 
+  color: white;
+}
+input
+{
+  width: 40%;
+  height: 2.5rem;
+  margin-top: 1%;
+  border-radius: 7px;
+  background-color: rgb(243, 243, 250);
+  border: 1px solid rgb(203, 203, 219);
+  font-size: 20px;
+  margin-left: 1%;
+
+  
+  
+}
+input:focus
+{
+  border: 2px solid orange;
+  outline: none;
+  box-shadow: 2px 2px 2px 1px gray;
+}
+input::placeholder
+{
+  padding-left: 5%;
+  color: goldenrod;
+  opacity: 0.5;
+  font-size: 15px;
+}
+#class
+{
+  margin-left: 3%;
+}
+label
+{
+  font-size: 25px;
+}
+.fa-plus
+{
+  color: black;
+}
+#subjectedit,#classedit{
+
+margin-top: 2%;
+background-color: #24a0ed;
+color: white;
+cursor: pointer;
+border: none;
+
+}
+.fa-trash
+{
+  font-size: 25px;
+  cursor: pointer;
+  margin-left: 3%;
+
+}
+#thname,#thaction
+{
+  width: 20%;
+}

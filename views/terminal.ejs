@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terminal</title>
+  <link rel="stylesheet" href="/form.css">
+  <link rel="stylesheet" href="/nav.css">
+</head>
+<body>
+  <%- include('./partials/nav',{currentPage:'teacher'}) %>
+  <br><br><center><h1>Choose Terminal <span style="color: orange;">Examination</span></h1></center><br><br><br><br>
+  <div class="terminalcontainer">
+   <a href="<%=section %>/first"> <div id="firstterm" value="first terminal examination" name="terminal" class="terminal"><i class="fa-solid fa-pen-to-square" style="color: #000000;"></i><br><br>
+      First Terminal Examination
+    </div></a>
+    <a href="<%=section %>/second"><div id="secondterm" value="second terminal examination" name="terminal" class="terminal"><i class="fa-solid fa-pen-to-square" style="color: #000000;"></i><br><br>
+      Second Terminal Examination
+    
+    
+    </div></a>
+   <a href="<%= section %>/third"> <div id="thirdterm" value="third terminal examination" name="terminal" class="terminal">
+      <i class="fa-solid fa-pen-to-square" style="color: #000000;"></i><br> 
+      <br>Third Terminal Examination
+    </div></a>
+
+    <a href="<%=section %>/first/second"> <div id="firstterm" value="first terminal examination" name="terminal" class="terminal"><i class="fa-solid fa-pen-to-square" style="color: #000000;"></i><br><br>
+      First & Second Terminal Examination
+    </div></a>
+    <a href="<%=section %>/first/third"><div id="secondterm" value="second terminal examination" name="terminal" class="terminal"><i class="fa-solid fa-pen-to-square" style="color: #000000;"></i><br><br>
+      First & Third Terminal Examination
+    
+    
+    </div></a>
+   <a href="<%= section %>/second/third"> <div id="thirdterm" value="third terminal examination" name="terminal" class="terminal">
+      <i class="fa-solid fa-pen-to-square" style="color: #000000;"></i><br> 
+      <br>Second & Third Terminal Examination
+    </div></a>
+    <a href="<%= section %>/first/second/third"> <div id="thirdterm" value="third terminal examination" name="terminal" class="terminal">
+      <i class="fa-solid fa-pen-to-square" style="color: #000000;"></i><br> 
+      <br>First , Second & Third Terminal Examination
+    </div></a>
+
+
+
+
+  </div>
+  <script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
+</body>
+</html>

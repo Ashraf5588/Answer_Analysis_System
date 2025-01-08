@@ -1,0 +1,97 @@
+
+@font-face {
+  font-family: 'Alexandria Regular';
+  font-style: normal;
+  font-weight:300;
+  src: local('Alexandria Regular'), url('Alexandria[wght].woff') format('woff');
+  }
+  *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Alexandria Regular;
+  }
+.subjectcontainer
+{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  
+
+}
+.subcol1,.subcol2,.subcol3,.subcol4
+{
+  display: flex;
+  justify-content: space-around;
+  
+}
+a{
+  text-decoration: none;
+  color: white;
+  text-align: center;
+}
+#four
+{
+  background-color: orange !important;
+}
+.subjectdiv
+{
+  font-size: 28px;
+  font-weight: 600;
+  width: 30rem;
+  height: 7.8rem;
+  border-radius: 12px;
+ margin-top: 10%;
+}
+.subjectdiv:hover{
+  background-color: rgb(255, 255, 255) !important;
+  color: black;
+  border: 2px solid #64b5f6;
+  transition: all 0.1s ease-in-out;
+}
+.fa-chalkboard-user 
+{
+  font-size: 40px;
+  line-height: 2 !important;
+}
+#fours
+{
+  background-color: #90caf9 ;
+}
+#five
+{
+  background-color:#e3f2fd;
+  color: black;
+}
+#six
+{
+  background-color: #90caf9;
+}
+#seven
+{
+  background-color: #64b5f6;
+}
+#eight
+{
+  background-color: #1e88e5;
+}
+#nine
+{
+  background-color: #1565c0;
+}
+#ten
+{
+  background-color: #0d47a1;
+}
+.fa-chalkboard-user
+{
+  color: #383e3e !important;
+}
+#firstheading
+{
+  font-size: 50px;
+}
+#firstspan
+{
+  color: #ebbb46;
+}

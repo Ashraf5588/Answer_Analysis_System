@@ -1,0 +1,121 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+.spansubject
+{
+    font-size: 18px;
+    padding-left: 20%;
+    width: 100%;
+    
+}
+.subject span
+{
+    font-size: 18px;
+   
+   
+    
+}
+.subject
+{
+    display: block;
+    background-color:#3307F8 !important;
+    line-height: 60%;
+    padding-left: 8%;
+    height: 20rem;
+}
+#rightans,#wrongans,#notattempt,#totalstudent
+{
+    border: none;
+    border-radius: 5px;
+    padding-left: 2%;
+    margin-left: 5%;
+    background-color:#ebbb46;
+    color: white;
+    height: 1.5rem;
+    width: 28%;
+   
+}
+#totalstudent
+{
+    width: 20%;
+    margin-left:0.5%;
+}
+#notattempt
+{
+    margin-left:25% ;
+}
+#rightans:hover
+{
+    
+    cursor: pointer;
+    transform: scale(1.06);
+    transition: all 0.3s ease-in-out;
+}
+#wrongans:hover
+{
+    
+    cursor: pointer;
+    transform: scale(1.06);
+    transition: all 0.3s ease-in-out;
+}
+#notattempt:hover
+{
+    
+    cursor: pointer;
+    transform: scale(1.06);
+    transition: all 0.3s ease-in-out;
+}
+.analysiscontainer
+{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  
+}
+.subcol
+{
+    margin: 0.5%;
+}
+.subname
+{
+    background-color:orange;
+    color: white;
+    width: 40%;
+    height: 10rem; 
+    padding-top:1.2%;
+    font-size: 30px;
+    border-radius: 12px;
+}
+.max,.total,.wrong
+{
+    color: red;
+    font-weight: 700;
+    padding-left: 5%;
+}
+.total{
+    color: rgb(2, 89, 123);
+}
+.compare
+{
+    background-color: #ebbb46;
+    border-radius: 5px;
+    margin-top: 0.5%;
+    padding: 1%;
+}
+.comparecontainer
+{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 2%;
+}
+.compare:hover
+{
+    background-color: #3307F8;
+    transition: all 0.3s ease-in-out;
+    font-size: 15px;
+}
