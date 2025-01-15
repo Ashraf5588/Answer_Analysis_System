@@ -33,7 +33,7 @@ a{
 }
 #four
 {
-  background-color: orange !important;
+  background-color: darkblue !important;
 }
 .subjectdiv
 {
@@ -47,17 +47,18 @@ a{
 .subjectdiv:hover{
   background-color: rgb(255, 255, 255) !important;
   color: black;
-  border: 2px solid #64b5f6;
+  border: 2px solid #003968;
   transition: all 0.1s ease-in-out;
 }
 .fa-chalkboard-user 
 {
   font-size: 40px;
   line-height: 2 !important;
+  
 }
 #fours
 {
-  background-color: #90caf9 ;
+  background-color: #003561 ;
 }
 #five
 {
@@ -95,4 +96,12 @@ a{
 #firstspan
 {
   color: #ebbb46;
+}
+@media(max-width:500px)
+{
+    .subject
+    {
+        width: 18rem;
+        font-size: 25px;
+    }
 }

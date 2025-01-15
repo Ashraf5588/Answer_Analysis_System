@@ -23,8 +23,8 @@ student.get('/teacher/:controller',authenticateToken,controller.teacherPage)
 student.get('/teacher/:subject/:controller',authenticateToken,controller.studentclass)
 
 student.get('/findData/:subjectinput/:studentClass/:section/:terminal/:terminal2?/:terminal3?',authenticateToken,controller.findData)
-student.get('/:controller/:subject',authenticateToken,controller.studentclass)
-student.get('/:controller/:subject/:studentClass/:section',authenticateToken,controller.terminal)
+student.get('/:controller/:subject',controller.studentclass)
+student.get('/:controller/:subject/:studentClass/:section',controller.terminal)
 student.get('/forms/:subjectinput/:studentClass/:section/:terminal',controller.showForm)
 
 student.post('/forms/:subjectinput',controller.saveForm)
