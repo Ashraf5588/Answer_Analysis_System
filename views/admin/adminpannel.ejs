@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin</title>
   <link rel="stylesheet" href="/adminpannel.css">
+  <link rel="stylesheet" href="/nav.css">
 </head>
 <body>
-
+  <%- include('../partials/nav',{currentPage:'admin'}) %>
   <center><h1>Welcome, <span style="color: orange;">Admin</span></h1></center>
   
 <center>
-<form action="/admin/subject" method="post">
+<form action="<%= editing ? `/admin/subject/${subId}` : '/admin/subject' %>" method="post">
   
   <label for="subject" >Subject:</label> 
   <input type="text" id="subject" name="subject" required placeholder="Add New Subject here" value="<%= editing? subjectedit.subject:'' %>"> <br><br>
