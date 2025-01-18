@@ -35,16 +35,12 @@
     <center><h1 id="firstheading"><span style="color: #3307F8;">Class Performance </span><span id="firstspan">Summary</span></h1></center>
     <center><h3><span class="subheading">A system designed to analyze the performance of a student</span></h3></center><br>
 <center><div class="subname" ><h6 style="color:#3307F8"><%= terminal %> Terminal Examination </h6>Subject:<%= subjectname %> <br>Class:<%=studentClass%> <br>Section:<%=section%></div></center><br><br>
-<span class="max">Maximum Number of Wrong Question:&ensp;<b> <%= results[0].questionNo %>&ensp;&ensp;(By:<%= results[0].wrong %>)</b><br></span>
-<span class="total">Total Student : <b><%=totalStudent%></b><a href="/totalStudent/<%=subjectname %>/<%=studentClass %>/<%=section %>/<%=terminal %>"><button id="totalstudent">See Student<i class="fa-solid fa-user" style="color: #3307F8;"></i></a></button></span><br></span>
-<span class="wrong">Wrong Percentage : <b><%=results[0].wrong/totalStudent*100%>%</b><br></span><br>
+<span class="max">Max No. of Wrong Question:&ensp;<b> <%= results[0].questionNo %>&ensp;(By:<%= results[0].wrong %>)</b><br></span>
+<span class="total">Total Student : <b><%=totalStudent%></b><a href="/totalStudent/<%=subjectname %>/<%=studentClass %>/<%=section %>/<%=terminal %>"><button id="totalstudent">See Student<i class="fa-solid fa-user" style="color: #3307F8;"></i></a></button></span><br></span> <br>
 
-<!-- <div class="comparecontainer">
-    <a href="" class="compare">1<sup>st</sup> & 2<sup>nd</sup> Term Wrong Student</a> <br>
-    <a href="" class="compare">1<sup>st</sup> & 3<sup>rd</sup> Term Wrong Student</a> <br>
-    <a href=""class="compare">2<sup>nd</sup> & 3<sup>rd</sup> Term Wrong Student</a> <br>
-    <a href=""class="compare">1<sup>st</sup> & 2<sup>nd</sup> & 3<sup>rd</sup> Term Wrong Student</a>
-</div> <br> -->
+
+
+<span class="wrong">Wrong Percentage : <b><%=results[0].wrong/totalStudent*100%>%</b><br></span><br>
 
 
 <hr><br>
@@ -63,10 +59,14 @@
       
 
         <div class="subcol">
-            <div id="math" class="subject"> <span class="spansubject" id="spanmath"><%= result.questionNo %> </span> <br>
+            <div id="math" class="subject"> <center><div class="spansubject" id="spanmath"><%= result.questionNo %> </div></center> <br>
+               
 <span>No. of Wrong Answer: <%= result.wrong %> &ensp;<span><button id="wrongans"><a href="/studentData/<%=subjectname %>/<%=studentClass %>/<%=section %>/<%=result.questionNo%>/incorrect/<%=terminal %>">See Student</a><i class="fa-solid fa-user" style="color: #3307F8;"></i></button></span><br>
 No. of Right Answer: <%= result.correct%> &ensp;&ensp;<span><button id="rightans"><a href="/studentData/<%=subjectname %>/<%=studentClass %>/<%=section %>/<%=result.questionNo%>/correct/<%=terminal %>">See Student&ensp;</a><i class="fa-solid fa-user" style="color: #3307F8;"></i></button></span><br>
-Not Attempt: <%= result.notattempt %><span><button id="notattempt"><a href="/studentData/<%=subjectname %>/<%=studentClass %>/<%=section %>/<%=result.questionNo%>/notattempt/<%=terminal %>">See Student<i class="fa-solid fa-user" style="color: #3307F8;"></i></a></button></span> Wrong Percentage:<b><%=result.wrong/totalStudent*100%>%</b> <br>
+Not Attempt:<%= result.notattempt %><span><button id="notattempt"><a href="/studentData/<%=subjectname %>/<%=studentClass %>/<%=section %>/<%=result.questionNo%>/notattempt/<%=terminal %>">See Student<i class="fa-solid fa-user" style="color: #3307F8;"></i></a></button></span><br> 
+<span>Correct above 50%: <%= result.correctabove50 %> &ensp;<span><button id="correctabove50"><a href="/studentData/<%=subjectname %>/<%=studentClass %>/<%=section %>/<%=result.questionNo%>/correctabove50/<%=terminal %>">See Student</a><i class="fa-solid fa-user" style="color: #3307F8;"></i></button></span><br>
+Correct below 50%: <%= result.correctbelow50 %> &ensp;<span><button id="correctbelow50"><a href="/studentData/<%=subjectname %>/<%=studentClass %>/<%=section %>/<%=result.questionNo%>/correctbelow50/<%=terminal %>">See Student</a><i class="fa-solid fa-user" style="color: #3307F8;"></i></button></span><br>
+Wrong Percentage:<b><%=result.wrong/totalStudent*100%>%</b> <br>
 
 
 </span> <br>

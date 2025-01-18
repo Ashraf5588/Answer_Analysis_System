@@ -9,6 +9,7 @@
 </head>
 <body>
   <%- include('./partials/nav',{currentPage:'teacher'}) %>
+  
   <br><br><center><h1>Choose Terminal <span style="color: orange;">Examination</span></h1></center><br><br><br><br>
   <div class="terminalcontainer">
    <a href="<%=section %>/first"> <div id="firstterm" value="first terminal examination" name="terminal" class="terminal"><i class="fa-solid fa-pen-to-square" style="color: #000000;"></i><br><br>
@@ -24,19 +25,19 @@
       <br>Third Terminal Examination
     </div></a>
 
-    <a href="<%=section %>/first/second"> <div id="firstterm" value="first terminal examination" name="terminal" class="terminal"><i class="fa-solid fa-pen-to-square" style="color: #000000;"></i><br><br>
+    <a href="<%=section %>/first/second"> <div id="firstterm" value="first terminal examination" name="terminal" class="terminal" style="display:<%= controller==='forms'?'none':'block'%>"><i class="fa-solid fa-pen-to-square" style="color: #000000;"></i><br><br>
       First & Second Terminal Examination
     </div></a>
-    <a href="<%=section %>/first/third"><div id="secondterm" value="second terminal examination" name="terminal" class="terminal"><i class="fa-solid fa-pen-to-square" style="color: #000000;"></i><br><br>
+    <a href="<%=section %>/first/third"><div id="secondterm" value="second terminal examination" name="terminal" class="terminal" style="display:<%= controller==='forms'?'none':'block'%>"><i class="fa-solid fa-pen-to-square" style="color: #000000;"></i><br><br>
       First & Third Terminal Examination
     
     
     </div></a>
-   <a href="<%= section %>/second/third"> <div id="thirdterm" value="third terminal examination" name="terminal" class="terminal">
+   <a href="<%= section %>/second/third"> <div id="thirdterm" value="third terminal examination" name="terminal" class="terminal" style="display:<%= controller==='forms'?'none':'block'%>">
       <i class="fa-solid fa-pen-to-square" style="color: #000000;"></i><br> 
       <br>Second & Third Terminal Examination
     </div></a>
-    <a href="<%= section %>/first/second/third"> <div id="thirdterm" value="third terminal examination" name="terminal" class="terminal">
+    <a href="<%= section %>/first/second/third"> <div id="thirdterm" value="third terminal examination" name="terminal" class="terminal" style="display:<%= controller==='forms'?'none':'block'%>">
       <i class="fa-solid fa-pen-to-square" style="color: #000000;"></i><br> 
       <br>First , Second & Third Terminal Examination
     </div></a>

@@ -27,9 +27,12 @@ student.get('/:controller/:subject',controller.studentclass)
 student.get('/:controller/:subject/:studentClass/:section',controller.terminal)
 student.get('/forms/:subjectinput/:studentClass/:section/:terminal',controller.showForm)
 
-student.post('/forms/:subjectinput',controller.saveForm)
+student.post('/forms/:subjectinput/:studentclass?/:section?/:terminal?',controller.saveForm)
 student.get('/studentData/:subjectinput/:studentClass/:section/:qno/:status/:terminal',controller.studentData)
 student.get('/totalStudent/:subjectinput/:studentClass/:section/:terminal',controller.totalStudent)
+
+
+student.get('/updatequestion/:no',controller.updateQuestion)
 
 
 

@@ -4,12 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
+  <link rel="stylesheet" href="/login.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
 </head>
-<body>
+<body><center>
   <form action="/admin/login" method="POST">
-    Username: <input type="text" name="username" id="username">
-    Password: <input type="password" name="password" id="password">
-    <input type="submit" value="login">
-  </form>
+    <img src="/image.png" alt="Logo">
+   
+    <input type="text" placeholder="&#xf2be;&ensp; username" style="font-family:Arial, FontAwesome" name="username" id="username"/>
+    <input type="password" placeholder="&#xf13e;&ensp; password" style="font-family:Arial, FontAwesome" name="password" id="password"/>
+    
+    
+    <input type="submit" value="login" id="submit">
+  </form></center>
+  <script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
 </body>
 </html>

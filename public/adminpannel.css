@@ -115,7 +115,50 @@ border: none;
   margin-left: 3%;
 
 }
+.deletebtn
+{
+  color: darkblue !important;
+}
 #thname,#thaction
 {
   width: 20%;
+}
+@media(max-width: 480px)
+{
+  table{
+    width: 80%;
+    font-size: 15px;
+  }
+  input
+  {
+    width: 80%;
+  }
+  #class
+  {
+    margin-left: 0;
+  }
+  #subjectedit,#classedit
+  {
+    width: 40%;
+  }
+  .addbutton
+  {
+    width: 40%;
+  }
+  .fa-trash
+  {
+    font-size: 20px;
+  }
+  .deletebtn
+  {
+    color: darkblue !important;
+    font-size: 15px;
+
+  }
+  #subjectedit,#classedit
+  {
+    width: 30%;
+    font-size: 15px;
+    margin-right: 5%;
+  }
 }

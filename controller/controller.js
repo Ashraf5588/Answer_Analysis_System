@@ -71,7 +71,8 @@ exports.showForm= async(req,res,next)=>
 exports.saveForm = async (req,res,next)=>
   {
     const {subjectinput} = req.params;
-    console.log(subjectinput)
+    const {studentclass,section,terminal} = req.params;
+    console.log(subjectinput,studentclass,section,terminal)
   if(!availablesubject.includes(subjectinput))
   {
     return res.render('404')
@@ -83,7 +84,7 @@ exports.saveForm = async (req,res,next)=>
     {
       const model = getSubjectModel(subjectinput);
       await model.create(req.body)
-      res.render('FormPostMessage',{subjectinput})
+      res.render('FormPostMessage',{subjectinput,studentclass,section,terminal})
   }catch(err)
   {
     console.log(err)
@@ -132,9 +133,7 @@ console.log(totalStudent)
       { roll: 1, name: 1, _id: 0 ,[`q${i}${question_list[j-1]}`]:1}
     );
     
-    console.log(term1Incorrect)
-    console.log(term2Incorrect)
-    console.log(term3Incorrect)
+    
 
 
     const firstSecondTerm= term1Incorrect.filter((data1)=>
@@ -170,23 +169,7 @@ const firstSecondThirdTerm = term1Incorrect.filter((data1)=>{
 })
 console.log(firstSecondTerm)
 console.log(firstThirdTerm)
-    
-    // Convert results into Map objects with roll as the key and name as the value
-    // const term1Map = new Map(term1Incorrect.map(student => [student.roll, student.name]));
-    // const term2Map = new Map(term2Incorrect.map(student => [student.roll, student.name]));
-    
-    // // Find intersection (rolls that exist in both maps)
-    // const intersection = [...term1Map.keys()].filter(roll => term2Map.has(roll));
-    
-    // // Extract details of intersecting students (roll and name)
-    // const intersectingStudents = intersection.map(roll => ({
-    //   roll,
-    //   name: term1Map.get(roll) // Name is the same in both terms; retrieve from term1Map
-    // }));
-    
-    // console.log(`Students who made incorrect answers for q1a in both first and second terms:`, intersectingStudents);
-    // console.log(term1Incorrect)
-    // console.log(term2Incorrect)
+
     
 
 
@@ -223,6 +206,16 @@ console.log(firstThirdTerm)
             {'terminal':`${terminal}`},
           ]}},
             {$count: 'count'}],
+            correctabove50: [
+              {$match:{$and:[{[`q${i}${question_list[j-1]}`]:'correctabove50'},{'section':section},
+              {'terminal':`${terminal}`},
+            ]}},
+              {$count: 'count'}],
+              correctbelow50: [
+                {$match:{$and:[{[`q${i}${question_list[j-1]}`]:'correctbelow50'},{'section':section},
+                {'terminal':`${terminal}`},
+              ]}},
+                {$count: 'count'}],
         incorrectTerminal: [
               {$match:{$and:[{[`q${i}${question_list[j-1]}`]:'incorrect','terminal':`${terminal}`},{'section':section},
               {[`q${i}${question_list[j-1]}`]:'incorrect','terminal':`${terminal2}`},
@@ -249,6 +242,8 @@ console.log(firstThirdTerm)
     correct: {$ifNull: [{$arrayElemAt: ["$correct.count",0]},0]},
   incorrect: {$ifNull:[{$arrayElemAt: ["$incorrect.count", 0]},0]},
 notattempt:{$ifNull:[{ $arrayElemAt: ["$notattempt.count", 0]},0 ]},
+correctabove50:{$ifNull:[{ $arrayElemAt: ["$correctabove50.count", 0]},0 ]},
+correctbelow50:{$ifNull:[{ $arrayElemAt: ["$correctbelow50.count", 0]},0 ]},
 incorrectTerminal:{$ifNull:[{ $arrayElemAt: ["$incorrectTerminal.count", 0]},0 ]},
 correctTerminal:{$ifNull:[{ $arrayElemAt: ["$correctTerminal.count", 0]},0 ]},
 notattemptTerminal:{$ifNull:[{ $arrayElemAt: ["$notattemptTerminal.count", 0]},0 ]},
@@ -264,6 +259,8 @@ notattemptTerminal:{$ifNull:[{ $arrayElemAt: ["$notattemptTerminal.count", 0]},0
       correct:analysis[0].correct,
       wrong: analysis[0].incorrect,
       notattempt:analysis[0].notattempt,
+      correctabove50:analysis[0].correctabove50,
+      correctbelow50:analysis[0].correctabove50,
       
   
       
@@ -323,3 +320,11 @@ exports.studentData = async (req,res,next)=>
 
       res.render('totalstudent',{totalStudent,subjectinput,studentClass,section,terminal,terminal2,terminal3})
     } 
+
+
+exports.updateQuestion = async(req,res,next)=>
+  {
+    const {no} = req.params;
+    console.log(no)
+    
+  }

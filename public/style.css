@@ -124,11 +124,43 @@ flex-wrap: wrap;
     color: white;
     margin-top: 5%;
 }
+.subject:hover 
+{
+   opacity: 0.7;
+    transform: scale(1.01);
+    transition: all 0.2s ease-in-out; 
+}
+
+
 @media(max-width:500px)
 {
     .subject
     {
         width: 18rem;
         font-size: 25px;
+    }
+    #firstheading
+    {
+        font-size: 35px;
+    }
+    .subheading
+    {
+        font-size: 12px;
+    }
+}
+@media(max-width:416px)
+{
+    .subject
+    {
+        width: 17rem;
+        font-size: 25px;
+    }
+    #firstheading
+    {
+        font-size: 25px;
+    }
+    .subheading
+    {
+        font-size: 10px;
     }
 }

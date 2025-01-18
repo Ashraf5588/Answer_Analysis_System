@@ -45,3 +45,11 @@ ul li:hover{
 {
 font-size: 20px;
 }
+@media(max-width:500px)
+{
+  ul li 
+  {
+    font-size: 17px;
+    line-height: 3;
+  }
+}

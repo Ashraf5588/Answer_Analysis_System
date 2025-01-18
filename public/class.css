@@ -87,21 +87,35 @@ a{
 }
 .fa-chalkboard-user
 {
-  color: #383e3e !important;
+  color: #ffffff !important;
 }
 #firstheading
 {
   font-size: 50px;
+  
 }
 #firstspan
 {
-  color: #ebbb46;
+  color: darkblue;
 }
 @media(max-width:500px)
 {
     .subject
     {
-        width: 18rem;
+        width: 17rem;
         font-size: 25px;
+    }
+    #fours
+    {
+      width: 18rem;
+      height: 10rem;
+    }
+    #firstheading
+    {
+      font-size: 30px;
+    }
+    .subheading
+    {
+      font-size: 12px;
     }
 }
