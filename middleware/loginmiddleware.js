@@ -17,17 +17,7 @@ const authenticateToken = (req, res, next) => {
     req.user = verified;
 
     // Check for the user’s role and current path
-    if (verified.role === 'admin') {
-      // If user is an admin and trying to access anything other than /admin, redirect
-      if (req.path !== '/admin' && !req.path.startsWith('/admin')) {
-        return res.redirect('/admin');
-      }
-    } else if (verified.role === 'teacher') {
-      // If user is a teacher and trying to access anything other than /teacher, redirect
-      if (req.path !== '/teacher' && !req.path.startsWith('/teacher')) {
-        return res.redirect('/teacher');
-      }
-    }
+    
 
     // If the user is trying to access their designated page or any allowed page, proceed
     next();
