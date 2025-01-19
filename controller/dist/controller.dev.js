@@ -222,17 +222,58 @@ exports.saveForm = function _callee5(req, res, next) {
   }, null, null, [[7, 14]]);
 };
 
-exports.findData = function _callee7(req, res) {
-  var _req$params5, subjectinput, _studentClass, section, terminal, terminal2, terminal3, _model2, totalstudent, totalStudent, result, term, i, _ref6, _ref7, analysis;
+exports.search = function _callee6(req, res, next) {
+  var _req$params5, subject, studentClass, section, terminal, roll, model, individualData;
 
-  return regeneratorRuntime.async(function _callee7$(_context7) {
+  return regeneratorRuntime.async(function _callee6$(_context6) {
     while (1) {
-      switch (_context7.prev = _context7.next) {
+      switch (_context6.prev = _context6.next) {
         case 0:
-          _context7.prev = 0;
-          _req$params5 = req.params, subjectinput = _req$params5.subjectinput, _studentClass = _req$params5.studentClass, section = _req$params5.section, terminal = _req$params5.terminal, terminal2 = _req$params5.terminal2, terminal3 = _req$params5.terminal3;
+          _req$params5 = req.params, subject = _req$params5.subject, studentClass = _req$params5.studentClass, section = _req$params5.section, terminal = _req$params5.terminal;
+          roll = req.body.roll;
+          console.log(subject, studentClass, section, terminal, roll);
+          model = getSubjectModel(subject);
+          _context6.next = 6;
+          return regeneratorRuntime.awrap(model.find({
+            'subject': "".concat(subject),
+            'section': "".concat(section),
+            'terminal': "".concat(terminal),
+            'roll': roll,
+            'studentClass': "".concat(studentClass)
+          }, {
+            _id: 0,
+            __v: 0
+          }).lean());
+
+        case 6:
+          individualData = _context6.sent;
+          res.render('search', {
+            individualData: individualData,
+            subject: subject,
+            studentClass: studentClass,
+            section: section,
+            terminal: terminal
+          });
+
+        case 8:
+        case "end":
+          return _context6.stop();
+      }
+    }
+  });
+};
+
+exports.findData = function _callee8(req, res) {
+  var _req$params6, subjectinput, _studentClass, section, terminal, terminal2, terminal3, _model2, totalstudent, totalStudent, result, term, i, _ref6, _ref7, analysis;
+
+  return regeneratorRuntime.async(function _callee8$(_context8) {
+    while (1) {
+      switch (_context8.prev = _context8.next) {
+        case 0:
+          _context8.prev = 0;
+          _req$params6 = req.params, subjectinput = _req$params6.subjectinput, _studentClass = _req$params6.studentClass, section = _req$params6.section, terminal = _req$params6.terminal, terminal2 = _req$params6.terminal2, terminal3 = _req$params6.terminal3;
           _model2 = getSubjectModel(subjectinput);
-          _context7.next = 5;
+          _context8.next = 5;
           return regeneratorRuntime.awrap(_model2.aggregate([{
             $match: {
               $and: [{
@@ -246,7 +287,7 @@ exports.findData = function _callee7(req, res) {
           }]));
 
         case 5:
-          totalstudent = _context7.sent;
+          totalstudent = _context8.sent;
           totalStudent = totalstudent.length > 0 && totalstudent[0].count ? totalstudent[0].count : 0;
           console.log(totalStudent);
           result = [];
@@ -256,7 +297,7 @@ exports.findData = function _callee7(req, res) {
 
         case 12:
           if (!(i <= 20)) {
-            _context7.next = 34;
+            _context8.next = 34;
             break;
           }
 
@@ -264,21 +305,21 @@ exports.findData = function _callee7(req, res) {
 
         case 14:
           if (!(j <= 4)) {
-            _context7.next = 31;
+            _context8.next = 31;
             break;
           }
 
-          _context7.prev = 15;
-          _context7.next = 18;
-          return regeneratorRuntime.awrap(function _callee6() {
+          _context8.prev = 15;
+          _context8.next = 18;
+          return regeneratorRuntime.awrap(function _callee7() {
             var _model2$find, _model2$find3, _model2$find5;
 
             var term1Incorrect, term2Incorrect, term3Incorrect, firstSecondTerm, firstThirdTerm, secondThirdTerm, firstSecondThirdTerm;
-            return regeneratorRuntime.async(function _callee6$(_context6) {
+            return regeneratorRuntime.async(function _callee7$(_context7) {
               while (1) {
-                switch (_context6.prev = _context6.next) {
+                switch (_context7.prev = _context7.next) {
                   case 0:
-                    _context6.next = 2;
+                    _context7.next = 2;
                     return regeneratorRuntime.awrap(_model2.find((_model2$find = {}, _defineProperty(_model2$find, "q".concat(i).concat(question_list[j - 1]), 'incorrect'), _defineProperty(_model2$find, "terminal", 'first'), _model2$find), _defineProperty({
                       roll: 1,
                       name: 1,
@@ -286,8 +327,8 @@ exports.findData = function _callee7(req, res) {
                     }, "q".concat(i).concat(question_list[j - 1]), 1)));
 
                   case 2:
-                    term1Incorrect = _context6.sent;
-                    _context6.next = 5;
+                    term1Incorrect = _context7.sent;
+                    _context7.next = 5;
                     return regeneratorRuntime.awrap(_model2.find((_model2$find3 = {}, _defineProperty(_model2$find3, "q".concat(i).concat(question_list[j - 1]), 'incorrect'), _defineProperty(_model2$find3, "terminal", 'second'), _model2$find3), _defineProperty({
                       roll: 1,
                       name: 1,
@@ -295,8 +336,8 @@ exports.findData = function _callee7(req, res) {
                     }, "q".concat(i).concat(question_list[j - 1]), 1)));
 
                   case 5:
-                    term2Incorrect = _context6.sent;
-                    _context6.next = 8;
+                    term2Incorrect = _context7.sent;
+                    _context7.next = 8;
                     return regeneratorRuntime.awrap(_model2.find((_model2$find5 = {}, _defineProperty(_model2$find5, "q".concat(i).concat(question_list[j - 1]), 'incorrect'), _defineProperty(_model2$find5, "terminal", 'third'), _model2$find5), _defineProperty({
                       roll: 1,
                       name: 1,
@@ -304,7 +345,7 @@ exports.findData = function _callee7(req, res) {
                     }, "q".concat(i).concat(question_list[j - 1]), 1)));
 
                   case 8:
-                    term3Incorrect = _context6.sent;
+                    term3Incorrect = _context7.sent;
                     firstSecondTerm = term1Incorrect.filter(function (data1) {
                       var term1 = term2Incorrect.find(function (data2) {
                         return data2.roll === data1.roll ? true : false;
@@ -334,23 +375,23 @@ exports.findData = function _callee7(req, res) {
 
                   case 15:
                   case "end":
-                    return _context6.stop();
+                    return _context7.stop();
                 }
               }
             });
           }());
 
         case 18:
-          _context7.next = 23;
+          _context8.next = 23;
           break;
 
         case 20:
-          _context7.prev = 20;
-          _context7.t0 = _context7["catch"](15);
-          console.log(_context7.t0);
+          _context8.prev = 20;
+          _context8.t0 = _context8["catch"](15);
+          console.log(_context8.t0);
 
         case 23:
-          _context7.next = 25;
+          _context8.next = 25;
           return regeneratorRuntime.awrap(_model2.aggregate([{
             $facet: {
               correct: [{
@@ -490,14 +531,14 @@ exports.findData = function _callee7(req, res) {
           }]));
 
         case 25:
-          analysis = _context7.sent;
+          analysis = _context8.sent;
           result.push({
             questionNo: "q".concat(i).concat(question_list[j - 1]),
             correct: analysis[0].correct,
             wrong: analysis[0].incorrect,
             notattempt: analysis[0].notattempt,
             correctabove50: analysis[0].correctabove50,
-            correctbelow50: analysis[0].correctabove50
+            correctbelow50: analysis[0].correctbelow50
           });
           term.push({
             questionNo: "q".concat(i).concat(question_list[j - 1]),
@@ -510,12 +551,12 @@ exports.findData = function _callee7(req, res) {
 
         case 28:
           j++;
-          _context7.next = 14;
+          _context8.next = 14;
           break;
 
         case 31:
           i++;
-          _context7.next = 12;
+          _context8.next = 12;
           break;
 
         case 34:
@@ -536,32 +577,32 @@ exports.findData = function _callee7(req, res) {
             terminal2: terminal2,
             terminal3: terminal3
           });
-          _context7.next = 42;
+          _context8.next = 42;
           break;
 
         case 39:
-          _context7.prev = 39;
-          _context7.t1 = _context7["catch"](0);
-          console.log(_context7.t1);
+          _context8.prev = 39;
+          _context8.t1 = _context8["catch"](0);
+          console.log(_context8.t1);
 
         case 42:
         case "end":
-          return _context7.stop();
+          return _context8.stop();
       }
     }
   }, null, null, [[0, 39], [15, 20]]);
 };
 
-exports.studentData = function _callee8(req, res, next) {
-  var _req$params6, subjectinput, studentClass, section, qno, status, terminal, StudentData;
+exports.studentData = function _callee9(req, res, next) {
+  var _req$params7, subjectinput, studentClass, section, qno, status, terminal, StudentData;
 
-  return regeneratorRuntime.async(function _callee8$(_context8) {
+  return regeneratorRuntime.async(function _callee9$(_context9) {
     while (1) {
-      switch (_context8.prev = _context8.next) {
+      switch (_context9.prev = _context9.next) {
         case 0:
-          _req$params6 = req.params, subjectinput = _req$params6.subjectinput, studentClass = _req$params6.studentClass, section = _req$params6.section, qno = _req$params6.qno, status = _req$params6.status, terminal = _req$params6.terminal;
+          _req$params7 = req.params, subjectinput = _req$params7.subjectinput, studentClass = _req$params7.studentClass, section = _req$params7.section, qno = _req$params7.qno, status = _req$params7.status, terminal = _req$params7.terminal;
           model = getSubjectModel(subjectinput);
-          _context8.next = 4;
+          _context9.next = 4;
           return regeneratorRuntime.awrap(model.find({
             $and: [_defineProperty({}, "".concat(qno), "".concat(status)), {
               'section': "".concat(section)
@@ -571,7 +612,7 @@ exports.studentData = function _callee8(req, res, next) {
           }));
 
         case 4:
-          StudentData = _context8.sent;
+          StudentData = _context9.sent;
           res.render('studentdata', {
             subjectinput: subjectinput,
             qno: qno,
@@ -584,22 +625,22 @@ exports.studentData = function _callee8(req, res, next) {
 
         case 6:
         case "end":
-          return _context8.stop();
+          return _context9.stop();
       }
     }
   });
 };
 
-exports.totalStudent = function _callee9(req, res, next) {
-  var _req$params7, subjectinput, studentClass, section, terminal, terminal2, terminal3, totalStudent;
+exports.totalStudent = function _callee10(req, res, next) {
+  var _req$params8, subjectinput, studentClass, section, terminal, terminal2, terminal3, totalStudent;
 
-  return regeneratorRuntime.async(function _callee9$(_context9) {
+  return regeneratorRuntime.async(function _callee10$(_context10) {
     while (1) {
-      switch (_context9.prev = _context9.next) {
+      switch (_context10.prev = _context10.next) {
         case 0:
-          _req$params7 = req.params, subjectinput = _req$params7.subjectinput, studentClass = _req$params7.studentClass, section = _req$params7.section, terminal = _req$params7.terminal, terminal2 = _req$params7.terminal2, terminal3 = _req$params7.terminal3;
+          _req$params8 = req.params, subjectinput = _req$params8.subjectinput, studentClass = _req$params8.studentClass, section = _req$params8.section, terminal = _req$params8.terminal, terminal2 = _req$params8.terminal2, terminal3 = _req$params8.terminal3;
           model = getSubjectModel(subjectinput);
-          _context9.next = 4;
+          _context10.next = 4;
           return regeneratorRuntime.awrap(model.find({
             $and: [{
               'studentClass': "".concat(studentClass)
@@ -611,7 +652,7 @@ exports.totalStudent = function _callee9(req, res, next) {
           }));
 
         case 4:
-          totalStudent = _context9.sent;
+          totalStudent = _context10.sent;
           res.render('totalstudent', {
             totalStudent: totalStudent,
             subjectinput: subjectinput,
@@ -624,24 +665,24 @@ exports.totalStudent = function _callee9(req, res, next) {
 
         case 6:
         case "end":
-          return _context9.stop();
+          return _context10.stop();
       }
     }
   });
 };
 
-exports.updateQuestion = function _callee10(req, res, next) {
+exports.updateQuestion = function _callee11(req, res, next) {
   var no;
-  return regeneratorRuntime.async(function _callee10$(_context10) {
+  return regeneratorRuntime.async(function _callee11$(_context11) {
     while (1) {
-      switch (_context10.prev = _context10.next) {
+      switch (_context11.prev = _context11.next) {
         case 0:
           no = req.params.no;
           console.log(no);
 
         case 2:
         case "end":
-          return _context10.stop();
+          return _context11.stop();
       }
     }
   });

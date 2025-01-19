@@ -3,14 +3,34 @@
   padding: 0;
   box-sizing: border-box;
 }
+nav
+{
+  display: flex;
+  justify-content: space-between;
+}
+nav img{
+  width: 10%;
+  margin-left: 2.5%;
+  flex-shrink: 0;
+
+  
+}
+.schoolname
+{
+  padding: 0 0 0 15%;
+  font-size: 20px;
+  font-weight: 850;
+  margin-top: -8.5%;
+
+}
 nav ul{
   display: flex;
   text-decoration: none;
-  gap: 2%;
-  background-color: darkblue;
+  gap: 4rem;
+  
   height: 4rem;
   line-height: 1.9;
-  padding-right: 1.7%;
+  padding-right: 10%;
   
   
 
@@ -51,5 +71,9 @@ font-size: 20px;
   {
     font-size: 17px;
     line-height: 3;
+  }
+  .schoolname
+  {
+    display: none;
   }
 }

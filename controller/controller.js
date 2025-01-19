@@ -68,6 +68,7 @@ exports.showForm= async(req,res,next)=>
     res.render('form',{subjectname:subjectinput,section,studentClass,terminal})
   }
 }
+
 exports.saveForm = async (req,res,next)=>
   {
     const {subjectinput} = req.params;
@@ -91,7 +92,17 @@ exports.saveForm = async (req,res,next)=>
   }  
   }
 }
-
+exports.search = async(req,res,next)=>
+  {
+    const {subject,studentClass,section,terminal} = req.params;
+    const {roll} = req.body;
+    console.log(subject,studentClass,section,terminal,roll)
+    const model = getSubjectModel(subject);
+    const individualData = await model.find({'subject':`${subject}`,'section':`${section}`,'terminal':`${terminal}`,'roll':roll,'studentClass':`${studentClass}`},{_id:0,__v:0}).lean();
+    
+    res.render('search',{individualData,subject,studentClass,section,terminal})
+    
+  }
 exports.findData= async(req,res)=>
   {
     try
@@ -260,7 +271,7 @@ notattemptTerminal:{$ifNull:[{ $arrayElemAt: ["$notattemptTerminal.count", 0]},0
       wrong: analysis[0].incorrect,
       notattempt:analysis[0].notattempt,
       correctabove50:analysis[0].correctabove50,
-      correctbelow50:analysis[0].correctabove50,
+      correctbelow50:analysis[0].correctbelow50,
       
   
       

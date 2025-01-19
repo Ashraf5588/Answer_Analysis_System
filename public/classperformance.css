@@ -8,7 +8,7 @@
 .spansubject
 {
     font-size: 18px;
-    padding-left: 20%;
+ 
     width: 100%;
     
 }
@@ -124,7 +124,42 @@
     transition: all 0.3s ease-in-out;
     font-size: 15px;
 }
+.search
+{
+    background-color: #ebbb46;
+    color: white;
+    font-size: 15px;
+    display: flex;
+   height: 3rem;
+    width: 15rem;
+    border-radius: 0 12px 0 12px;
+    justify-content: center;
+    line-height: 3;
+ 
+}
+#search
+{
+    width: 100%;
+}
+.search:hover
+{
+    background-color: #3307F8;
+    transition: all 0.3s ease-in-out;
+}
+#searchroll
+{
+    width: 70%;
+    height: 2rem;
+    border-radius: 12px;
+    margin-top: 1%;
+}
+#submit
+{
+    width: 25%;
+    height: 2rem;
+  
 
+}
 @media(max-width:500px)
 {
     .subname

@@ -142,7 +142,8 @@ exports.adminloginpost = function _callee4(req, res, next) {
             res.send("invalid credentials");
           } else {
             token = jwt.sign({
-              user: user.username
+              user: user.username,
+              role: user.role
             }, "mynameisashraf!23_9&", {
               expiresIn: "24h"
             });

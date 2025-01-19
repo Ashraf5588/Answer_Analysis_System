@@ -74,7 +74,7 @@ exports.adminlogin = async(req,res,next)=>
         else
         {
 
-          const token = jwt.sign({user:user.username}, "mynameisashraf!23_9&", { expiresIn: "24h" });
+          const token = jwt.sign({user:user.username,role:user.role}, "mynameisashraf!23_9&", { expiresIn: "24h" });
           console.log("Generated Token:", token); // Log the generated token
 
           res.cookie("token", token, { httpOnly: true, secure: false });

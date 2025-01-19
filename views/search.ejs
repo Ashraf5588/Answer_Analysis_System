@@ -1,0 +1,44 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Individual Record</title>
+    <link rel="stylesheet" href="/search.css">
+    
+  </head>
+  <body> <br>
+    <center>
+    <h1 >Individual <span style="color: darkblue;">Record</span> </h1>
+  
+    <table border="1" cellspacing="0" cellpadding="5">
+      <thead style="background-color: orange;">
+        <tr>
+          <th>Field</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+     
+        <% individualData.forEach(record => { %>
+          <% Object.entries(record).forEach(([key, value]) => { %>
+            <tr>
+              <td><%= key %></td>
+              <td><%= value %></td>
+            </tr>
+          <% }) %>
+        <% }) %>
+     
+    </table>
+  </center>
+    <a href="/findData/<%=subject%>/<%=studentClass %>/<%=section %>/<%=terminal %>">Go Back</a>
+  </body>
+  </html>
+  
+ 
+
+  </table></center>
+ 
+
+  <script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
+</body>
+</html>

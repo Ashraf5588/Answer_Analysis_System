@@ -44,7 +44,13 @@
 
 
 <hr><br>
-
+<center><div class="search">
+    <form action="/search/<%=subjectname %>/<%=studentClass %>/<%=section %>/<%=terminal %>" method="POST">
+     
+    <input type="number" id="searchroll" value="roll" name="roll" placeholder="&#xF002; Search By Roll" style="font-family:Arial, FontAwesome" />
+   <input type="submit" value="search" id="submit"/>
+</form></center>
+</div>
     <div class="analysiscontainer">
         <% if (results.length == 0) { %>
             <div class="subcol">

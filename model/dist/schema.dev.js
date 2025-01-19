@@ -379,7 +379,7 @@ var studentSchema = new mongoose.Schema({
     type: String,
     required: false
   }
-});
+},{ versionKey: false });
 module.exports = {
   studentSchema: studentSchema
 };
