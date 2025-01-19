@@ -40,7 +40,7 @@
     <center><h1>Qustion <span class="info" style="color: darkblue;">Info</span></h1></center><br> 
 <% question_list = ['a','b','c','d','e','f','g','h','i','j','k'] %>
 <% let n %>
-<% if(subjectname === "science")
+<% if(subjectname === "Science")
 { n=4 } %>
 <% if(subjectname === "Math")
 { n=4 } %>
@@ -48,8 +48,14 @@
 { n=10} %>
 <% if(subjectname === "Social")
 { n=4} %>
+<% if(subjectname === "Health")
+{ n=1} %>
+<% if(subjectname === "English")
+{ n=4} %>
+<% if(subjectname === "Delight")
+{ n=4} %>
 
-    <% for (let i = 1; i <= 20; i++){
+    <% for (let i = 1; i <= 25; i++){
         for(let j=1;j<=n;j++){%>
        
     <div class="questions">
