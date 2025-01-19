@@ -9,7 +9,7 @@ nav
   justify-content: space-between;
 }
 nav img{
-  width: 3.5rem;
+  width: 3.5rem !important;
   margin-left: 2.5%;
   flex-shrink: 0;
 
