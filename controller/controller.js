@@ -92,17 +92,7 @@ exports.saveForm = async (req,res,next)=>
   }  
   }
 }
-exports.search = async(req,res,next)=>
-  {
-    const {subject,studentClass,section,terminal} = req.params;
-    const {roll} = req.body;
-    console.log(subject,studentClass,section,terminal,roll)
-    const model = getSubjectModel(subject);
-    const individualData = await model.find({'subject':`${subject}`,'section':`${section}`,'terminal':`${terminal}`,'roll':roll,'studentClass':`${studentClass}`},{_id:0,__v:0}).lean();
-    
-    res.render('search',{individualData,subject,studentClass,section,terminal})
-    
-  }
+
 exports.findData= async(req,res)=>
   {
     try
@@ -306,7 +296,17 @@ notattemptTerminal:{$ifNull:[{ $arrayElemAt: ["$notattemptTerminal.count", 0]},0
   
   
   }
-
+  exports.search = async(req,res,next)=>
+    {
+      const {subject,studentClass,section,terminal} = req.params;
+      const {roll} = req.body;
+      console.log(subject,studentClass,section,terminal,roll)
+      const model = getSubjectModel(subject);
+      const individualData = await model.find({'subject':`${subject}`,'section':`${section}`,'terminal':`${terminal}`,'roll':roll,'studentClass':`${studentClass}`},{_id:0,__v:0}).lean();
+      
+      res.render('search',{individualData,subject,studentClass,section,terminal})
+      
+    }
 exports.studentData = async (req,res,next)=>
   {
     const {subjectinput,studentClass,section,qno,status,terminal} = req.params;
