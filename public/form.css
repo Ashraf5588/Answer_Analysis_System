@@ -195,4 +195,22 @@ a{
         flex-direction: column; /* Stack options vertically on small screens */
         gap: 5px;               /* Reduce the gap for smaller screens */
     }
+    .sccuesscontainer{
+        width: 70%;
+        height: 20rem;
+    }
+}
+@media(max-width: 420px) {
+   
+    .sccuesscontainer{
+        width: 10rem;
+        height: 20rem;
+    }
+}
+@media(max-width: 780px) {
+                /* Reduce the gap for smaller screens */
+    .sccuesscontainer{
+        width: 70%;
+        height: 20rem;
+    }
 }

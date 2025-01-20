@@ -23,7 +23,7 @@
 <div class="personal">
     <center><h1>Personal <span class="info" style="color: darkblue;">Info</span></h1></center> <br>
     <input type="text" name="name" id="name" placeholder="Name" required>
-    <input type="roll" name="roll" id="roll" placeholder="Roll.No." required>
+    <input type="number" name="roll" id="roll" placeholder="Roll.No." required>
     <!-- <input type="number" name="studentClass" id="class" placeholder="Class" required> -->
      <input type="text" name="studentClass" id="studentClass" 
      value = "<%=studentClass%>" required>
@@ -43,11 +43,11 @@
 <% if(subjectname === "science")
 { n=4 } %>
 <% if(subjectname === "Math")
-{ n=4 } %>
+{ n=5 } %>
 <% if(subjectname === "Computer")
 { n=10} %>
 <% if(subjectname === "Social")
-{ n=4} %>
+{ n=0} %>
 <% if(subjectname === "Health")
 { n=1} %>
 <% if(subjectname === "English-I")
@@ -58,6 +58,8 @@
 { n=4} %>
 <% if(subjectname === "OptMath")
 { n=4} %>
+<% if(subjectname === "Nepali")
+{ n=5} %>
     <% for (let i = 1; i <= 25; i++){
         for(let j=1;j<=n;j++){%>
        
