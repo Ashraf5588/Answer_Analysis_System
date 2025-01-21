@@ -111,10 +111,10 @@ console.log(totalStudent)
 
       let result = [];
       let term = [];
-      question_list = ['a','b','c','d'];
-      for (let i = 1; i <= 20; i++)
+      question_list = ['a','b','c','d','e','f','g','h','i','j'];
+      for (let i = 1; i <= 25; i++)
         {
-        for(j=1;j<=4;j++)
+        for(j=1;j<=10;j++)
         { 
 
   try

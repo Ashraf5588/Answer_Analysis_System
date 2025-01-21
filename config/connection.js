@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-url =url ="mongodb://0.0.0.0/aes"
+url ="mongodb://0.0.0.0/aes"
 
 
 const connectDB = async () => {

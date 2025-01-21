@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose');
 
-url = url = "mongodb://0.0.0.0/aes";
+url = "mongodb://0.0.0.0/aes";
 
 var connectDB = function connectDB() {
   var conn;

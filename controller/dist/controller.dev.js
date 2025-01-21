@@ -251,11 +251,11 @@ exports.findData = function _callee7(req, res) {
           console.log(totalStudent);
           result = [];
           term = [];
-          question_list = ['a', 'b', 'c', 'd'];
+          question_list = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
           i = 1;
 
         case 12:
-          if (!(i <= 20)) {
+          if (!(i <= 25)) {
             _context7.next = 34;
             break;
           }
@@ -263,7 +263,7 @@ exports.findData = function _callee7(req, res) {
           j = 1;
 
         case 14:
-          if (!(j <= 4)) {
+          if (!(j <= 10)) {
             _context7.next = 31;
             break;
           }
