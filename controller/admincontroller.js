@@ -114,7 +114,7 @@ exports.addSubject = async (req, res, next) => {
     });
   } else {
     await subject.create(req.body);
-    res.render("admin/adminpannel", { editing: false });
+    res.render("admin/adminpannel", { editing: false ,entryArray: req.entryArray});
   }
 };
 
@@ -145,13 +145,13 @@ exports.deleteSubject = async (req, res, next) => {
 
   await subject.findByIdAndDelete(subjectId);
 
-  res.redirect("/admin");
+  res.redirect("/admin",{entryArray: req.entryArray});
 };
 exports.deleteStudentClass = async (req, res, next) => {
   const { classId } = req.params;
 
   await studentClass.findByIdAndDelete(classId);
-  res.redirect("/admin");
+  res.redirect("/admin",{entryArray: req.entryArray});
 };
 exports.editSub = async (req, res, next) => {
   const { subId } = req.params;
