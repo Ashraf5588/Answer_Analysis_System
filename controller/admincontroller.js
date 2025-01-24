@@ -86,7 +86,7 @@ exports.admin = async (req, res, next) => {
       editing: false,
       subjects,
       studentClasslist,
-      entryArray,
+      entryArray:entryArray,
     });
   } catch (err) {
     console.log(err);
@@ -114,7 +114,9 @@ exports.addSubject = async (req, res, next) => {
     });
   } else {
     await subject.create(req.body);
-    res.render("admin/adminpannel", { editing: false ,entryArray: req.entryArray});
+    res.render("admin/adminpannel", { 
+      editing: false ,
+      entryArray: req.entryArray});
   }
 };
 

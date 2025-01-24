@@ -2,38 +2,38 @@
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var path = require('path');
+var path = require("path");
 
-var express = require('express');
+var express = require("express");
 
 var app = express();
 
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 
-var bodyParser = require('body-parser');
+var bodyParser = require("body-parser");
 
-var _require = require('../utils/path'),
+var _require = require("../utils/path"),
     rootDir = _require.rootDir;
 
-var _require2 = require('../model/schema'),
+var _require2 = require("../model/schema"),
     studentSchema = _require2.studentSchema;
 
-var _require3 = require('../model/adminschema'),
+var _require3 = require("../model/adminschema"),
     classSchema = _require3.classSchema,
     subjectSchema = _require3.subjectSchema; // const {subject} = require('../controller/admincontroller')
 // const {studentClass} = require('../controller/admincontroller')
 
 
-var subjectlist = mongoose.model('subjectlist', subjectSchema, 'subjectlist');
-var studentClass = mongoose.model('studentClass', classSchema, 'classlist');
+var subjectlist = mongoose.model("subjectlist", subjectSchema, "subjectlist");
+var studentClass = mongoose.model("studentClass", classSchema, "classlist");
 
-var _require4 = require('mongoose'),
+var _require4 = require("mongoose"),
     mongo = _require4.mongo; // const subjects = await subject.find({})
 // let availablesubject = ['math','science','english','computer','social','optmath','health']
 
 
-app.set('view engine', 'ejs');
-app.set('view', path.join(rootDir, 'views'));
+app.set("view engine", "ejs");
+app.set("view", path.join(rootDir, "views"));
 
 exports.homePage = function _callee(req, res, next) {
   var subjects;
@@ -46,8 +46,8 @@ exports.homePage = function _callee(req, res, next) {
 
         case 2:
           subjects = _context.sent;
-          res.render('index', {
-            currentPage: 'home',
+          res.render("index", {
+            currentPage: "home",
             subjects: subjects
           });
 
@@ -71,9 +71,9 @@ exports.teacherPage = function _callee2(req, res, next) {
         case 2:
           subjects = _context2.sent;
           controller = req.params.controller;
-          res.render('teacher', {
+          res.render("teacher", {
             controller: controller,
-            currentPage: 'teacher',
+            currentPage: "teacher",
             subjects: subjects
           });
 
@@ -98,7 +98,7 @@ exports.studentclass = function _callee3(req, res, next) {
         case 2:
           studentClassdata = _context3.sent;
           _req$params = req.params, subject = _req$params.subject, controller = _req$params.controller;
-          res.render('class', {
+          res.render("class", {
             subject: subject,
             controller: controller,
             studentClassdata: studentClassdata
@@ -118,7 +118,7 @@ exports.terminal = function (req, res, next) {
       subject = _req$params2.subject,
       studentClass = _req$params2.studentClass,
       section = _req$params2.section;
-  res.render('terminal', {
+  res.render("terminal", {
     subject: subject,
     controller: controller,
     studentClass: studentClass,
@@ -157,10 +157,10 @@ exports.showForm = function _callee4(req, res, next) {
             break;
           }
 
-          return _context4.abrupt("return", res.render('404'));
+          return _context4.abrupt("return", res.render("404"));
 
         case 9:
-          res.render('form', {
+          res.render("form", {
             subjectname: subjectinput,
             section: section,
             studentClass: studentClass,
@@ -190,7 +190,7 @@ exports.saveForm = function _callee5(req, res, next) {
             break;
           }
 
-          return _context5.abrupt("return", res.render('404'));
+          return _context5.abrupt("return", res.render("404"));
 
         case 6:
           _context5.prev = 6;
@@ -199,7 +199,7 @@ exports.saveForm = function _callee5(req, res, next) {
           return regeneratorRuntime.awrap(_model.create(req.body));
 
         case 10:
-          res.render('FormPostMessage', {
+          res.render("FormPostMessage", {
             subjectinput: subjectinput,
             studentclass: studentclass,
             section: section,
@@ -235,13 +235,13 @@ exports.findData = function _callee7(req, res) {
           return regeneratorRuntime.awrap(_model2.aggregate([{
             $match: {
               $and: [{
-                'section': "".concat(section)
+                section: "".concat(section)
               }, {
-                'terminal': "".concat(terminal)
+                terminal: "".concat(terminal)
               }]
             }
           }, {
-            $count: 'count'
+            $count: "count"
           }]));
 
         case 5:
@@ -249,7 +249,7 @@ exports.findData = function _callee7(req, res) {
           totalStudent = totalstudent.length > 0 && totalstudent[0].count ? totalstudent[0].count : 0;
           result = [];
           term = [];
-          question_list = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+          question_list = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
           i = 1;
 
         case 11:
@@ -277,7 +277,7 @@ exports.findData = function _callee7(req, res) {
                 switch (_context6.prev = _context6.next) {
                   case 0:
                     _context6.next = 2;
-                    return regeneratorRuntime.awrap(_model2.find((_model2$find = {}, _defineProperty(_model2$find, "q".concat(i).concat(question_list[j - 1]), 'incorrect'), _defineProperty(_model2$find, "terminal", 'first'), _model2$find), _defineProperty({
+                    return regeneratorRuntime.awrap(_model2.find((_model2$find = {}, _defineProperty(_model2$find, "q".concat(i).concat(question_list[j - 1]), "incorrect"), _defineProperty(_model2$find, "terminal", "first"), _model2$find), _defineProperty({
                       roll: 1,
                       name: 1,
                       _id: 0
@@ -286,7 +286,7 @@ exports.findData = function _callee7(req, res) {
                   case 2:
                     term1Incorrect = _context6.sent;
                     _context6.next = 5;
-                    return regeneratorRuntime.awrap(_model2.find((_model2$find3 = {}, _defineProperty(_model2$find3, "q".concat(i).concat(question_list[j - 1]), 'incorrect'), _defineProperty(_model2$find3, "terminal", 'second'), _model2$find3), _defineProperty({
+                    return regeneratorRuntime.awrap(_model2.find((_model2$find3 = {}, _defineProperty(_model2$find3, "q".concat(i).concat(question_list[j - 1]), "incorrect"), _defineProperty(_model2$find3, "terminal", "second"), _model2$find3), _defineProperty({
                       roll: 1,
                       name: 1,
                       _id: 0
@@ -295,7 +295,7 @@ exports.findData = function _callee7(req, res) {
                   case 5:
                     term2Incorrect = _context6.sent;
                     _context6.next = 8;
-                    return regeneratorRuntime.awrap(_model2.find((_model2$find5 = {}, _defineProperty(_model2$find5, "q".concat(i).concat(question_list[j - 1]), 'incorrect'), _defineProperty(_model2$find5, "terminal", 'third'), _model2$find5), _defineProperty({
+                    return regeneratorRuntime.awrap(_model2.find((_model2$find5 = {}, _defineProperty(_model2$find5, "q".concat(i).concat(question_list[j - 1]), "incorrect"), _defineProperty(_model2$find5, "terminal", "third"), _model2$find5), _defineProperty({
                       roll: 1,
                       name: 1,
                       _id: 0
@@ -351,93 +351,93 @@ exports.findData = function _callee7(req, res) {
             $facet: {
               correct: [{
                 $match: {
-                  $and: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), 'correct'), {
-                    'section': "".concat(section)
+                  $and: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), "correct"), {
+                    section: "".concat(section)
                   }, {
-                    'terminal': "".concat(terminal)
+                    terminal: "".concat(terminal)
                   }]
                 }
               }, {
-                $count: 'count'
+                $count: "count"
               }],
               incorrect: [{
                 $match: {
-                  $and: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), 'incorrect'), {
-                    'section': "".concat(section)
+                  $and: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), "incorrect"), {
+                    section: "".concat(section)
                   }, {
-                    'terminal': "".concat(terminal)
+                    terminal: "".concat(terminal)
                   }]
                 }
               }, {
-                $count: 'count'
+                $count: "count"
               }],
               notattempt: [{
                 $match: {
-                  $and: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), 'notattempt'), {
-                    'section': section
+                  $and: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), "notattempt"), {
+                    section: section
                   }, {
-                    'terminal': "".concat(terminal)
+                    terminal: "".concat(terminal)
                   }]
                 }
               }, {
-                $count: 'count'
+                $count: "count"
               }],
               correctabove50: [{
                 $match: {
-                  $and: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), 'correctabove50'), {
-                    'section': section
+                  $and: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), "correctabove50"), {
+                    section: section
                   }, {
-                    'terminal': "".concat(terminal)
+                    terminal: "".concat(terminal)
                   }]
                 }
               }, {
-                $count: 'count'
+                $count: "count"
               }],
               correctbelow50: [{
                 $match: {
-                  $and: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), 'correctbelow50'), {
-                    'section': section
+                  $and: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), "correctbelow50"), {
+                    section: section
                   }, {
-                    'terminal': "".concat(terminal)
+                    terminal: "".concat(terminal)
                   }]
                 }
               }, {
-                $count: 'count'
+                $count: "count"
               }],
               incorrectTerminal: [{
                 $match: {
-                  $and: [(_ref6 = {}, _defineProperty(_ref6, "q".concat(i).concat(question_list[j - 1]), 'incorrect'), _defineProperty(_ref6, 'terminal', "".concat(terminal)), _ref6), {
-                    'section': section
-                  }, (_ref7 = {}, _defineProperty(_ref7, "q".concat(i).concat(question_list[j - 1]), 'incorrect'), _defineProperty(_ref7, 'terminal', "".concat(terminal2)), _ref7)]
+                  $and: [(_ref6 = {}, _defineProperty(_ref6, "q".concat(i).concat(question_list[j - 1]), "incorrect"), _defineProperty(_ref6, "terminal", "".concat(terminal)), _ref6), {
+                    section: section
+                  }, (_ref7 = {}, _defineProperty(_ref7, "q".concat(i).concat(question_list[j - 1]), "incorrect"), _defineProperty(_ref7, "terminal", "".concat(terminal2)), _ref7)]
                 }
               }, {
-                $count: 'count'
+                $count: "count"
               }],
               correctTerminal: [{
                 $match: {
-                  $or: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), 'correct'), {
-                    'section': section
+                  $or: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), "correct"), {
+                    section: section
                   }, {
-                    'terminal': "".concat(terminal)
+                    terminal: "".concat(terminal)
                   }, {
-                    'terminal': "".concat(terminal2)
+                    terminal: "".concat(terminal2)
                   }]
                 }
               }, {
-                $count: 'count'
+                $count: "count"
               }],
               notattemptTerminal: [{
                 $match: {
-                  $or: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), 'notattempt'), {
-                    'section': section
+                  $or: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), "notattempt"), {
+                    section: section
                   }, {
-                    'terminal': "".concat(terminal)
+                    terminal: "".concat(terminal)
                   }, {
-                    'terminal': "".concat(terminal2)
+                    terminal: "".concat(terminal2)
                   }]
                 }
               }, {
-                $count: 'count'
+                $count: "count"
               }]
             }
           }, {
@@ -521,7 +521,7 @@ exports.findData = function _callee7(req, res) {
           term.sort(function (a, b) {
             return b.wrong - a.wrong;
           });
-          res.render('analysis', {
+          res.render("analysis", {
             results: result,
             term: term,
             subjectname: subjectinput,
@@ -560,11 +560,11 @@ exports.search = function _callee8(req, res, next) {
           model = getSubjectModel(subject);
           _context8.next = 5;
           return regeneratorRuntime.awrap(model.find({
-            'subject': "".concat(subject),
-            'section': "".concat(section),
-            'terminal': "".concat(terminal),
-            'roll': roll,
-            'studentClass': "".concat(studentClass)
+            subject: "".concat(subject),
+            section: "".concat(section),
+            terminal: "".concat(terminal),
+            roll: roll,
+            studentClass: "".concat(studentClass)
           }, {
             _id: 0,
             __v: 0
@@ -572,7 +572,7 @@ exports.search = function _callee8(req, res, next) {
 
         case 5:
           individualData = _context8.sent;
-          res.render('search', {
+          res.render("search", {
             individualData: individualData,
             subject: subject,
             studentClass: studentClass,
@@ -600,15 +600,15 @@ exports.studentData = function _callee9(req, res, next) {
           _context9.next = 4;
           return regeneratorRuntime.awrap(model.find({
             $and: [_defineProperty({}, "".concat(qno), "".concat(status)), {
-              'section': "".concat(section)
+              section: "".concat(section)
             }, {
-              'terminal': "".concat(terminal)
+              terminal: "".concat(terminal)
             }]
           }));
 
         case 4:
           StudentData = _context9.sent;
-          res.render('studentdata', {
+          res.render("studentdata", {
             subjectinput: subjectinput,
             qno: qno,
             status: status,
@@ -638,17 +638,17 @@ exports.totalStudent = function _callee10(req, res, next) {
           _context10.next = 4;
           return regeneratorRuntime.awrap(model.find({
             $and: [{
-              'studentClass': "".concat(studentClass)
+              studentClass: "".concat(studentClass)
             }, {
-              'section': "".concat(section)
+              section: "".concat(section)
             }, {
-              'terminal': "".concat(terminal)
+              terminal: "".concat(terminal)
             }]
           }).lean());
 
         case 4:
           totalStudent = _context10.sent;
-          res.render('totalstudent', {
+          res.render("totalstudent", {
             totalStudent: totalStudent,
             subjectinput: subjectinput,
             studentClass: studentClass,
