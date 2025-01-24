@@ -18,7 +18,7 @@ connection();
 
 app.use(student)
 
-app.listen(3001,()=>{
+app.listen(80,()=>{
     console.log('Server is running on port 80')
     
 })

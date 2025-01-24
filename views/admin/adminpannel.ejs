@@ -9,7 +9,7 @@
 </head>
 <body>
   <%- include('../partials/nav',{currentPage:'admin'}) %>
-  <center><h1>Welcome, <span style="color: orange;">Admin</span></h1></center>
+  <center><h1>Welcome, <span style="color: darkblue;">Admin</span></h1></center>
   
 <center>
 <form action="<%= editing ? `/admin/subject/${subId}` : '/admin/subject' %>" method="post">
@@ -23,7 +23,7 @@
 </form>
 
 <div class="head">
-<h1>Subject <span style="color:orange;"><u>List</u></span></h1></div><br>
+<h1>Subject <span style="color:darkblue;"><u>List</u></span></h1></div><br>
 </center>
 <center>
 <table cellspacing="0px" border="1"> 
@@ -38,7 +38,7 @@
 
 <tr>
   <td><%= sub.subject %></td>
-  <td> <a href="/admin/editsub/<%=sub._id%>?editing=true" e> <button id="subjectedit">Edit</button></a> <a href="/delete/subject/<%=sub._id%>" onclick= "return confirm('Are you sure you want to delete <%=sub.subject%> subject')" class="deletebtn">Delete<i class="fa-solid fa-trash" style="color: #ff0000;"></i></a></td>
+  <td> <a href="/admin/editsub/<%=sub._id%>?editing=true" > <button id="subjectedit">Edit</button></a> <a href="/delete/subject/<%=sub._id%>" onclick= "return confirm('Are you sure you want to delete <%=sub.subject%> subject')" class="deletebtn">Delete<i class="fa-solid fa-trash" style="color: #ff0000;"></i></a></td>
 <% }) %>
 
 </tr>
@@ -52,12 +52,12 @@
 <center>
   <div class="head">
     <h1>Class <span style="color:darkblue;"><u>Information</u></span></h1></div>
-  <form action="/admin/class" method="POST">
+  <form action="<%= editing ? `/admin/class/${classId}` : '/admin/class' %>" method="POST">
   <label for="class">Class:</label>
-    <input type="text" id="class" name="studentClass" required placeholder="Add New Class"><br><br>
+    <input type="text" id="class" name="studentClass" required placeholder="Add New Class" value="<%= editing? classedit.studentClass:'' %>">><br><br>
   
     <label for="section">Section:</label>
-    <input type="text" id="section" name="section" required placeholder="Add New Section"><br><br>
+    <input type="text" id="section" name="section" required placeholder="Add New Section" value="<%= editing? classedit.section:'' %>">><br><br>
     <button type="submit" class="addbutton">Add New</button>
   
   </form>
@@ -73,7 +73,7 @@
   
   <td><%= studentclass.studentClass %> </td>
   <td><%= studentclass.section %></td>
-<td><button id="classedit">Edit</button> <a href="/delete/class/<%=studentclass._id%>" onclick= "return confirm('Are you sure you want to delete class <%=studentclass.studentClass%> <%=studentclass.section%> ')" class="deletebtn">Delete<i class="fa-solid fa-trash" style="color: #ff0000;"></i></a></td>
+<td><a href="/admin/editclass/<%=studentclass._id%>?editing=true" ><button id="classedit">Edit</button></a> <a href="/delete/class/<%=studentclass._id%>" onclick= "return confirm('Are you sure you want to delete class <%=studentclass.studentClass%> <%=studentclass.section%> ')" class="deletebtn">Delete<i class="fa-solid fa-trash" style="color: #ff0000;"></i></a></td>
   </tr>
   <% }) %>
   </table>
@@ -84,6 +84,39 @@
 
 
 
+  <div class="head">
+   <center> <h1>Entry <span style="color:darkblue;"><u>Data</u></span></h1></div><br>
+    </center>
+    <center>
+    <table cellspacing="0px" border="1"> 
+      <tr>
+      <th id="thname">Class</th>
+      <th>Section</th>
+      <th>Subject</th>
+      <th>Total Entry</th>
+      
+    </tr>
+    
+    
+    <% entryArray.forEach((data)=>{ %>
+    
+    
+    <tr>
+      <td><%= data.studentClass %></td>
+      <td><%= data.section %></td>
+      <td><%= data.subject %></td>
+      <td><%= data.totalentry %></td>
+      
+    <% }) %>
+    
+    </tr>
+    
+    
+    </table> <br><br>
+    </center>
+    
+    <hr><hr><br>
+  
 <script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
 <script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
 </body>

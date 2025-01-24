@@ -24,6 +24,6 @@ app.use(express.urlencoded({
 }));
 connection();
 app.use(student);
-app.listen(3001, function () {
+app.listen(80, function () {
   console.log('Server is running on port 80');
 });

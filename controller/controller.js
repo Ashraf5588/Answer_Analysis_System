@@ -73,7 +73,7 @@ exports.saveForm = async (req,res,next)=>
   {
     const {subjectinput} = req.params;
     const {studentclass,section,terminal} = req.params;
-    console.log(subjectinput,studentclass,section,terminal)
+
   if(!availablesubject.includes(subjectinput))
   {
     return res.render('404')
@@ -107,7 +107,6 @@ const totalstudent = await model.aggregate([
 const totalStudent = totalstudent.length > 0 && totalstudent[0].count 
   ? totalstudent[0].count 
   : 0;
-console.log(totalStudent)
 
       let result = [];
       let term = [];
@@ -168,8 +167,6 @@ const firstSecondThirdTerm = term1Incorrect.filter((data1)=>{
    })
    return term23;
 })
-console.log(firstSecondTerm)
-console.log(firstThirdTerm)
 
     
 
@@ -300,7 +297,8 @@ notattemptTerminal:{$ifNull:[{ $arrayElemAt: ["$notattemptTerminal.count", 0]},0
     {
       const {subject,studentClass,section,terminal} = req.params;
       const {roll} = req.body;
-      console.log(subject,studentClass,section,terminal,roll)
+      
+
       const model = getSubjectModel(subject);
       const individualData = await model.find({'subject':`${subject}`,'section':`${section}`,'terminal':`${terminal}`,'roll':roll,'studentClass':`${studentClass}`},{_id:0,__v:0}).lean();
       
@@ -325,7 +323,7 @@ exports.studentData = async (req,res,next)=>
       
       
       const totalStudent = await model.find(
-        {$and:[{'studentClass':`${studentClass}`},{'section':`${section}`},{'terminal':`${terminal}`}]})
+        {$and:[{'studentClass':`${studentClass}`},{'section':`${section}`},{'terminal':`${terminal}`}]}).lean();
         
 
 

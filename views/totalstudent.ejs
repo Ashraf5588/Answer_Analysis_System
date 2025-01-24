@@ -3,44 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>StudentInfo</title>
   <link rel="stylesheet" href="/studentdata.css">
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/nav.css">
 </head>
 <body>
-  <%- include('./partials/nav',{currentPage:'teacher'}) %>
-  <center><h1 id="firstheading" style="font-weight: 900;">Student <span id="firstspan">Detail</span></h1></center></header>
-   <center>  <h1><center>Total Student Detail
-<center>
-  <table border="1" cellspacing="0px" id="studentTable">
-  <tr id="row1">
-    
-    <th>Name</th>
-    <th>Roll</th>
-    <th>Class</th>
-    <th>Section</th>
-    <th>Subject</th>
-    <th>Terminal</th>
-    
-  </tr>
-  <% totalStudent.forEach((student)=>
-  { %>
-<tr>
-  <td><%= student.name %></td>
-  <td><%= student.roll %></td>
-  <td><%= student.studentClass %></td>
-  <td><%= student.section %></td>
-  <td><%= student.subject %></td>
-  <td><%= student.terminal %></td>
+  <%- include('./partials/nav', { currentPage: 'teacher' }) %>
+  <center>
+    <h1 id="firstheading" style="font-weight: 900;">Student <span id="firstspan">Detail</span></h1>
+    <h1>Total Student Detail</h1>
+    <table border="1" cellspacing="0" id="studentTable">
+      <!-- Table Header -->
+      <thead>
+        <tr>
+          <% 
+          // Collect all unique keys from all student objects
+          const allKeys = new Set();
+          totalStudent.forEach(student => {
+            Object.keys(student).forEach(key => allKeys.add(key));
+          });
+          allKeys.forEach(key => { 
+          %>
+            <th><%= key %></th>
+          <% }); %>
+          <th>Action</th>
+        </tr>
+      </thead>
 
- 
-</tr>
-  <% }) %>
- 
-
-  </table></center>
-
+      <!-- Table Body -->
+      <tbody>
+        <% 
+        totalStudent.forEach(student => { 
+        %>
+          <tr>
+            <% 
+            allKeys.forEach(key => { 
+            %>
+              <td><%= student[key] || "" %></td>
+            <% }); %>
+          </tr>
+          
+        <% }); %>
+       
+      </tbody>
+    </table>
+  </center>
 </body>
 </html>

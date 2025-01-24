@@ -23,11 +23,12 @@ table{
   font-size: 25px;
 }
 th{
-  background-color: orange;
+  background-color: darkblue;
   height: 3rem;
   border-left: 0;
   border-right: 0;
   font-weight: 1000;
+  color: white;
 }
 tr
 {
@@ -43,14 +44,15 @@ tr
   height: 2rem;
   border-radius: 5px;
   margin-bottom: 5%;
-  background-color: orange;
+  background-color: darkblue;
   border: 1px solid gainsboro;
   font-size: 20px;
   text-align: center;
+  color: white;
 }
 .addbutton:hover 
 {
-  background-color:rgb(228, 218, 33);
+  background-color:rgb(1, 116, 198);
   transition:all 0.3s ease-in-out;
   font-size: 18px;
   color: white;
@@ -76,14 +78,14 @@ input
 }
 input:focus
 {
-  border: 2px solid orange;
+  border: 2px solid skyblue;
   outline: none;
   box-shadow: 2px 2px 2px 1px gray;
 }
 input::placeholder
 {
   padding-left: 5%;
-  color: goldenrod;
+  color: darkblue;
   opacity: 0.5;
   font-size: 15px;
 }

@@ -184,42 +184,41 @@ exports.saveForm = function _callee5(req, res, next) {
         case 0:
           subjectinput = req.params.subjectinput;
           _req$params4 = req.params, studentclass = _req$params4.studentclass, section = _req$params4.section, terminal = _req$params4.terminal;
-          console.log(subjectinput, studentclass, section, terminal);
 
           if (availablesubject.includes(subjectinput)) {
-            _context5.next = 7;
+            _context5.next = 6;
             break;
           }
 
           return _context5.abrupt("return", res.render('404'));
 
-        case 7:
-          _context5.prev = 7;
+        case 6:
+          _context5.prev = 6;
           _model = getSubjectModel(subjectinput);
-          _context5.next = 11;
+          _context5.next = 10;
           return regeneratorRuntime.awrap(_model.create(req.body));
 
-        case 11:
+        case 10:
           res.render('FormPostMessage', {
             subjectinput: subjectinput,
             studentclass: studentclass,
             section: section,
             terminal: terminal
           });
-          _context5.next = 17;
+          _context5.next = 16;
           break;
 
-        case 14:
-          _context5.prev = 14;
-          _context5.t0 = _context5["catch"](7);
+        case 13:
+          _context5.prev = 13;
+          _context5.t0 = _context5["catch"](6);
           console.log(_context5.t0);
 
-        case 17:
+        case 16:
         case "end":
           return _context5.stop();
       }
     }
-  }, null, null, [[7, 14]]);
+  }, null, null, [[6, 13]]);
 };
 
 exports.findData = function _callee7(req, res) {
@@ -248,28 +247,27 @@ exports.findData = function _callee7(req, res) {
         case 5:
           totalstudent = _context7.sent;
           totalStudent = totalstudent.length > 0 && totalstudent[0].count ? totalstudent[0].count : 0;
-          console.log(totalStudent);
           result = [];
           term = [];
           question_list = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
           i = 1;
 
-        case 12:
+        case 11:
           if (!(i <= 25)) {
-            _context7.next = 34;
+            _context7.next = 33;
             break;
           }
 
           j = 1;
 
-        case 14:
+        case 13:
           if (!(j <= 10)) {
-            _context7.next = 31;
+            _context7.next = 30;
             break;
           }
 
-          _context7.prev = 15;
-          _context7.next = 18;
+          _context7.prev = 14;
+          _context7.next = 17;
           return regeneratorRuntime.awrap(function _callee6() {
             var _model2$find, _model2$find3, _model2$find5;
 
@@ -329,10 +327,8 @@ exports.findData = function _callee7(req, res) {
                       });
                       return term23;
                     });
-                    console.log(firstSecondTerm);
-                    console.log(firstThirdTerm);
 
-                  case 15:
+                  case 13:
                   case "end":
                     return _context6.stop();
                 }
@@ -340,17 +336,17 @@ exports.findData = function _callee7(req, res) {
             });
           }());
 
-        case 18:
-          _context7.next = 23;
+        case 17:
+          _context7.next = 22;
           break;
 
-        case 20:
-          _context7.prev = 20;
-          _context7.t0 = _context7["catch"](15);
+        case 19:
+          _context7.prev = 19;
+          _context7.t0 = _context7["catch"](14);
           console.log(_context7.t0);
 
-        case 23:
-          _context7.next = 25;
+        case 22:
+          _context7.next = 24;
           return regeneratorRuntime.awrap(_model2.aggregate([{
             $facet: {
               correct: [{
@@ -489,7 +485,7 @@ exports.findData = function _callee7(req, res) {
             }
           }]));
 
-        case 25:
+        case 24:
           analysis = _context7.sent;
           result.push({
             questionNo: "q".concat(i).concat(question_list[j - 1]),
@@ -508,17 +504,17 @@ exports.findData = function _callee7(req, res) {
             notattempt: analysis[0].notattemptTerminal
           });
 
-        case 28:
+        case 27:
           j++;
-          _context7.next = 14;
+          _context7.next = 13;
           break;
 
-        case 31:
+        case 30:
           i++;
-          _context7.next = 12;
+          _context7.next = 11;
           break;
 
-        case 34:
+        case 33:
           result.sort(function (a, b) {
             return b.wrong - a.wrong;
           });
@@ -536,20 +532,20 @@ exports.findData = function _callee7(req, res) {
             terminal2: terminal2,
             terminal3: terminal3
           });
-          _context7.next = 42;
+          _context7.next = 41;
           break;
 
-        case 39:
-          _context7.prev = 39;
+        case 38:
+          _context7.prev = 38;
           _context7.t1 = _context7["catch"](0);
           console.log(_context7.t1);
 
-        case 42:
+        case 41:
         case "end":
           return _context7.stop();
       }
     }
-  }, null, null, [[0, 39], [15, 20]]);
+  }, null, null, [[0, 38], [14, 19]]);
 };
 
 exports.search = function _callee8(req, res, next) {
@@ -561,9 +557,8 @@ exports.search = function _callee8(req, res, next) {
         case 0:
           _req$params6 = req.params, subject = _req$params6.subject, studentClass = _req$params6.studentClass, section = _req$params6.section, terminal = _req$params6.terminal;
           roll = req.body.roll;
-          console.log(subject, studentClass, section, terminal, roll);
           model = getSubjectModel(subject);
-          _context8.next = 6;
+          _context8.next = 5;
           return regeneratorRuntime.awrap(model.find({
             'subject': "".concat(subject),
             'section': "".concat(section),
@@ -575,7 +570,7 @@ exports.search = function _callee8(req, res, next) {
             __v: 0
           }).lean());
 
-        case 6:
+        case 5:
           individualData = _context8.sent;
           res.render('search', {
             individualData: individualData,
@@ -585,7 +580,7 @@ exports.search = function _callee8(req, res, next) {
             terminal: terminal
           });
 
-        case 8:
+        case 7:
         case "end":
           return _context8.stop();
       }
@@ -649,7 +644,7 @@ exports.totalStudent = function _callee10(req, res, next) {
             }, {
               'terminal': "".concat(terminal)
             }]
-          }));
+          }).lean());
 
         case 4:
           totalStudent = _context10.sent;
