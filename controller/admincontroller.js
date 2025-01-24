@@ -79,7 +79,8 @@ exports.admin = async (req, res, next) => {
       }
     }
 
-    console.log(entryArray);
+ 
+    req.entryArray = entryArray;
 
     res.render("admin/adminpannel", {
       editing: false,
@@ -109,6 +110,7 @@ exports.addSubject = async (req, res, next) => {
       editing: false,
       subjects,
       studentClasslist,
+      entryArray: req.entryArray,
     });
   } else {
     await subject.create(req.body);
@@ -131,6 +133,7 @@ exports.addClass = async (req, res, next) => {
       editing: false,
       studentclass,
       studentClasslist,
+      entryArray: req.entryArray,
     });
   }
 
@@ -165,6 +168,8 @@ exports.editSub = async (req, res, next) => {
     subjectedit,
     subjects,
     studentClasslist,
+    entryArray: req.entryArray,
+    
   });
 };
 exports.editClass = async (req, res, next) => {
@@ -182,5 +187,6 @@ exports.editClass = async (req, res, next) => {
     classId,
     subjects,
     studentClasslist,
+    entryArray: req.entryArray,
   });
 };
