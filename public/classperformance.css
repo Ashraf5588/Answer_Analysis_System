@@ -36,22 +36,29 @@
     background-color:#ebbb46;
     color: white;
     height: 1.5rem;
-    width: 28%;
+    width: 7rem;
     margin: 0.3%;
    
 }
 #totalstudent
 {
-    width: 20%;
-    margin-left:0.5%;
+    width: 7rem;
+    margin-left:2%;
 }
 #notattempt
 {
-    margin-left:24.5% ;
+    margin-left:80% ;
 }
-#correctabove50,#correctbelow50
+#correctbelow50
 {
-    margin-left: 6.5%;
+    margin-left: 15%;
+    margin-top:1%
+
+}
+#correctabove50
+{
+    margin-left: 13%;
+    
 }
 #rightans:hover
 {
@@ -89,7 +96,7 @@
 {
     background-color:orange;
     color: white;
-    width: 40%;
+    width: 28rem;
     height: 10rem; 
     padding-top:1.2%;
     font-size: 30px;
@@ -182,11 +189,12 @@
     #math
     {
         width: 100%;
+        height: 25rem;
     }
     
 }
 /* Media Query for devices with width 480px or below */
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 499.9px) {
     body {
         font-size: 14px;
         line-height: 1.4;
@@ -221,6 +229,7 @@
         padding: 10px;
         text-align: center;
         word-wrap: break-word;
+        height: 15rem;
     }
 
     .subcol {
@@ -256,10 +265,15 @@
     }
 
     #totalstudent, #wrongans, #rightans, #notattempt,#correctabove50,#correctbelow50 {
-        width: 80%;
+        width: 20rem;
         margin-top: 0.5rem;
         margin-bottom: 0.5rem;
         margin-left: -1%;
+    }
+    #totalstudent
+    {
+        width: 17rem;
+        margin-left: 2%;
     }
 
     hr {
@@ -301,5 +315,15 @@
     .spansubject
     {
         margin-right: 10%;
+    }
+}
+@media(max-width:375px)
+{
+    #totalstudent, #wrongans, #rightans, #notattempt, #correctabove50, #correctbelow50{
+        width: 14rem;
+    }
+    #totalstudent
+    {
+        width: 16rem;
     }
 }

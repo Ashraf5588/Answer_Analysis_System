@@ -20,38 +20,31 @@ var _require2 = require("../model/schema"),
 
 var _require3 = require("../model/adminschema"),
     classSchema = _require3.classSchema,
-    subjectSchema = _require3.subjectSchema; // const {subject} = require('../controller/admincontroller')
-// const {studentClass} = require('../controller/admincontroller')
-
+    subjectSchema = _require3.subjectSchema;
 
 var subjectlist = mongoose.model("subjectlist", subjectSchema, "subjectlist");
 var studentClass = mongoose.model("studentClass", classSchema, "classlist");
-
-var _require4 = require("mongoose"),
-    mongo = _require4.mongo; // const subjects = await subject.find({})
-// let availablesubject = ['math','science','english','computer','social','optmath','health']
-
-
 app.set("view engine", "ejs");
 app.set("view", path.join(rootDir, "views"));
 
 exports.homePage = function _callee(req, res, next) {
-  var subjects;
+  var subject;
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
           _context.next = 2;
-          return regeneratorRuntime.awrap(subjectlist.find({}));
+          return regeneratorRuntime.awrap(subjectlist.find({}).lean());
 
         case 2:
-          subjects = _context.sent;
+          subject = _context.sent;
+          console.log(subject);
           res.render("index", {
             currentPage: "home",
-            subjects: subjects
+            subjects: subject
           });
 
-        case 4:
+        case 5:
         case "end":
           return _context.stop();
       }
@@ -238,6 +231,8 @@ exports.findData = function _callee7(req, res) {
                 section: "".concat(section)
               }, {
                 terminal: "".concat(terminal)
+              }, {
+                studentClass: "".concat(_studentClass)
               }]
             }
           }, {

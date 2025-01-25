@@ -33,8 +33,7 @@ th{
 tr
 {
   border:2px solid rgb(202, 200, 200);
-  border-left: 0;
-  border-right: 0;
+  
   height: 2rem;
   font-weight: 500;
 }
@@ -125,6 +124,30 @@ border: none;
 {
   width: 20%;
 }
+.addclasscontainer
+{
+  display: flex;
+  justify-content: space-around;
+  margin-top: 5%;
+  flex-wrap: wrap;
+}
+.addclass
+{
+  background-color: rgba(17, 132, 255, 0.7);
+  backdrop-filter: blur(10px);
+  width: 15rem;
+  line-height: 1.5;
+  text-align: center;
+  height: 8rem;
+  border-radius: 7px;
+  font-size: 25px;
+  
+}
+.fa-chalkboard-user,.fa-book-open
+{
+  font-size: 40px;
+  margin-top: 3%;
+}
 @media(max-width: 480px)
 {
   table{
@@ -146,6 +169,7 @@ border: none;
   .addbutton
   {
     width: 40%;
+    
   }
   .fa-trash
   {
@@ -162,5 +186,6 @@ border: none;
     width: 30%;
     font-size: 15px;
     margin-right: 5%;
+
   }
 }

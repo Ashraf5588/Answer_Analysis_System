@@ -51,9 +51,9 @@
     <% if(subjectname === "OptMath") { n = 4 } %>
     <% if(subjectname === "Nepali") { n = 5 } %>
     
-    <% if(subjectname === "science"){ %>
+    <% if (subjectname === "science") { %>
         <% for (let i = 1; i <= 25; i++) { %>
-            <% if (i >= 2) { n = 1 } %> <!-- Only change n to 1 if subjectname is science and i >= 2 -->
+            <% if (i >= 2) { n = 1 } %> <!-- Set n to 1 if subjectname is science and i >= 2 -->
             <% for (let j = 1; j <= n; j++) { %>
                 <div class="questions">
                     <span class="spanquestion">Question Number:</span> 
@@ -63,6 +63,7 @@
                         </b>
                     </span><br>
                     <div class="optionsinfo">
+                        <!-- Options Radio Buttons -->
                         <div class="ansradio">
                             <label for="correct<%= i + question_list[j-1] %>" style="color: rgb(45, 224, 99);" class="clabel">Correct</label>
                             <input type="radio" id="correct<%= i + question_list[j-1] %>" value="correct" name="q<%= i + question_list[j-1] %>">
@@ -85,8 +86,46 @@
                         </div>
                     </div><hr><br><br>
                 </div>
-            <% } %> <!-- Close inner for loop -->
-        <% } %> <!-- Close outer for loop -->
+            <% } %>
+        <% } %>
+    <% } else if (subjectname === "English-I") { %>
+        <% for (let i = 1; i <= 25; i++) { %>
+            <% if (i === 4) { n = 10 } %> 
+            <% if (i === 5) { n = 5 } %><!-- Set n to 10 if subjectname is English and i === 4 -->
+            <% for (let j = 1; j <= n; j++) { %>
+                <div class="questions">
+                    <span class="spanquestion">Question Number:</span> 
+                    <span id="qno">
+                        <b>
+                            <%= i %><%= question_list[j-1] ? question_list[j-1] : '' %>
+                        </b>
+                    </span><br>
+                    <div class="optionsinfo">
+                        <!-- Options Radio Buttons -->
+                        <div class="ansradio">
+                            <label for="correct<%= i + question_list[j-1] %>" style="color: rgb(45, 224, 99);" class="clabel">Correct</label>
+                            <input type="radio" id="correct<%= i + question_list[j-1] %>" value="correct" name="q<%= i + question_list[j-1] %>">
+                        </div>
+                        <div class="ansradio">
+                            <label for="incorrect<%= i + question_list[j-1] %>" style="color: rgb(224, 45, 45);" class="clabel">Incorrect</label>
+                            <input type="radio" id="incorrect<%= i + question_list[j-1] %>" value="incorrect" name="q<%= i + question_list[j-1] %>">
+                        </div>
+                        <div class="ansradio">
+                            <label for="notattempt<%= i + question_list[j-1] %>" style="color:darkblue;" class="clabel">Not Attempted</label>
+                            <input type="radio" id="notattempt<%= i + question_list[j-1] %>" value="notattempt" name="q<%= i + question_list[j-1] %>">
+                        </div>
+                        <div class="ansradio">
+                            <label for="cabv50<%= i + question_list[j-1] %>" style="color: rgb(3, 125, 60);" class="clabel">Correct above 50%</label>
+                            <input type="radio" id="cabv50<%= i + question_list[j-1] %>" value="correctabove50" name="q<%= i + question_list[j-1] %>">
+                        </div>
+                        <div class="ansradio">
+                            <label for="cblw50<%= i + question_list[j-1] %>" style="color: rgb(83, 184, 223);" class="clabel">Correct below 50%</label>
+                            <input type="radio" id="cblw50<%= i + question_list[j-1] %>" value="correctbelow50" name="q<%= i + question_list[j-1] %>">
+                        </div>
+                    </div><hr><br><br>
+                </div>
+            <% } %>
+        <% } %>
     <% } else { %>
         <% for (let i = 1; i <= 25; i++) { %>
             <% for (let j = 1; j <= n; j++) { %>
@@ -98,6 +137,7 @@
                         </b>
                     </span><br>
                     <div class="optionsinfo">
+                        <!-- Options Radio Buttons -->
                         <div class="ansradio">
                             <label for="correct<%= i + question_list[j-1] %>" style="color: rgb(45, 224, 99);" class="clabel">Correct</label>
                             <input type="radio" id="correct<%= i + question_list[j-1] %>" value="correct" name="q<%= i + question_list[j-1] %>">
@@ -118,12 +158,14 @@
                             <label for="cblw50<%= i + question_list[j-1] %>" style="color: rgb(83, 184, 223);" class="clabel">Correct below 50%</label>
                             <input type="radio" id="cblw50<%= i + question_list[j-1] %>" value="correctbelow50" name="q<%= i + question_list[j-1] %>">
                         </div>
-                       
                     </div><hr><br><br>
                 </div>
-            <% } %> <!-- Close inner for loop -->
-        <% } %> <!-- Close outer for loop -->
-    <% } %> <!-- End of subjectname check -->
+            <% } %>
+        <% } %>
+    <% } %>
+    
+    
+    
     
    <center> <input type="submit" id="submit"></center>                                                                        
 </form> <br><br>

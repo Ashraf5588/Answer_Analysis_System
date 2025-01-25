@@ -15,13 +15,14 @@ student.get('/', controller.homePage);
 student.get('/admin/login', admincontrol.adminlogin);
 student.post('/admin/login', admincontrol.adminloginpost);
 student.get('/admin', authenticateToken, admincontrol.admin);
-student.post('/admin/subject/:subId?', authenticateToken, admincontrol.addSubject);
+student.get('/admin/subject/:subId?', authenticateToken, admincontrol.showSubject);
+student.post('/admin/subjectadd/:subId?', authenticateToken, admincontrol.addSubject);
+student.get('/admin/class/:classId?', authenticateToken, admincontrol.showClass);
 student.post('/admin/class/:classId?', authenticateToken, admincontrol.addClass);
 student.get('/delete/subject/:subjectId', authenticateToken, admincontrol.deleteSubject);
 student.get('/delete/class/:classId', authenticateToken, admincontrol.deleteStudentClass);
 student.get('/admin/editsub/:subId/:editing?', authenticateToken, admincontrol.editSub);
-student.get('/admin/editclass/:classId/:editing?', authenticateToken, admincontrol.editClass); // student.post('/admin/editsub/:subId/:editing?',admincontrol.editSub)
-
+student.get('/admin/editclass/:classId/:editing?', authenticateToken, admincontrol.editClass);
 student.get('/teacher/:controller?', authenticateToken, controller.teacherPage);
 student.get('/teacher/:subject/:controller', authenticateToken, controller.studentclass);
 student.get('/findData/:subjectinput/:studentClass/:section/:terminal/:terminal2?/:terminal3?', authenticateToken, controller.findData);

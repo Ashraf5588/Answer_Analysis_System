@@ -6,20 +6,16 @@ const bodyParser = require("body-parser");
 const { rootDir } = require("../utils/path");
 const { studentSchema } = require("../model/schema");
 const { classSchema, subjectSchema } = require("../model/adminschema");
-// const {subject} = require('../controller/admincontroller')
-// const {studentClass} = require('../controller/admincontroller')
 const subjectlist = mongoose.model("subjectlist", subjectSchema, "subjectlist");
 const studentClass = mongoose.model("studentClass", classSchema, "classlist");
-const { mongo } = require("mongoose");
-// const subjects = await subject.find({})
-// let availablesubject = ['math','science','english','computer','social','optmath','health']
 
 app.set("view engine", "ejs");
 app.set("view", path.join(rootDir, "views"));
 
 exports.homePage = async (req, res, next) => {
-  const subjects = await subjectlist.find({});
-  res.render("index", { currentPage: "home", subjects });
+  const subject = await subjectlist.find({}).lean();
+  console.log(subject);
+  res.render("index", { currentPage: "home",subjects:subject});
 };
 exports.teacherPage = async (req, res, next) => {
   const subjects = await subjectlist.find({});
@@ -100,7 +96,7 @@ exports.findData = async (req, res) => {
     const totalstudent = await model.aggregate([
       {
         $match: {
-          $and: [{ section: `${section}` }, { terminal: `${terminal}` }],
+          $and: [{ section: `${section}` }, { terminal: `${terminal}` }, { studentClass: `${studentClass}` }],
         },
       },
       { $count: "count" },

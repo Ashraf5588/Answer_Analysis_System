@@ -24,7 +24,7 @@
 
 <div class="subcol1">
   <% subjects.forEach((sub)=>{%>
-
+    <% if (sub.subject) { %>
 
   <a href="/forms/<%=sub.subject.trim()%>"><div id="<%=sub.subject.trim()%>" class="subject" style="background-color: darkblue;"> <div class="logo" id="logo1"><script src="https://cdn.lordicon.com/lordicon.js"></script>
     <lord-icon
@@ -34,8 +34,9 @@
         state="morph-open"
         colors="primary:#121331,secondary:#110a5c"
         style="width:50px;height:70px;">
-    </lord-icon></div><span class="spansubject" id="spanmath"><%=sub.subject.trim()%></span></div><br></a>
+    </lord-icon></div><span class="spansubject" id="spanmath"><%=sub.subject.trim()%></span></div><br></a><% } %>
 <%})%>
+
 </div>
 </div>
   <br>
