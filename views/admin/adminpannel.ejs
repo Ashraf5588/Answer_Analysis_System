@@ -30,18 +30,21 @@
     </tr>
     
     
-    <% entryArray.forEach((data)=>{ %>
+    <% if (entryArray && entryArray.length > 0) { %>
+      <% entryArray.forEach((data) => { %>
+        <tr>
+          <td><%= data.studentClass %></td>
+          <td><%= data.section %></td>
+          <td><%= data.subject %></td>
+          <td><%= data.totalentry %></td>
+        </tr>
+      <% }); %>
+    <% } else { %>
+      <tr>
+        <td colspan="4">No data available</td>
+      </tr>
+    <% } %>
     
-    
-    <tr>
-      <td><%= data.studentClass %></td>
-      <td><%= data.section %></td>
-      <td><%= data.subject %></td>
-      <td><%= data.totalentry %></td>
-      
-    <% }) %>
-    
-    </tr>
     
     
     </table> <br><br>

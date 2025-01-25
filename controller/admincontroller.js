@@ -17,7 +17,7 @@ app.set("view", path.join(rootDir, "views"));
 const subject = mongoose.model("subject", subjectSchema, "subjectlist");
 const studentClass = mongoose.model("studentClass", classSchema, "classlist");
 const admin = mongoose.model("admin", adminSchema, "admin");
-
+let entryArray = [];
 exports.adminlogin = async (req, res, next) => {
   try {
     res.render("admin/login");
@@ -51,25 +51,20 @@ exports.adminloginpost = async (req, res, next) => {
 };
 exports.admin = async (req, res, next) => {
   try {
-    let entryArray = [];
+    // Initialize array
+    entryArray = [];
     const subjects = await subject.find({});
     const studentClasslist = await studentClass.find({});
 
-    // Loop through each subject
+    // Populate entryArray
     for (const sub of subjects) {
-      const model = mongoose.model(
-        sub.subject,
-        studentSchema,
-        `${sub.subject}`
-      );
+      const model = mongoose.model(sub.subject, studentSchema, `${sub.subject}`);
 
-      // Loop through each class
       for (const stuclass of studentClasslist) {
         const section = stuclass.section;
 
-        // Aggregate query for total entries
         const totalstudentthirdterminal = await model.aggregate([
-          { $match: { $and: [{ section: section }, { terminal: "third" }, { studentClass:`${stuclass.studentClass}`}] } },
+          { $match: { $and: [{ section }, { terminal: "third" }, { studentClass: stuclass.studentClass }] } },
           { $count: "count" },
         ]);
 
@@ -78,22 +73,24 @@ exports.admin = async (req, res, next) => {
           section: stuclass.section,
           subject: sub.subject,
           terminal: "third",
-          totalentry: totalstudentthirdterminal[0]?.count || 0, // Default to 0 if no data
+          totalentry: totalstudentthirdterminal[0]?.count || 0,
         });
       }
     }
 
+    // Render with entryArray
     res.render("admin/adminpannel", {
       editing: false,
       subjects,
       studentClasslist,
-      entryArray: entryArray,
+      entryArray, // Ensure entryArray is passed to the template
     });
   } catch (err) {
-    console.log(err);
-    next(err); // Pass the error to the next middleware
+    console.error(err);
+    next(err);
   }
 };
+
 exports.showSubject = async (req, res, next) => {
   const subjects = await subject.find({});
   res.render("admin/subjectlist", { subjects, editing: false });
