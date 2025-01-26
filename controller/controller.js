@@ -11,12 +11,64 @@ const studentClass = mongoose.model("studentClass", classSchema, "classlist");
 
 app.set("view engine", "ejs");
 app.set("view", path.join(rootDir, "views"));
-
+const getSubjectModel = (subjectinput) => {
+  // to Check if model already exists
+  if (mongoose.models[subjectinput]) {
+    return mongoose.models[subjectinput];
+  }
+  return mongoose.model(subjectinput, studentSchema, subjectinput);
+};
 exports.homePage = async (req, res, next) => {
   const subject = await subjectlist.find({}).lean();
   console.log(subject);
   res.render("index", { currentPage: "home",subjects:subject});
 };
+
+
+// Edit student (get data for the form)
+exports.editStudent = async (req, res, next) => {
+  const { studentId ,subjectinput} = req.params;
+  try {
+    // Find student by ID
+    const model = getSubjectModel(subjectinput);
+    const studentToEdit = await model.findById(studentId);
+    res.render("admin/edit-student", { student: studentToEdit });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
+
+// Update student (save the modified data)
+exports.updateStudent = async (req, res, next) => {
+  const { studentId } = req.params;
+  const updatedData = req.body;  // The updated data comes from the form
+  try {
+    // Update the student record
+    await student.findByIdAndUpdate(studentId, updatedData, { new: true });
+    res.redirect('/admin');  // Redirect to admin dashboard or any page you prefer
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
+
+// Delete student
+exports.deleteStudent = async (req, res, next) => {
+  
+  const { studentId,subjectinput,studentClass,section,terminal} = req.params;
+  const model = getSubjectModel(subjectinput);
+  try {
+   
+    // Delete the student record
+    await model.findByIdAndDelete(studentId);
+    res.redirect(`/totalStudent/${subjectinput}/${studentClass}/${section}/${terminal}`);  // Redirect to admin dashboard or any page you prefer
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
+
 exports.teacherPage = async (req, res, next) => {
   const subjects = await subjectlist.find({});
   const { controller } = req.params;
@@ -34,13 +86,7 @@ exports.terminal = (req, res, next) => {
   const { controller, subject, studentClass, section } = req.params;
   res.render("terminal", { subject, controller, studentClass, section });
 };
-const getSubjectModel = (subjectinput) => {
-  // to Check if model already exists
-  if (mongoose.models[subjectinput]) {
-    return mongoose.models[subjectinput];
-  }
-  return mongoose.model(subjectinput, studentSchema, subjectinput);
-};
+
 
 exports.showForm = async (req, res, next) => {
   const subjects = await subjectlist.find({});

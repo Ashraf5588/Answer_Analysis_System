@@ -148,6 +148,24 @@ border: none;
   font-size: 40px;
   margin-top: 3%;
 }
+.head{
+  display: none;
+}
+.show
+{
+  display:block
+}
+.showentry
+{
+  background-color: rgba(17, 132, 255, 0.7);
+  width: 10rem;
+  height: 3rem;
+  text-align: center;
+  padding-top: 1%;
+  color: white;
+  border-radius: 7px;
+  cursor: pointer;
+}
 @media(max-width: 480px)
 {
   table{

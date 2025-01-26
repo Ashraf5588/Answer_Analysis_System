@@ -15,9 +15,11 @@
   <a href="/admin/class"><div class="addclass"><i class="fa-solid fa-chalkboard-user" style="color: #01358e;"></i><br>Class Detail</div></a>
  <a href="admin/subject"><div class="addclass"><i class="fa-solid fa-book-open" style="color: #01358e;"></i><br>Subject Detail</div></a>
 </div>
-
+<center><div class="showentry">
+  Show Entry Detail
+</div></center>
   <div class="head">
-   <center> <h1>Entry <span style="color:darkblue;"><u>Data</u></span></h1></div><br>
+   <center> <h1>Entry <span style="color:darkblue;"><u>Data</u></span></h1><br>
     </center>
     <center>
     <table cellspacing="0px" border="1"> 
@@ -50,8 +52,23 @@
     </table> <br><br>
     </center>
     
-    <hr><hr><br>
-  
+    <hr><hr><br></div>
+    <script>
+      const element = document.querySelector('.showentry');
+      const table = document.querySelector('.head');
+      
+      element.addEventListener('click', () => {
+        // Toggle the visibility of the table
+        if (table.style.display === 'none' || table.style.display === '') {
+          table.style.display = 'block'; // Show table
+          element.textContent = 'Hide';  // Change the text to 'Hide'
+        } else {
+          table.style.display = 'none';  // Hide table
+          element.textContent = 'Show Entry Detail';  // Revert text back
+        }
+      });
+    </script>
+    
 <script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
 <script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
 </body>

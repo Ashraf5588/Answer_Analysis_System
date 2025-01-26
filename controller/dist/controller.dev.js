@@ -27,6 +27,15 @@ var studentClass = mongoose.model("studentClass", classSchema, "classlist");
 app.set("view engine", "ejs");
 app.set("view", path.join(rootDir, "views"));
 
+var getSubjectModel = function getSubjectModel(subjectinput) {
+  // to Check if model already exists
+  if (mongoose.models[subjectinput]) {
+    return mongoose.models[subjectinput];
+  }
+
+  return mongoose.model(subjectinput, studentSchema, subjectinput);
+};
+
 exports.homePage = function _callee(req, res, next) {
   var subject;
   return regeneratorRuntime.async(function _callee$(_context) {
@@ -50,19 +59,126 @@ exports.homePage = function _callee(req, res, next) {
       }
     }
   });
-};
+}; // Edit student (get data for the form)
 
-exports.teacherPage = function _callee2(req, res, next) {
-  var subjects, controller;
+
+exports.editStudent = function _callee2(req, res, next) {
+  var _req$params, studentId, subjectinput, _model, studentToEdit;
+
   return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
-          _context2.next = 2;
+          _req$params = req.params, studentId = _req$params.studentId, subjectinput = _req$params.subjectinput;
+          _context2.prev = 1;
+          // Find student by ID
+          _model = getSubjectModel(subjectinput);
+          _context2.next = 5;
+          return regeneratorRuntime.awrap(_model.findById(studentId));
+
+        case 5:
+          studentToEdit = _context2.sent;
+          res.render("admin/edit-student", {
+            student: studentToEdit
+          });
+          _context2.next = 13;
+          break;
+
+        case 9:
+          _context2.prev = 9;
+          _context2.t0 = _context2["catch"](1);
+          console.error(_context2.t0);
+          next(_context2.t0);
+
+        case 13:
+        case "end":
+          return _context2.stop();
+      }
+    }
+  }, null, null, [[1, 9]]);
+}; // Update student (save the modified data)
+
+
+exports.updateStudent = function _callee3(req, res, next) {
+  var studentId, updatedData;
+  return regeneratorRuntime.async(function _callee3$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          studentId = req.params.studentId;
+          updatedData = req.body; // The updated data comes from the form
+
+          _context3.prev = 2;
+          _context3.next = 5;
+          return regeneratorRuntime.awrap(student.findByIdAndUpdate(studentId, updatedData, {
+            "new": true
+          }));
+
+        case 5:
+          res.redirect('/admin'); // Redirect to admin dashboard or any page you prefer
+
+          _context3.next = 12;
+          break;
+
+        case 8:
+          _context3.prev = 8;
+          _context3.t0 = _context3["catch"](2);
+          console.error(_context3.t0);
+          next(_context3.t0);
+
+        case 12:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  }, null, null, [[2, 8]]);
+}; // Delete student
+
+
+exports.deleteStudent = function _callee4(req, res, next) {
+  var _req$params2, studentId, subjectinput, studentClass, section, terminal, model;
+
+  return regeneratorRuntime.async(function _callee4$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          _req$params2 = req.params, studentId = _req$params2.studentId, subjectinput = _req$params2.subjectinput, studentClass = _req$params2.studentClass, section = _req$params2.section, terminal = _req$params2.terminal;
+          model = getSubjectModel(subjectinput);
+          _context4.prev = 2;
+          _context4.next = 5;
+          return regeneratorRuntime.awrap(model.findByIdAndDelete(studentId));
+
+        case 5:
+          res.redirect("/totalStudent/".concat(subjectinput, "/").concat(studentClass, "/").concat(section, "/").concat(terminal)); // Redirect to admin dashboard or any page you prefer
+
+          _context4.next = 12;
+          break;
+
+        case 8:
+          _context4.prev = 8;
+          _context4.t0 = _context4["catch"](2);
+          console.error(_context4.t0);
+          next(_context4.t0);
+
+        case 12:
+        case "end":
+          return _context4.stop();
+      }
+    }
+  }, null, null, [[2, 8]]);
+};
+
+exports.teacherPage = function _callee5(req, res, next) {
+  var subjects, controller;
+  return regeneratorRuntime.async(function _callee5$(_context5) {
+    while (1) {
+      switch (_context5.prev = _context5.next) {
+        case 0:
+          _context5.next = 2;
           return regeneratorRuntime.awrap(subjectlist.find({}));
 
         case 2:
-          subjects = _context2.sent;
+          subjects = _context5.sent;
           controller = req.params.controller;
           res.render("teacher", {
             controller: controller,
@@ -72,25 +188,25 @@ exports.teacherPage = function _callee2(req, res, next) {
 
         case 5:
         case "end":
-          return _context2.stop();
+          return _context5.stop();
       }
     }
   });
 };
 
-exports.studentclass = function _callee3(req, res, next) {
-  var studentClassdata, _req$params, subject, controller;
+exports.studentclass = function _callee6(req, res, next) {
+  var studentClassdata, _req$params3, subject, controller;
 
-  return regeneratorRuntime.async(function _callee3$(_context3) {
+  return regeneratorRuntime.async(function _callee6$(_context6) {
     while (1) {
-      switch (_context3.prev = _context3.next) {
+      switch (_context6.prev = _context6.next) {
         case 0:
-          _context3.next = 2;
+          _context6.next = 2;
           return regeneratorRuntime.awrap(studentClass.find({}));
 
         case 2:
-          studentClassdata = _context3.sent;
-          _req$params = req.params, subject = _req$params.subject, controller = _req$params.controller;
+          studentClassdata = _context6.sent;
+          _req$params3 = req.params, subject = _req$params3.subject, controller = _req$params3.controller;
           res.render("class", {
             subject: subject,
             controller: controller,
@@ -99,18 +215,18 @@ exports.studentclass = function _callee3(req, res, next) {
 
         case 5:
         case "end":
-          return _context3.stop();
+          return _context6.stop();
       }
     }
   });
 };
 
 exports.terminal = function (req, res, next) {
-  var _req$params2 = req.params,
-      controller = _req$params2.controller,
-      subject = _req$params2.subject,
-      studentClass = _req$params2.studentClass,
-      section = _req$params2.section;
+  var _req$params4 = req.params,
+      controller = _req$params4.controller,
+      subject = _req$params4.subject,
+      studentClass = _req$params4.studentClass,
+      section = _req$params4.section;
   res.render("terminal", {
     subject: subject,
     controller: controller,
@@ -119,38 +235,29 @@ exports.terminal = function (req, res, next) {
   });
 };
 
-var getSubjectModel = function getSubjectModel(subjectinput) {
-  // to Check if model already exists
-  if (mongoose.models[subjectinput]) {
-    return mongoose.models[subjectinput];
-  }
+exports.showForm = function _callee7(req, res, next) {
+  var subjects, _req$params5, subjectinput, studentClass, section, terminal;
 
-  return mongoose.model(subjectinput, studentSchema, subjectinput);
-};
-
-exports.showForm = function _callee4(req, res, next) {
-  var subjects, _req$params3, subjectinput, studentClass, section, terminal;
-
-  return regeneratorRuntime.async(function _callee4$(_context4) {
+  return regeneratorRuntime.async(function _callee7$(_context7) {
     while (1) {
-      switch (_context4.prev = _context4.next) {
+      switch (_context7.prev = _context7.next) {
         case 0:
-          _context4.next = 2;
+          _context7.next = 2;
           return regeneratorRuntime.awrap(subjectlist.find({}));
 
         case 2:
-          subjects = _context4.sent;
+          subjects = _context7.sent;
           global.availablesubject = subjects.map(function (sub) {
             return sub.subject;
           });
-          _req$params3 = req.params, subjectinput = _req$params3.subjectinput, studentClass = _req$params3.studentClass, section = _req$params3.section, terminal = _req$params3.terminal;
+          _req$params5 = req.params, subjectinput = _req$params5.subjectinput, studentClass = _req$params5.studentClass, section = _req$params5.section, terminal = _req$params5.terminal;
 
           if (availablesubject.includes(subjectinput)) {
-            _context4.next = 9;
+            _context7.next = 9;
             break;
           }
 
-          return _context4.abrupt("return", res.render("404"));
+          return _context7.abrupt("return", res.render("404"));
 
         case 9:
           res.render("form", {
@@ -162,34 +269,34 @@ exports.showForm = function _callee4(req, res, next) {
 
         case 10:
         case "end":
-          return _context4.stop();
+          return _context7.stop();
       }
     }
   });
 };
 
-exports.saveForm = function _callee5(req, res, next) {
-  var subjectinput, _req$params4, studentclass, section, terminal, _model;
+exports.saveForm = function _callee8(req, res, next) {
+  var subjectinput, _req$params6, studentclass, section, terminal, _model2;
 
-  return regeneratorRuntime.async(function _callee5$(_context5) {
+  return regeneratorRuntime.async(function _callee8$(_context8) {
     while (1) {
-      switch (_context5.prev = _context5.next) {
+      switch (_context8.prev = _context8.next) {
         case 0:
           subjectinput = req.params.subjectinput;
-          _req$params4 = req.params, studentclass = _req$params4.studentclass, section = _req$params4.section, terminal = _req$params4.terminal;
+          _req$params6 = req.params, studentclass = _req$params6.studentclass, section = _req$params6.section, terminal = _req$params6.terminal;
 
           if (availablesubject.includes(subjectinput)) {
-            _context5.next = 6;
+            _context8.next = 6;
             break;
           }
 
-          return _context5.abrupt("return", res.render("404"));
+          return _context8.abrupt("return", res.render("404"));
 
         case 6:
-          _context5.prev = 6;
-          _model = getSubjectModel(subjectinput);
-          _context5.next = 10;
-          return regeneratorRuntime.awrap(_model.create(req.body));
+          _context8.prev = 6;
+          _model2 = getSubjectModel(subjectinput);
+          _context8.next = 10;
+          return regeneratorRuntime.awrap(_model2.create(req.body));
 
         case 10:
           res.render("FormPostMessage", {
@@ -198,34 +305,34 @@ exports.saveForm = function _callee5(req, res, next) {
             section: section,
             terminal: terminal
           });
-          _context5.next = 16;
+          _context8.next = 16;
           break;
 
         case 13:
-          _context5.prev = 13;
-          _context5.t0 = _context5["catch"](6);
-          console.log(_context5.t0);
+          _context8.prev = 13;
+          _context8.t0 = _context8["catch"](6);
+          console.log(_context8.t0);
 
         case 16:
         case "end":
-          return _context5.stop();
+          return _context8.stop();
       }
     }
   }, null, null, [[6, 13]]);
 };
 
-exports.findData = function _callee7(req, res) {
-  var _req$params5, subjectinput, _studentClass, section, terminal, terminal2, terminal3, _model2, totalstudent, totalStudent, result, term, i, _ref6, _ref7, analysis;
+exports.findData = function _callee10(req, res) {
+  var _req$params7, subjectinput, _studentClass, section, terminal, terminal2, terminal3, _model3, totalstudent, totalStudent, result, term, i, _ref6, _ref7, analysis;
 
-  return regeneratorRuntime.async(function _callee7$(_context7) {
+  return regeneratorRuntime.async(function _callee10$(_context10) {
     while (1) {
-      switch (_context7.prev = _context7.next) {
+      switch (_context10.prev = _context10.next) {
         case 0:
-          _context7.prev = 0;
-          _req$params5 = req.params, subjectinput = _req$params5.subjectinput, _studentClass = _req$params5.studentClass, section = _req$params5.section, terminal = _req$params5.terminal, terminal2 = _req$params5.terminal2, terminal3 = _req$params5.terminal3;
-          _model2 = getSubjectModel(subjectinput);
-          _context7.next = 5;
-          return regeneratorRuntime.awrap(_model2.aggregate([{
+          _context10.prev = 0;
+          _req$params7 = req.params, subjectinput = _req$params7.subjectinput, _studentClass = _req$params7.studentClass, section = _req$params7.section, terminal = _req$params7.terminal, terminal2 = _req$params7.terminal2, terminal3 = _req$params7.terminal3;
+          _model3 = getSubjectModel(subjectinput);
+          _context10.next = 5;
+          return regeneratorRuntime.awrap(_model3.aggregate([{
             $match: {
               $and: [{
                 section: "".concat(section)
@@ -240,7 +347,7 @@ exports.findData = function _callee7(req, res) {
           }]));
 
         case 5:
-          totalstudent = _context7.sent;
+          totalstudent = _context10.sent;
           totalStudent = totalstudent.length > 0 && totalstudent[0].count ? totalstudent[0].count : 0;
           result = [];
           term = [];
@@ -249,7 +356,7 @@ exports.findData = function _callee7(req, res) {
 
         case 11:
           if (!(i <= 25)) {
-            _context7.next = 33;
+            _context10.next = 33;
             break;
           }
 
@@ -257,47 +364,47 @@ exports.findData = function _callee7(req, res) {
 
         case 13:
           if (!(j <= 10)) {
-            _context7.next = 30;
+            _context10.next = 30;
             break;
           }
 
-          _context7.prev = 14;
-          _context7.next = 17;
-          return regeneratorRuntime.awrap(function _callee6() {
-            var _model2$find, _model2$find3, _model2$find5;
+          _context10.prev = 14;
+          _context10.next = 17;
+          return regeneratorRuntime.awrap(function _callee9() {
+            var _model3$find, _model3$find3, _model3$find5;
 
             var term1Incorrect, term2Incorrect, term3Incorrect, firstSecondTerm, firstThirdTerm, secondThirdTerm, firstSecondThirdTerm;
-            return regeneratorRuntime.async(function _callee6$(_context6) {
+            return regeneratorRuntime.async(function _callee9$(_context9) {
               while (1) {
-                switch (_context6.prev = _context6.next) {
+                switch (_context9.prev = _context9.next) {
                   case 0:
-                    _context6.next = 2;
-                    return regeneratorRuntime.awrap(_model2.find((_model2$find = {}, _defineProperty(_model2$find, "q".concat(i).concat(question_list[j - 1]), "incorrect"), _defineProperty(_model2$find, "terminal", "first"), _model2$find), _defineProperty({
+                    _context9.next = 2;
+                    return regeneratorRuntime.awrap(_model3.find((_model3$find = {}, _defineProperty(_model3$find, "q".concat(i).concat(question_list[j - 1]), "incorrect"), _defineProperty(_model3$find, "terminal", "first"), _model3$find), _defineProperty({
                       roll: 1,
                       name: 1,
                       _id: 0
                     }, "q".concat(i).concat(question_list[j - 1]), 1)));
 
                   case 2:
-                    term1Incorrect = _context6.sent;
-                    _context6.next = 5;
-                    return regeneratorRuntime.awrap(_model2.find((_model2$find3 = {}, _defineProperty(_model2$find3, "q".concat(i).concat(question_list[j - 1]), "incorrect"), _defineProperty(_model2$find3, "terminal", "second"), _model2$find3), _defineProperty({
+                    term1Incorrect = _context9.sent;
+                    _context9.next = 5;
+                    return regeneratorRuntime.awrap(_model3.find((_model3$find3 = {}, _defineProperty(_model3$find3, "q".concat(i).concat(question_list[j - 1]), "incorrect"), _defineProperty(_model3$find3, "terminal", "second"), _model3$find3), _defineProperty({
                       roll: 1,
                       name: 1,
                       _id: 0
                     }, "q".concat(i).concat(question_list[j - 1]), 1)));
 
                   case 5:
-                    term2Incorrect = _context6.sent;
-                    _context6.next = 8;
-                    return regeneratorRuntime.awrap(_model2.find((_model2$find5 = {}, _defineProperty(_model2$find5, "q".concat(i).concat(question_list[j - 1]), "incorrect"), _defineProperty(_model2$find5, "terminal", "third"), _model2$find5), _defineProperty({
+                    term2Incorrect = _context9.sent;
+                    _context9.next = 8;
+                    return regeneratorRuntime.awrap(_model3.find((_model3$find5 = {}, _defineProperty(_model3$find5, "q".concat(i).concat(question_list[j - 1]), "incorrect"), _defineProperty(_model3$find5, "terminal", "third"), _model3$find5), _defineProperty({
                       roll: 1,
                       name: 1,
                       _id: 0
                     }, "q".concat(i).concat(question_list[j - 1]), 1)));
 
                   case 8:
-                    term3Incorrect = _context6.sent;
+                    term3Incorrect = _context9.sent;
                     firstSecondTerm = term1Incorrect.filter(function (data1) {
                       var term1 = term2Incorrect.find(function (data2) {
                         return data2.roll === data1.roll ? true : false;
@@ -325,24 +432,24 @@ exports.findData = function _callee7(req, res) {
 
                   case 13:
                   case "end":
-                    return _context6.stop();
+                    return _context9.stop();
                 }
               }
             });
           }());
 
         case 17:
-          _context7.next = 22;
+          _context10.next = 22;
           break;
 
         case 19:
-          _context7.prev = 19;
-          _context7.t0 = _context7["catch"](14);
-          console.log(_context7.t0);
+          _context10.prev = 19;
+          _context10.t0 = _context10["catch"](14);
+          console.log(_context10.t0);
 
         case 22:
-          _context7.next = 24;
-          return regeneratorRuntime.awrap(_model2.aggregate([{
+          _context10.next = 24;
+          return regeneratorRuntime.awrap(_model3.aggregate([{
             $facet: {
               correct: [{
                 $match: {
@@ -481,7 +588,7 @@ exports.findData = function _callee7(req, res) {
           }]));
 
         case 24:
-          analysis = _context7.sent;
+          analysis = _context10.sent;
           result.push({
             questionNo: "q".concat(i).concat(question_list[j - 1]),
             correct: analysis[0].correct,
@@ -501,12 +608,12 @@ exports.findData = function _callee7(req, res) {
 
         case 27:
           j++;
-          _context7.next = 13;
+          _context10.next = 13;
           break;
 
         case 30:
           i++;
-          _context7.next = 11;
+          _context10.next = 11;
           break;
 
         case 33:
@@ -527,33 +634,33 @@ exports.findData = function _callee7(req, res) {
             terminal2: terminal2,
             terminal3: terminal3
           });
-          _context7.next = 41;
+          _context10.next = 41;
           break;
 
         case 38:
-          _context7.prev = 38;
-          _context7.t1 = _context7["catch"](0);
-          console.log(_context7.t1);
+          _context10.prev = 38;
+          _context10.t1 = _context10["catch"](0);
+          console.log(_context10.t1);
 
         case 41:
         case "end":
-          return _context7.stop();
+          return _context10.stop();
       }
     }
   }, null, null, [[0, 38], [14, 19]]);
 };
 
-exports.search = function _callee8(req, res, next) {
-  var _req$params6, subject, studentClass, section, terminal, roll, model, individualData;
+exports.search = function _callee11(req, res, next) {
+  var _req$params8, subject, studentClass, section, terminal, roll, model, individualData;
 
-  return regeneratorRuntime.async(function _callee8$(_context8) {
+  return regeneratorRuntime.async(function _callee11$(_context11) {
     while (1) {
-      switch (_context8.prev = _context8.next) {
+      switch (_context11.prev = _context11.next) {
         case 0:
-          _req$params6 = req.params, subject = _req$params6.subject, studentClass = _req$params6.studentClass, section = _req$params6.section, terminal = _req$params6.terminal;
+          _req$params8 = req.params, subject = _req$params8.subject, studentClass = _req$params8.studentClass, section = _req$params8.section, terminal = _req$params8.terminal;
           roll = req.body.roll;
           model = getSubjectModel(subject);
-          _context8.next = 5;
+          _context11.next = 5;
           return regeneratorRuntime.awrap(model.find({
             subject: "".concat(subject),
             section: "".concat(section),
@@ -566,7 +673,7 @@ exports.search = function _callee8(req, res, next) {
           }).lean());
 
         case 5:
-          individualData = _context8.sent;
+          individualData = _context11.sent;
           res.render("search", {
             individualData: individualData,
             subject: subject,
@@ -577,22 +684,22 @@ exports.search = function _callee8(req, res, next) {
 
         case 7:
         case "end":
-          return _context8.stop();
+          return _context11.stop();
       }
     }
   });
 };
 
-exports.studentData = function _callee9(req, res, next) {
-  var _req$params7, subjectinput, studentClass, section, qno, status, terminal, StudentData;
+exports.studentData = function _callee12(req, res, next) {
+  var _req$params9, subjectinput, studentClass, section, qno, status, terminal, StudentData;
 
-  return regeneratorRuntime.async(function _callee9$(_context9) {
+  return regeneratorRuntime.async(function _callee12$(_context12) {
     while (1) {
-      switch (_context9.prev = _context9.next) {
+      switch (_context12.prev = _context12.next) {
         case 0:
-          _req$params7 = req.params, subjectinput = _req$params7.subjectinput, studentClass = _req$params7.studentClass, section = _req$params7.section, qno = _req$params7.qno, status = _req$params7.status, terminal = _req$params7.terminal;
+          _req$params9 = req.params, subjectinput = _req$params9.subjectinput, studentClass = _req$params9.studentClass, section = _req$params9.section, qno = _req$params9.qno, status = _req$params9.status, terminal = _req$params9.terminal;
           model = getSubjectModel(subjectinput);
-          _context9.next = 4;
+          _context12.next = 4;
           return regeneratorRuntime.awrap(model.find({
             $and: [_defineProperty({}, "".concat(qno), "".concat(status)), {
               section: "".concat(section)
@@ -602,7 +709,7 @@ exports.studentData = function _callee9(req, res, next) {
           }));
 
         case 4:
-          StudentData = _context9.sent;
+          StudentData = _context12.sent;
           res.render("studentdata", {
             subjectinput: subjectinput,
             qno: qno,
@@ -615,22 +722,22 @@ exports.studentData = function _callee9(req, res, next) {
 
         case 6:
         case "end":
-          return _context9.stop();
+          return _context12.stop();
       }
     }
   });
 };
 
-exports.totalStudent = function _callee10(req, res, next) {
-  var _req$params8, subjectinput, studentClass, section, terminal, terminal2, terminal3, totalStudent;
+exports.totalStudent = function _callee13(req, res, next) {
+  var _req$params10, subjectinput, studentClass, section, terminal, terminal2, terminal3, totalStudent;
 
-  return regeneratorRuntime.async(function _callee10$(_context10) {
+  return regeneratorRuntime.async(function _callee13$(_context13) {
     while (1) {
-      switch (_context10.prev = _context10.next) {
+      switch (_context13.prev = _context13.next) {
         case 0:
-          _req$params8 = req.params, subjectinput = _req$params8.subjectinput, studentClass = _req$params8.studentClass, section = _req$params8.section, terminal = _req$params8.terminal, terminal2 = _req$params8.terminal2, terminal3 = _req$params8.terminal3;
+          _req$params10 = req.params, subjectinput = _req$params10.subjectinput, studentClass = _req$params10.studentClass, section = _req$params10.section, terminal = _req$params10.terminal, terminal2 = _req$params10.terminal2, terminal3 = _req$params10.terminal3;
           model = getSubjectModel(subjectinput);
-          _context10.next = 4;
+          _context13.next = 4;
           return regeneratorRuntime.awrap(model.find({
             $and: [{
               studentClass: "".concat(studentClass)
@@ -642,7 +749,7 @@ exports.totalStudent = function _callee10(req, res, next) {
           }).lean());
 
         case 4:
-          totalStudent = _context10.sent;
+          totalStudent = _context13.sent;
           res.render("totalstudent", {
             totalStudent: totalStudent,
             subjectinput: subjectinput,
@@ -655,24 +762,24 @@ exports.totalStudent = function _callee10(req, res, next) {
 
         case 6:
         case "end":
-          return _context10.stop();
+          return _context13.stop();
       }
     }
   });
 };
 
-exports.updateQuestion = function _callee11(req, res, next) {
+exports.updateQuestion = function _callee14(req, res, next) {
   var no;
-  return regeneratorRuntime.async(function _callee11$(_context11) {
+  return regeneratorRuntime.async(function _callee14$(_context14) {
     while (1) {
-      switch (_context11.prev = _context11.next) {
+      switch (_context14.prev = _context14.next) {
         case 0:
           no = req.params.no;
           console.log(no);
 
         case 2:
         case "end":
-          return _context11.stop();
+          return _context14.stop();
       }
     }
   });

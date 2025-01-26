@@ -20,6 +20,14 @@ student.get('/delete/subject/:subjectId',authenticateToken,admincontrol.deleteSu
 student.get('/delete/class/:classId',authenticateToken,admincontrol.deleteStudentClass)
 student.get('/admin/editsub/:subId/:editing?',authenticateToken,admincontrol.editSub)
 student.get('/admin/editclass/:classId/:editing?',authenticateToken,admincontrol.editClass)
+// Route for editing a student
+student.get('/edit-student/:studentId/:subjectinput?', controller.editStudent);
+
+// Route for updating a student
+student.post('/update-student/:studentId', controller.updateStudent);
+
+// Route for deleting a student
+student.get('/delete-student/:studentId/:subjectinput?/:studentClass?/:section?/:terminal?', controller.deleteStudent);
 
 student.get('/teacher/:controller?',authenticateToken,controller.teacherPage)
 student.get('/teacher/:subject/:controller',authenticateToken,controller.studentclass)

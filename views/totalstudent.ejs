@@ -7,47 +7,101 @@
   <link rel="stylesheet" href="/studentdata.css">
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/nav.css">
+  <style>
+    /* Style for sticky action column */
+    #studentTable th:last-child, 
+    #studentTable td:last-child {
+      position: sticky;
+      right: 0;
+      background-color: white; /* Optional: make sure the background is white */
+      z-index: 1; /* Keeps it on top of other content */
+    }
+
+    /* Add a scrollbar for the table body */
+    .tablecontainer {
+      max-height: 400px; /* Adjust height to your preference */
+      overflow-y: auto;
+    }
+
+    #studentTable {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    #studentTable th, #studentTable td {
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+
+    /* Sticky header */
+    #studentTable th {
+      background-color: #f2f2f2;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    /* Add a background color to the last column (action column) */
+    #studentTable th:last-child,
+    #studentTable td:last-child {
+      background-color: #f2f2f2;
+    }
+  </style>
 </head>
 <body>
   <%- include('./partials/nav', { currentPage: 'teacher' }) %>
   <center>
     <h1 id="firstheading" style="font-weight: 900;">Student <span id="firstspan">Detail</span></h1>
     <h1>Total Student Detail</h1>
-    <table border="1" cellspacing="0" id="studentTable">
-      <!-- Table Header -->
-      <thead>
-        <tr>
-          <% 
-          // Collect all unique keys from all student objects
-          const allKeys = new Set();
-          totalStudent.forEach(student => {
-            Object.keys(student).forEach(key => allKeys.add(key));
-          });
-          allKeys.forEach(key => { 
-          %>
-            <th><%= key %></th>
-          <% }); %>
-          <th>Action</th>
-        </tr>
-      </thead>
-
-      <!-- Table Body -->
-      <tbody>
-        <% 
-        totalStudent.forEach(student => { 
-        %>
+    <div class="tablecontainer">
+      <table border="1" cellspacing="0" id="studentTable">
+        <!-- Table Header -->
+        <thead>
           <tr>
             <% 
+            // Collect all unique keys from all student objects
+            const allKeys = new Set();
+            totalStudent.forEach(student => {
+              Object.keys(student).forEach(key => allKeys.add(key));
+            });
             allKeys.forEach(key => { 
             %>
-              <td><%= student[key] || "" %></td>
+              <th><%= key %></th>
             <% }); %>
+            <th>Action</th>
           </tr>
-          
-        <% }); %>
-       
-      </tbody>
-    </table>
+        </thead>
+
+        <!-- Table Body -->
+        <tbody>
+          <% 
+          totalStudent.forEach(student => { 
+          %>
+            <tr>
+              <% 
+              allKeys.forEach(key => { 
+              %>
+                <td><%= student[key] || "" %></td>
+              <% }); %>
+
+              <!-- Action Buttons (Edit, Delete) -->
+              <td>
+                <a href="/edit-student/<%= student._id %>/<%= student.subject %>">
+                  <button style="background-color: #33aee3; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+                    Edit
+                  </button>
+                </a>
+                <a href="/delete-student/<%= student._id %>/<%= student.subject %>/<%=student.studentClass%>/<%=student.section%>/<%=student.terminal%>" onclick="return confirm('Are you sure you want to delete this student?');">
+                  <button style="background-color: #f44336; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+                    Delete
+                  </button>
+                </a>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
   </center>
 </body>
 </html>
