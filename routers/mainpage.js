@@ -16,7 +16,7 @@ student.post('/admin/subjectadd/:subId?',authenticateToken,admincontrol.addSubje
 student.get('/admin/class/:classId?',authenticateToken,admincontrol.showClass)
 student.post('/admin/class/:classId?',authenticateToken,admincontrol.addClass)
 
-student.get('/delete/subject/:subjectId',authenticateToken,admincontrol.deleteSubject)
+student.get('/delete/subject/:subjectId/:subjectname?',authenticateToken,admincontrol.deleteSubject)
 student.get('/delete/class/:classId',authenticateToken,admincontrol.deleteStudentClass)
 student.get('/admin/editsub/:subId/:editing?',authenticateToken,admincontrol.editSub)
 student.get('/admin/editclass/:classId/:editing?',authenticateToken,admincontrol.editClass)

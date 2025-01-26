@@ -101,6 +101,7 @@ exports.showForm = async (req, res, next) => {
       section,
       studentClass,
       terminal,
+      subjects,
     });
   }
 };

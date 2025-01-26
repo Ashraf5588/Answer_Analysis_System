@@ -38,7 +38,7 @@
 
 <tr>
   <td><%= sub.subject %></td>
-  <td> <a href="/admin/editsub/<%=sub._id%>?editing=true" > <button id="subjectedit">Edit</button></a> <a href="/delete/subject/<%=sub._id%>" onclick= "return confirm('Are you sure you want to delete <%=sub.subject%> subject')" class="deletebtn">Delete<i class="fa-solid fa-trash" style="color: #ff0000;"></i></a></td>
+  <td> <a href="/admin/editsub/<%=sub._id%>?editing=true" > <button id="subjectedit">Edit</button></a> <a href="/delete/subject/<%=sub._id%>/<%=sub.subject%>" onclick= "return confirm('Are you sure you want to delete <%=sub.subject%> subject')" class="deletebtn">Delete<i class="fa-solid fa-trash" style="color: #ff0000;"></i></a></td>
 <% }) %>
 
 </tr>

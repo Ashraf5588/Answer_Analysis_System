@@ -137,9 +137,12 @@ exports.addClass = async (req, res, next) => {
 };
 
 exports.deleteSubject = async (req, res, next) => {
-  const { subjectId } = req.params;
+  const { subjectId,subjectname } = req.params;
+  await mongoose.connection.db.dropCollection(`${subjectname}`);
+ 
 
   await subject.findByIdAndDelete(subjectId);
+
   res.redirect("/admin/subject");
 };
 

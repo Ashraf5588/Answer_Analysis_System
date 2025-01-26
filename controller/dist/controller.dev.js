@@ -264,7 +264,8 @@ exports.showForm = function _callee7(req, res, next) {
             subjectname: subjectinput,
             section: section,
             studentClass: studentClass,
-            terminal: terminal
+            terminal: terminal,
+            subjects: subjects
           });
 
         case 10:
