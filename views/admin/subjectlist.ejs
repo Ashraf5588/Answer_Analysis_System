@@ -16,6 +16,12 @@
   
   <label for="subject" >Subject:</label> 
   <input type="text" id="subject" name="subject" required placeholder="Add New Subject here" value="<%= editing? subjectedit.subject:'' %>"> <br><br>
+Max Question:<input type="number" name="max" placeholder="Enter Maximum Number of Question" required value="<%= editing? subjectedit.max:'' %>">  <br>
+<% for(let i = 1;i<=25;i++){ %>
+  
+  Sub.Q.in.<%=i%>:<input type="number" name="<%=i%>" id="totalsubin<%=i%>" placeholder="Total Question in Q.No<%=i%>"  required value="<%= editing? subjectedit[i]:'' %>"> <br>
+<%}%> <br> <br>
+
 
   <button type="submit" id="subjectadd" class="addbutton"><%= editing?"Update":"Add New"%> &ensp;<i class="fa-solid fa-plus"></i></button>
   
@@ -27,23 +33,40 @@
 </center>
 <center>
 <table cellspacing="0px" border="1"> 
+  <% 
+  // Collect all unique keys from the array
+  const allKeys = [...new Set(subjects.flatMap(Object.keys))].filter(key => key !== "__v" && key !== "_id"); 
+  %>
+  
   <tr>
-  <th id="thname">Name</th>
-  <th id="thaction">Action</th>
-</tr>
+    <% allKeys.forEach((key) => { %>
+      <th id="thname"><%= key %></th>
+    <% }); %>
+    <th id="thaction">Action</th>
+  </tr>
+  
 
 
-<% subjects.forEach((sub)=>{ %>
-
-
-<tr>
-  <td><%= sub.subject %></td>
-  <td> <a href="/admin/editsub/<%=sub._id%>?editing=true" > <button id="subjectedit">Edit</button></a> <a href="/delete/subject/<%=sub._id%>/<%=sub.subject%>" onclick= "return confirm('Are you sure you want to delete <%=sub.subject%> subject')" class="deletebtn">Delete<i class="fa-solid fa-trash" style="color: #ff0000;"></i></a></td>
-<% }) %>
-
-</tr>
-
-
+    <% subjects.forEach((sub) => { %>
+      <tr>
+        <% allKeys.forEach((key) => { %>
+          <td><%= sub[key] %></td> <!-- Access the value of each key in the document -->
+        <% }); %>
+        <td>
+          <a href="/admin/editsub/<%= sub._id %>?editing=true">
+            <button id="subjectedit">Edit</button>
+          </a>
+          <a 
+            href="/delete/subject/<%= sub._id %>/<%= sub.subject %>" 
+            onclick="return confirm('Are you sure you want to delete <%= sub.subject %> subject')" 
+            class="deletebtn"
+          >
+            Delete <i class="fa-solid fa-trash" style="color: #ff0000;"></i>
+          </a>
+        </td>
+      </tr>
+    <% }); %>
+ 
 </table> <br><br>
 </center>
 

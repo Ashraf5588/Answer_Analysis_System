@@ -92,16 +92,15 @@ exports.admin = async (req, res, next) => {
 };
 
 exports.showSubject = async (req, res, next) => {
-  const subjects = await subject.find({});
+  const subjects = await subject.find({}).lean();
   res.render("admin/subjectlist", { subjects, editing: false });
 };
 exports.addSubject = async (req, res, next) => {
   const { subId } = req.params;
-  const updateSubject = req.body.subject;
+  const updates = req.body;
   if (subId && !undefined) {
     await subject.findByIdAndUpdate(
-      subId,
-      { subject: `${updateSubject}` },
+      subId,updates,
       { new: true, runValidators: true }
     );
     res.redirect("/admin/subject");
@@ -155,7 +154,7 @@ exports.deleteStudentClass = async (req, res, next) => {
 exports.editSub = async (req, res, next) => {
   const { subId } = req.params;
   const editing = req.query.editing === "true";
-  const subjects = await subject.find({});
+  const subjects = await subject.find({}).lean();
   const subjectedit = await subject.findOne({ _id: `${subId}` });
   res.render("admin/subjectlist", {
     editing,
