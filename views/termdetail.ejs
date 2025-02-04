@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Total</title>
+  <link rel="stylesheet" href="/studentdata.css">
+  <link rel="stylesheet" href="/nav.css">
+</head>
+<body>
+  <%- include('partials/nav',{currentPage:'teacher'}) %>
+  <div class="tablecontainer">
+
+ <center><table border="1" cellspacing="0" id="studentTable">
+  <tr>
+    <th>Name</th>
+    <th>Class</th>
+    <th>Section</th>
+    <th>Subject</th>
+    <th>Terminal</th>
+    <th>Q.No</th>
+    <th>Status</th>
+  </tr>
+ 
+  
+
+
+<% if(terminal ==='namedata12'){%>
+  <% term.forEach((data) => { %>
+    <% data.namedata12.forEach((student) => { %>
+      <tr>
+     <td> <%= student.name %></td>
+     <td><%= studentClass %></td>
+     <td><%= section %></td>
+     <td><%= subjectinput %></td>
+    <td>First & Second</td>
+   
+     <td><%= qno %></td> <br>
+     <td><%= status %></td>
+     </tr>
+    <% }) %>
+  <% }) %>
+<%}else if(terminal ==='namedata13'){%>
+  <% term.forEach((data) => { %>
+    <% data.namedata13.forEach((student) => { %>
+      <tr>
+     <td> <%= student.name %></td>
+     <td><%= studentClass %></td>
+     <td><%= section %></td>
+     <td><%= subjectinput %></td>
+    <td>First & Third</td>
+   
+     <td><%= qno %></td> <br>
+     <td><%= status %></td>
+    </tr>
+    <% }) %>
+  <% }) %>
+<%}else if(terminal ==='namedata23'){%>
+  <% term.forEach((data) => { %>
+    <% data.namedata23.forEach((student) => { %>
+      <tr>
+     <td> <%= student.name %></td>
+    
+    <% }) %> 
+    <td><%= studentClass %></td>
+    <td><%= section %></td>
+    <td><%= subjectinput %></td>
+   <td>Second & Third</td>
+  
+    <td><%= qno %></td> <br>
+    <td><%= status %></td>
+  </tr>
+  <% }) %>
+<%}else if(terminal ==='namedata123'){%>
+  <% term.forEach((data) => { %>
+    <% data.namedata123.forEach((student) => { %>
+      <tr>
+        <td> <%= student.name %></td>
+       
+       <% }) %> 
+       <td><%= studentClass %></td>
+       <td><%= section %></td>
+       <td><%= subjectinput %></td>
+      <td>Second & Third</td>
+     
+       <td><%= qno %></td> <br>
+       <td><%= status %></td>
+     </tr>
+      
+   
+  <% }) %>
+  <%}%>
+
+
+</table></center>
+</div>
+</body>
+</html>

@@ -32,7 +32,10 @@ student.get('/delete-student/:studentId/:subjectinput?/:studentClass?/:section?/
 student.get('/teacher/:controller?',authenticateToken,controller.teacherPage)
 student.get('/teacher/:subject/:controller',authenticateToken,controller.studentclass)
 
-student.get('/findData/:subjectinput/:studentClass/:section/:terminal/:terminal2?/:terminal3?',authenticateToken,controller.findData)
+student.get('/findData/:subjectinput/:studentClass/:section/:terminal',authenticateToken,controller.findData)
+student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:status',authenticateToken,controller.termwisestatus)
+student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:termwisereport/:status',authenticateToken,controller.termwisedata)
+student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:termwisereport/:status/:qno/:terminal',authenticateToken,controller.termdetail)
 
 
 student.post('/search/:subject/:studentClass/:section/:terminal',controller.search)
@@ -46,7 +49,8 @@ student.get('/studentData/:subjectinput/:studentClass/:section/:qno/:status/:ter
 student.get('/totalStudent/:subjectinput/:studentClass/:section/:terminal',controller.totalStudent)
 
 
-student.get('/updatequestion/:no',controller.updateQuestion)
+
+
 
 
 

@@ -31,7 +31,10 @@ student.post('/update-student/:studentId', controller.updateStudent); // Route f
 student.get('/delete-student/:studentId/:subjectinput?/:studentClass?/:section?/:terminal?', controller.deleteStudent);
 student.get('/teacher/:controller?', authenticateToken, controller.teacherPage);
 student.get('/teacher/:subject/:controller', authenticateToken, controller.studentclass);
-student.get('/findData/:subjectinput/:studentClass/:section/:terminal/:terminal2?/:terminal3?', authenticateToken, controller.findData);
+student.get('/findData/:subjectinput/:studentClass/:section/:terminal', authenticateToken, controller.findData);
+student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:status', authenticateToken, controller.termwisestatus);
+student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:termwisereport/:status', authenticateToken, controller.termwisedata);
+student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:termwisereport/:status/:qno/:terminal', authenticateToken, controller.termdetail);
 student.post('/search/:subject/:studentClass/:section/:terminal', controller.search);
 student.get('/:controller/:subject', controller.studentclass);
 student.get('/:controller/:subject/:studentClass/:section', controller.terminal);
@@ -39,5 +42,4 @@ student.get('/forms/:subjectinput/:studentClass/:section/:terminal', controller.
 student.post('/forms/:subjectinput/:studentclass?/:section?/:terminal?', controller.saveForm);
 student.get('/studentData/:subjectinput/:studentClass/:section/:qno/:status/:terminal', controller.studentData);
 student.get('/totalStudent/:subjectinput/:studentClass/:section/:terminal', controller.totalStudent);
-student.get('/updatequestion/:no', controller.updateQuestion);
 module.exports = student;

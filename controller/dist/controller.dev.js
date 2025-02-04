@@ -322,17 +322,17 @@ exports.saveForm = function _callee8(req, res, next) {
   }, null, null, [[6, 13]]);
 };
 
-exports.findData = function _callee10(req, res) {
-  var _req$params7, subjectinput, _studentClass, section, terminal, terminal2, terminal3, _model3, totalstudent, totalStudent, result, term, i, _ref6, _ref7, analysis;
+exports.findData = function _callee9(req, res) {
+  var _req$params7, subjectinput, _studentClass, section, terminal, _model3, totalstudent, totalStudent, result, currentSubject, max, i, n, analysis;
 
-  return regeneratorRuntime.async(function _callee10$(_context10) {
+  return regeneratorRuntime.async(function _callee9$(_context9) {
     while (1) {
-      switch (_context10.prev = _context10.next) {
+      switch (_context9.prev = _context9.next) {
         case 0:
-          _context10.prev = 0;
-          _req$params7 = req.params, subjectinput = _req$params7.subjectinput, _studentClass = _req$params7.studentClass, section = _req$params7.section, terminal = _req$params7.terminal, terminal2 = _req$params7.terminal2, terminal3 = _req$params7.terminal3;
+          _context9.prev = 0;
+          _req$params7 = req.params, subjectinput = _req$params7.subjectinput, _studentClass = _req$params7.studentClass, section = _req$params7.section, terminal = _req$params7.terminal;
           _model3 = getSubjectModel(subjectinput);
-          _context10.next = 5;
+          _context9.next = 5;
           return regeneratorRuntime.awrap(_model3.aggregate([{
             $match: {
               $and: [{
@@ -348,113 +348,45 @@ exports.findData = function _callee10(req, res) {
           }]));
 
         case 5:
-          totalstudent = _context10.sent;
+          totalstudent = _context9.sent;
           totalStudent = totalstudent.length > 0 && totalstudent[0].count ? totalstudent[0].count : 0;
           result = [];
-          term = [];
-          question_list = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
+          _context9.next = 10;
+          return regeneratorRuntime.awrap(subjectlist.find({
+            'subject': "".concat(subjectinput)
+          }));
+
+        case 10:
+          currentSubject = _context9.sent;
+          max = parseInt(currentSubject[0].max);
           i = 1;
 
-        case 11:
-          if (!(i <= 25)) {
-            _context10.next = 33;
-            break;
-          }
-
-          j = 1;
-
         case 13:
-          if (!(j <= 10)) {
-            _context10.next = 30;
+          if (!(i <= max)) {
+            _context9.next = 28;
             break;
           }
 
-          _context10.prev = 14;
-          _context10.next = 17;
-          return regeneratorRuntime.awrap(function _callee9() {
-            var _model3$find, _model3$find3, _model3$find5;
+          n = currentSubject[0][i];
 
-            var term1Incorrect, term2Incorrect, term3Incorrect, firstSecondTerm, firstThirdTerm, secondThirdTerm, firstSecondThirdTerm;
-            return regeneratorRuntime.async(function _callee9$(_context9) {
-              while (1) {
-                switch (_context9.prev = _context9.next) {
-                  case 0:
-                    _context9.next = 2;
-                    return regeneratorRuntime.awrap(_model3.find((_model3$find = {}, _defineProperty(_model3$find, "q".concat(i).concat(question_list[j - 1]), "incorrect"), _defineProperty(_model3$find, "terminal", "first"), _model3$find), _defineProperty({
-                      roll: 1,
-                      name: 1,
-                      _id: 0
-                    }, "q".concat(i).concat(question_list[j - 1]), 1)));
+          if (currentSubject[0][i] === 0) {
+            n = 1;
+          }
 
-                  case 2:
-                    term1Incorrect = _context9.sent;
-                    _context9.next = 5;
-                    return regeneratorRuntime.awrap(_model3.find((_model3$find3 = {}, _defineProperty(_model3$find3, "q".concat(i).concat(question_list[j - 1]), "incorrect"), _defineProperty(_model3$find3, "terminal", "second"), _model3$find3), _defineProperty({
-                      roll: 1,
-                      name: 1,
-                      _id: 0
-                    }, "q".concat(i).concat(question_list[j - 1]), 1)));
-
-                  case 5:
-                    term2Incorrect = _context9.sent;
-                    _context9.next = 8;
-                    return regeneratorRuntime.awrap(_model3.find((_model3$find5 = {}, _defineProperty(_model3$find5, "q".concat(i).concat(question_list[j - 1]), "incorrect"), _defineProperty(_model3$find5, "terminal", "third"), _model3$find5), _defineProperty({
-                      roll: 1,
-                      name: 1,
-                      _id: 0
-                    }, "q".concat(i).concat(question_list[j - 1]), 1)));
-
-                  case 8:
-                    term3Incorrect = _context9.sent;
-                    firstSecondTerm = term1Incorrect.filter(function (data1) {
-                      var term1 = term2Incorrect.find(function (data2) {
-                        return data2.roll === data1.roll ? true : false;
-                      });
-                      return term1;
-                    });
-                    firstThirdTerm = term1Incorrect.filter(function (data1) {
-                      var term13 = term3Incorrect.find(function (data3) {
-                        data3.roll === data1.roll ? true : false;
-                      });
-                      return term13;
-                    });
-                    secondThirdTerm = term2Incorrect.filter(function (data2) {
-                      var term23 = term3Incorrect.find(function (data3) {
-                        data3.roll === data1.roll ? true : false;
-                      });
-                      return term23;
-                    });
-                    firstSecondThirdTerm = term1Incorrect.filter(function (data1) {
-                      var term23 = term3Incorrect.find(function (data3) {
-                        data3.roll === data1.roll ? true : false;
-                      });
-                      return term23;
-                    });
-
-                  case 13:
-                  case "end":
-                    return _context9.stop();
-                }
-              }
-            });
-          }());
+          j = 0;
 
         case 17:
-          _context10.next = 22;
-          break;
+          if (!(j <= n)) {
+            _context9.next = 25;
+            break;
+          }
 
-        case 19:
-          _context10.prev = 19;
-          _context10.t0 = _context10["catch"](14);
-          console.log(_context10.t0);
-
-        case 22:
-          _context10.next = 24;
+          _context9.next = 20;
           return regeneratorRuntime.awrap(_model3.aggregate([{
             $facet: {
               correct: [{
                 $match: {
-                  $and: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), "correct"), {
+                  $and: [_defineProperty({}, "q".concat(i).concat(String.fromCharCode(97 + j)), "correct"), {
                     section: "".concat(section)
                   }, {
                     terminal: "".concat(terminal)
@@ -465,7 +397,7 @@ exports.findData = function _callee10(req, res) {
               }],
               incorrect: [{
                 $match: {
-                  $and: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), "incorrect"), {
+                  $and: [_defineProperty({}, "q".concat(i).concat(String.fromCharCode(97 + j)), "incorrect"), {
                     section: "".concat(section)
                   }, {
                     terminal: "".concat(terminal)
@@ -476,7 +408,7 @@ exports.findData = function _callee10(req, res) {
               }],
               notattempt: [{
                 $match: {
-                  $and: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), "notattempt"), {
+                  $and: [_defineProperty({}, "q".concat(i).concat(String.fromCharCode(97 + j)), "notattempt"), {
                     section: section
                   }, {
                     terminal: "".concat(terminal)
@@ -487,7 +419,7 @@ exports.findData = function _callee10(req, res) {
               }],
               correctabove50: [{
                 $match: {
-                  $and: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), "correctabove50"), {
+                  $and: [_defineProperty({}, "q".concat(i).concat(String.fromCharCode(97 + j)), "correctabove50"), {
                     section: section
                   }, {
                     terminal: "".concat(terminal)
@@ -498,45 +430,10 @@ exports.findData = function _callee10(req, res) {
               }],
               correctbelow50: [{
                 $match: {
-                  $and: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), "correctbelow50"), {
+                  $and: [_defineProperty({}, "q".concat(i).concat(String.fromCharCode(97 + j)), "correctbelow50"), {
                     section: section
                   }, {
                     terminal: "".concat(terminal)
-                  }]
-                }
-              }, {
-                $count: "count"
-              }],
-              incorrectTerminal: [{
-                $match: {
-                  $and: [(_ref6 = {}, _defineProperty(_ref6, "q".concat(i).concat(question_list[j - 1]), "incorrect"), _defineProperty(_ref6, "terminal", "".concat(terminal)), _ref6), {
-                    section: section
-                  }, (_ref7 = {}, _defineProperty(_ref7, "q".concat(i).concat(question_list[j - 1]), "incorrect"), _defineProperty(_ref7, "terminal", "".concat(terminal2)), _ref7)]
-                }
-              }, {
-                $count: "count"
-              }],
-              correctTerminal: [{
-                $match: {
-                  $or: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), "correct"), {
-                    section: section
-                  }, {
-                    terminal: "".concat(terminal)
-                  }, {
-                    terminal: "".concat(terminal2)
-                  }]
-                }
-              }, {
-                $count: "count"
-              }],
-              notattemptTerminal: [{
-                $match: {
-                  $or: [_defineProperty({}, "q".concat(i).concat(question_list[j - 1]), "notattempt"), {
-                    section: section
-                  }, {
-                    terminal: "".concat(terminal)
-                  }, {
-                    terminal: "".concat(terminal2)
                   }]
                 }
               }, {
@@ -569,55 +466,32 @@ exports.findData = function _callee10(req, res) {
                 $ifNull: [{
                   $arrayElemAt: ["$correctbelow50.count", 0]
                 }, 0]
-              },
-              incorrectTerminal: {
-                $ifNull: [{
-                  $arrayElemAt: ["$incorrectTerminal.count", 0]
-                }, 0]
-              },
-              correctTerminal: {
-                $ifNull: [{
-                  $arrayElemAt: ["$correctTerminal.count", 0]
-                }, 0]
-              },
-              notattemptTerminal: {
-                $ifNull: [{
-                  $arrayElemAt: ["$notattemptTerminal.count", 0]
-                }, 0]
               }
             }
           }]));
 
-        case 24:
-          analysis = _context10.sent;
+        case 20:
+          analysis = _context9.sent;
           result.push({
-            questionNo: "q".concat(i).concat(question_list[j - 1]),
+            questionNo: "q".concat(i).concat(String.fromCharCode(97 + j)),
             correct: analysis[0].correct,
             wrong: analysis[0].incorrect,
             notattempt: analysis[0].notattempt,
             correctabove50: analysis[0].correctabove50,
             correctbelow50: analysis[0].correctbelow50
           });
-          term.push({
-            questionNo: "q".concat(i).concat(question_list[j - 1]),
-            terminal1: terminal,
-            terminal2: terminal2,
-            wrong: analysis[0].incorrectTerminal,
-            correct: analysis[0].correctTerminal,
-            notattempt: analysis[0].notattemptTerminal
-          });
 
-        case 27:
+        case 22:
           j++;
-          _context10.next = 13;
+          _context9.next = 17;
           break;
 
-        case 30:
+        case 25:
           i++;
-          _context10.next = 11;
+          _context9.next = 13;
           break;
 
-        case 33:
+        case 28:
           result.sort(function (a, b) {
             return b.wrong - a.wrong;
           });
@@ -631,37 +505,293 @@ exports.findData = function _callee10(req, res) {
             studentClass: _studentClass,
             section: section,
             totalStudent: totalStudent,
-            terminal: terminal,
-            terminal2: terminal2,
-            terminal3: terminal3
+            terminal: terminal
           });
-          _context10.next = 41;
+          _context9.next = 36;
           break;
 
-        case 38:
-          _context10.prev = 38;
-          _context10.t1 = _context10["catch"](0);
-          console.log(_context10.t1);
+        case 33:
+          _context9.prev = 33;
+          _context9.t0 = _context9["catch"](0);
+          console.log(_context9.t0);
 
-        case 41:
+        case 36:
+        case "end":
+          return _context9.stop();
+      }
+    }
+  }, null, null, [[0, 33]]);
+};
+
+exports.termwisestatus = function _callee10(req, res, next) {
+  return regeneratorRuntime.async(function _callee10$(_context10) {
+    while (1) {
+      switch (_context10.prev = _context10.next) {
+        case 0:
+          res.render('termstatus');
+
+        case 1:
         case "end":
           return _context10.stop();
       }
     }
-  }, null, null, [[0, 38], [14, 19]]);
+  });
 };
 
-exports.search = function _callee11(req, res, next) {
-  var _req$params8, subject, studentClass, section, terminal, roll, model, individualData;
+exports.termwisedata = function _callee11(req, res, next) {
+  var term, _req$params8, subjectinput, status, model, currentSubject, max, i, n, _loop;
 
-  return regeneratorRuntime.async(function _callee11$(_context11) {
+  return regeneratorRuntime.async(function _callee11$(_context12) {
     while (1) {
-      switch (_context11.prev = _context11.next) {
+      switch (_context12.prev = _context12.next) {
         case 0:
-          _req$params8 = req.params, subject = _req$params8.subject, studentClass = _req$params8.studentClass, section = _req$params8.section, terminal = _req$params8.terminal;
+          term = [];
+          _req$params8 = req.params, subjectinput = _req$params8.subjectinput, status = _req$params8.status;
+          model = getSubjectModel(subjectinput);
+          _context12.next = 5;
+          return regeneratorRuntime.awrap(subjectlist.find({
+            'subject': "".concat(subjectinput)
+          }));
+
+        case 5:
+          currentSubject = _context12.sent;
+          max = parseInt(currentSubject[0].max);
+          _context12.prev = 7;
+          i = 1;
+
+        case 9:
+          if (!(i <= max)) {
+            _context12.next = 23;
+            break;
+          }
+
+          n = currentSubject[0][i];
+
+          if (currentSubject[0][i] === 0) {
+            n = 1;
+          }
+
+          _loop = function _loop() {
+            var _model$find, _model$find3, _model$find5;
+
+            var term1data, term2data, term3data, incorrect2roll, incorrect3roll, common12, count12, common13, count13, common23, count23, common123;
+            return regeneratorRuntime.async(function _loop$(_context11) {
+              while (1) {
+                switch (_context11.prev = _context11.next) {
+                  case 0:
+                    _context11.next = 2;
+                    return regeneratorRuntime.awrap(model.find((_model$find = {}, _defineProperty(_model$find, "q".concat(i).concat(String.fromCharCode(97 + j)), "".concat(status)), _defineProperty(_model$find, "terminal", "first"), _model$find), _defineProperty({
+                      roll: 1,
+                      name: 1,
+                      _id: 0
+                    }, "q".concat(i).concat(String.fromCharCode(97 + j)), 1)));
+
+                  case 2:
+                    term1data = _context11.sent;
+                    _context11.next = 5;
+                    return regeneratorRuntime.awrap(model.find((_model$find3 = {}, _defineProperty(_model$find3, "q".concat(i).concat(String.fromCharCode(97 + j)), "".concat(status)), _defineProperty(_model$find3, "terminal", "second"), _model$find3), _defineProperty({
+                      roll: 1,
+                      name: 1,
+                      _id: 0
+                    }, "q".concat(i).concat(String.fromCharCode(97 + j)), 1)));
+
+                  case 5:
+                    term2data = _context11.sent;
+                    _context11.next = 8;
+                    return regeneratorRuntime.awrap(model.find((_model$find5 = {}, _defineProperty(_model$find5, "q".concat(i).concat(String.fromCharCode(97 + j)), "".concat(status)), _defineProperty(_model$find5, "terminal", "third"), _model$find5), _defineProperty({
+                      roll: 1,
+                      name: 1,
+                      _id: 0
+                    }, "q".concat(i).concat(String.fromCharCode(97 + j)), 1)));
+
+                  case 8:
+                    term3data = _context11.sent;
+                    incorrect2roll = new Set(term2data.map(function (item) {
+                      return item.roll;
+                    }));
+                    incorrect3roll = new Set(term3data.map(function (item) {
+                      return item.roll;
+                    }));
+                    common12 = term1data.filter(function (student) {
+                      return incorrect2roll.has(student.roll);
+                    });
+                    count12 = common12.length;
+                    common13 = term1data.filter(function (student) {
+                      return incorrect3roll.has(student.roll);
+                    });
+                    count13 = common13.length;
+                    common23 = term2data.filter(function (student) {
+                      return incorrect3roll.has(student.roll);
+                    });
+                    count23 = common23.length;
+                    common123 = term1data.filter(function (student) {
+                      return incorrect2roll.has(student.roll) && incorrect3roll.has(student.roll);
+                    });
+                    term.push({
+                      questionNo: "q".concat(i).concat(String.fromCharCode(97 + j)),
+                      data12: count12,
+                      data13: count13,
+                      data23: count23,
+                      data123: count123,
+                      namedata12: common12,
+                      namedata13: common13,
+                      namedata23: common23,
+                      namedata123: common123
+                    });
+
+                  case 19:
+                  case "end":
+                    return _context11.stop();
+                }
+              }
+            });
+          };
+
+          j = 0;
+
+        case 14:
+          if (!(j < n)) {
+            _context12.next = 20;
+            break;
+          }
+
+          _context12.next = 17;
+          return regeneratorRuntime.awrap(_loop());
+
+        case 17:
+          j++;
+          _context12.next = 14;
+          break;
+
+        case 20:
+          i++;
+          _context12.next = 9;
+          break;
+
+        case 23:
+          res.render('termwiseanalysis', {
+            term: term,
+            status: status
+          });
+          _context12.next = 29;
+          break;
+
+        case 26:
+          _context12.prev = 26;
+          _context12.t0 = _context12["catch"](7);
+          console.log(_context12.t0);
+
+        case 29:
+        case "end":
+          return _context12.stop();
+      }
+    }
+  }, null, null, [[7, 26]]);
+};
+
+exports.termdetail = function _callee12(req, res, next) {
+  var _req$params9, subjectinput, studentClass, section, status, qno, terminal, term, model, _model$find7, _model$find9, _model$find11, term1data, term2data, term3data, incorrect2roll, incorrect3roll, common12, common13, common23, common123;
+
+  return regeneratorRuntime.async(function _callee12$(_context13) {
+    while (1) {
+      switch (_context13.prev = _context13.next) {
+        case 0:
+          _req$params9 = req.params, subjectinput = _req$params9.subjectinput, studentClass = _req$params9.studentClass, section = _req$params9.section, status = _req$params9.status, qno = _req$params9.qno, terminal = _req$params9.terminal;
+          term = [];
+          model = getSubjectModel(subjectinput);
+          _context13.prev = 3;
+          _context13.next = 6;
+          return regeneratorRuntime.awrap(model.find((_model$find7 = {}, _defineProperty(_model$find7, "".concat(qno), "".concat(status)), _defineProperty(_model$find7, "terminal", "first"), _model$find7), _defineProperty({
+            roll: 1,
+            name: 1,
+            _id: 0
+          }, "".concat(qno), 1)));
+
+        case 6:
+          term1data = _context13.sent;
+          _context13.next = 9;
+          return regeneratorRuntime.awrap(model.find((_model$find9 = {}, _defineProperty(_model$find9, "".concat(qno), "".concat(status)), _defineProperty(_model$find9, "terminal", "second"), _model$find9), _defineProperty({
+            roll: 1,
+            name: 1,
+            _id: 0
+          }, "".concat(qno), 1)));
+
+        case 9:
+          term2data = _context13.sent;
+          _context13.next = 12;
+          return regeneratorRuntime.awrap(model.find((_model$find11 = {}, _defineProperty(_model$find11, "".concat(qno), "".concat(status)), _defineProperty(_model$find11, "terminal", "third"), _model$find11), _defineProperty({
+            roll: 1,
+            name: 1,
+            _id: 0
+          }, "".concat(qno), 1)));
+
+        case 12:
+          term3data = _context13.sent;
+          incorrect2roll = new Set(term2data.map(function (item) {
+            return item.roll;
+          }));
+          incorrect3roll = new Set(term3data.map(function (item) {
+            return item.roll;
+          }));
+          common12 = term1data.filter(function (student) {
+            return incorrect2roll.has(student.roll);
+          });
+          common13 = term1data.filter(function (student) {
+            return incorrect3roll.has(student.roll);
+          });
+          common23 = term2data.filter(function (student) {
+            return incorrect3roll.has(student.roll);
+          });
+          common123 = term1data.filter(function (student) {
+            return incorrect2roll.has(student.roll) && incorrect3roll.has(student.roll);
+          });
+          term.push({
+            questionNo: qno,
+            data12: count12,
+            data13: count13,
+            data23: count23,
+            data123: count123,
+            namedata12: common12,
+            namedata13: common13,
+            namedata23: common23,
+            namedata123: common123
+          });
+          res.render('termdetail', {
+            term: term,
+            subjectinput: subjectinput,
+            studentClass: studentClass,
+            section: section,
+            status: status,
+            qno: qno,
+            terminal: terminal
+          });
+          _context13.next = 26;
+          break;
+
+        case 23:
+          _context13.prev = 23;
+          _context13.t0 = _context13["catch"](3);
+          console.log(_context13.t0);
+
+        case 26:
+        case "end":
+          return _context13.stop();
+      }
+    }
+  }, null, null, [[3, 23]]);
+};
+
+exports.search = function _callee13(req, res, next) {
+  var _req$params10, subject, studentClass, section, terminal, roll, model, individualData;
+
+  return regeneratorRuntime.async(function _callee13$(_context14) {
+    while (1) {
+      switch (_context14.prev = _context14.next) {
+        case 0:
+          _req$params10 = req.params, subject = _req$params10.subject, studentClass = _req$params10.studentClass, section = _req$params10.section, terminal = _req$params10.terminal;
           roll = req.body.roll;
           model = getSubjectModel(subject);
-          _context11.next = 5;
+          _context14.next = 5;
           return regeneratorRuntime.awrap(model.find({
             subject: "".concat(subject),
             section: "".concat(section),
@@ -674,7 +804,7 @@ exports.search = function _callee11(req, res, next) {
           }).lean());
 
         case 5:
-          individualData = _context11.sent;
+          individualData = _context14.sent;
           res.render("search", {
             individualData: individualData,
             subject: subject,
@@ -685,22 +815,22 @@ exports.search = function _callee11(req, res, next) {
 
         case 7:
         case "end":
-          return _context11.stop();
+          return _context14.stop();
       }
     }
   });
 };
 
-exports.studentData = function _callee12(req, res, next) {
-  var _req$params9, subjectinput, studentClass, section, qno, status, terminal, StudentData;
+exports.studentData = function _callee14(req, res, next) {
+  var _req$params11, subjectinput, studentClass, section, qno, status, terminal, StudentData;
 
-  return regeneratorRuntime.async(function _callee12$(_context12) {
+  return regeneratorRuntime.async(function _callee14$(_context15) {
     while (1) {
-      switch (_context12.prev = _context12.next) {
+      switch (_context15.prev = _context15.next) {
         case 0:
-          _req$params9 = req.params, subjectinput = _req$params9.subjectinput, studentClass = _req$params9.studentClass, section = _req$params9.section, qno = _req$params9.qno, status = _req$params9.status, terminal = _req$params9.terminal;
+          _req$params11 = req.params, subjectinput = _req$params11.subjectinput, studentClass = _req$params11.studentClass, section = _req$params11.section, qno = _req$params11.qno, status = _req$params11.status, terminal = _req$params11.terminal;
           model = getSubjectModel(subjectinput);
-          _context12.next = 4;
+          _context15.next = 4;
           return regeneratorRuntime.awrap(model.find({
             $and: [_defineProperty({}, "".concat(qno), "".concat(status)), {
               section: "".concat(section)
@@ -710,7 +840,7 @@ exports.studentData = function _callee12(req, res, next) {
           }));
 
         case 4:
-          StudentData = _context12.sent;
+          StudentData = _context15.sent;
           res.render("studentdata", {
             subjectinput: subjectinput,
             qno: qno,
@@ -723,22 +853,22 @@ exports.studentData = function _callee12(req, res, next) {
 
         case 6:
         case "end":
-          return _context12.stop();
+          return _context15.stop();
       }
     }
   });
 };
 
-exports.totalStudent = function _callee13(req, res, next) {
-  var _req$params10, subjectinput, studentClass, section, terminal, terminal2, terminal3, totalStudent;
+exports.totalStudent = function _callee15(req, res, next) {
+  var _req$params12, subjectinput, studentClass, section, terminal, terminal2, terminal3, totalStudent;
 
-  return regeneratorRuntime.async(function _callee13$(_context13) {
+  return regeneratorRuntime.async(function _callee15$(_context16) {
     while (1) {
-      switch (_context13.prev = _context13.next) {
+      switch (_context16.prev = _context16.next) {
         case 0:
-          _req$params10 = req.params, subjectinput = _req$params10.subjectinput, studentClass = _req$params10.studentClass, section = _req$params10.section, terminal = _req$params10.terminal, terminal2 = _req$params10.terminal2, terminal3 = _req$params10.terminal3;
+          _req$params12 = req.params, subjectinput = _req$params12.subjectinput, studentClass = _req$params12.studentClass, section = _req$params12.section, terminal = _req$params12.terminal, terminal2 = _req$params12.terminal2, terminal3 = _req$params12.terminal3;
           model = getSubjectModel(subjectinput);
-          _context13.next = 4;
+          _context16.next = 4;
           return regeneratorRuntime.awrap(model.find({
             $and: [{
               studentClass: "".concat(studentClass)
@@ -750,7 +880,7 @@ exports.totalStudent = function _callee13(req, res, next) {
           }).lean());
 
         case 4:
-          totalStudent = _context13.sent;
+          totalStudent = _context16.sent;
           res.render("totalstudent", {
             totalStudent: totalStudent,
             subjectinput: subjectinput,
@@ -763,24 +893,24 @@ exports.totalStudent = function _callee13(req, res, next) {
 
         case 6:
         case "end":
-          return _context13.stop();
+          return _context16.stop();
       }
     }
   });
 };
 
-exports.updateQuestion = function _callee14(req, res, next) {
+exports.updateQuestion = function _callee16(req, res, next) {
   var no;
-  return regeneratorRuntime.async(function _callee14$(_context14) {
+  return regeneratorRuntime.async(function _callee16$(_context17) {
     while (1) {
-      switch (_context14.prev = _context14.next) {
+      switch (_context17.prev = _context17.next) {
         case 0:
           no = req.params.no;
           console.log(no);
 
         case 2:
         case "end":
-          return _context14.stop();
+          return _context17.stop();
       }
     }
   });

@@ -35,8 +35,12 @@
     <center><h1 id="firstheading"><span style="color: #3307F8;">Class Performance </span><span id="firstspan">Summary</span></h1></center>
     <center><h3><span class="subheading">A system designed to analyze the performance of a student</span></h3></center><br>
 <center><div class="subname" ><h6 style="color:#3307F8"><%= terminal %> Terminal Examination </h6>Subject:<%= subjectname %> <br>Class:<%=studentClass%> <br>Section:<%=section%></div></center><br><br>
-<span class="max">Max No. of Wrong Question:&ensp;<b> <%= results[0].questionNo %>&ensp;(By:<%= results[0].wrong %>)</b><br></span>
-<span class="total">Total Student : <b><%=totalStudent%></b><a href="/totalStudent/<%=subjectname %>/<%=studentClass %>/<%=section %>/<%=terminal %>"><button id="totalstudent">See Student<i class="fa-solid fa-user" style="color: #3307F8;"></i></button></a></span><br></span> <br>
+<% if (results.length > 0) { %>
+    <span class="max">Max No. of Wrong Question:&ensp;<b> <%= results[0].questionNo %>&ensp;(By:<%= results[0].wrong %>)</b><br></span>
+<% } else { %>
+    <span class="max">No data available</span><br>
+<% } %>
+t%></b><a href="/totalStudent/<%=subjectname %>/<%=studentClass %>/<%=section %>/<%=terminal %>"><button id="totalstudent">See Student<i class="fa-solid fa-user" style="color: #3307F8;"></i></button></a></span><br></span> <br>
 
 
 
@@ -50,19 +54,40 @@
     <input type="number" id="searchroll" value="roll" name="roll" placeholder="&#xF002; Search By Roll" style="font-family:Arial, FontAwesome" />
    <input type="submit" value="search" id="submit"/>
 </form></center>
-</div>
+</div> <br>
     <div class="analysiscontainer">
         <% if (results.length == 0) { %>
             <div class="subcol">
                 <div id="math" class="subject"> <span class="spansubject" id="spanmath">No Data Available</span></div>
             </div> <%}%>
-     
+  <center>  <div class="tablecontainer">
 
-     
+            <table border="1" cellspacing="0" cellpadding="0">
+                <tr>
+                    <th>Question No</th>
+                    <th>Wrong</th>
+                    <th>Correct</th>
+                    <th>Not Attempt</th>
+                    <th>Correct above 50%</th>
+                    <th>Correct below 50%</th>
+                    <th>Wrong Percentage</th>
+                </tr>
       <% results.forEach((result)=>
       { %>
+            <tr>
+                <td><%= result.questionNo %></td>
+                <td><%= result.wrong %></td>
+                <td><%= result.correct %></td>
+                <td><%= result.notattempt %></td>
+                <td><%= result.correctabove50 %></td>
+                <td><%= result.correctbelow50 %></td>
+                <td><%= result.wrong/totalStudent*100%>%</td>
+            </tr>
+            <%})%>
+        </table></div></center>
 
-      
+<% results.forEach((result)=>
+{ %>
 
         <div class="subcol">
             <div id="math" class="subject"> <center><div class="spansubject" id="spanmath"><%= result.questionNo %> </div></center> <br>
@@ -124,9 +149,16 @@ Wrong Percentage:<b><%=result.wrong/totalStudent*100%>%</b> <br>
         <p class="">I contain 1 2 3 code </p>
     <%}%> 
 
-
-
 </div>
+
+
+
+
+
+
+
+
+
    <script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script> 
     <script>
    window.onload = function(){

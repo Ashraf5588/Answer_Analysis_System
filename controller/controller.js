@@ -135,11 +135,8 @@ exports.findData = async (req, res) => {
       studentClass,
       section,
       terminal,
-      terminal2,
-      terminal3,
     } = req.params;
     const model = getSubjectModel(subjectinput);
-
     const totalstudent = await model.aggregate([
       {
         $match: {
@@ -154,63 +151,13 @@ exports.findData = async (req, res) => {
         : 0;
 
     let result = [];
-    let term = [];
-    question_list = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
-    for (let i = 1; i <= 25; i++) {
-      for (j = 1; j <= 10; j++) {
-        try {
-          const term1Incorrect = await model.find(
-            {
-              [`q${i}${question_list[j - 1]}`]: "incorrect",
-              terminal: "first",
-            },
-            { roll: 1, name: 1, _id: 0, [`q${i}${question_list[j - 1]}`]: 1 }
-          );
+    const currentSubject = await subjectlist.find({'subject':`${subjectinput}`})
+    const max = parseInt(currentSubject[0].max)
 
-          const term2Incorrect = await model.find(
-            {
-              [`q${i}${question_list[j - 1]}`]: "incorrect",
-              terminal: "second",
-            },
-            { roll: 1, name: 1, _id: 0, [`q${i}${question_list[j - 1]}`]: 1 }
-          );
-          const term3Incorrect = await model.find(
-            {
-              [`q${i}${question_list[j - 1]}`]: "incorrect",
-              terminal: "third",
-            },
-            { roll: 1, name: 1, _id: 0, [`q${i}${question_list[j - 1]}`]: 1 }
-          );
-
-          const firstSecondTerm = term1Incorrect.filter((data1) => {
-            const term1 = term2Incorrect.find((data2) => {
-              return data2.roll === data1.roll ? true : false;
-            });
-
-            return term1;
-          });
-          const firstThirdTerm = term1Incorrect.filter((data1) => {
-            const term13 = term3Incorrect.find((data3) => {
-              data3.roll === data1.roll ? true : false;
-            });
-            return term13;
-          });
-          const secondThirdTerm = term2Incorrect.filter((data2) => {
-            const term23 = term3Incorrect.find((data3) => {
-              data3.roll === data1.roll ? true : false;
-            });
-            return term23;
-          });
-          const firstSecondThirdTerm = term1Incorrect.filter((data1) => {
-            const term23 = term3Incorrect.find((data3) => {
-              data3.roll === data1.roll ? true : false;
-            });
-            return term23;
-          });
-        } catch (err) {
-          console.log(err);
-        }
-
+    for (let i = 1; i <= max; i++) {
+      let n = currentSubject[0][i]
+      if(currentSubject[0][i]===0){n=1}
+      for (j = 0; j <= n; j++) {
         const analysis = await model.aggregate([
           {
             $facet: {
@@ -218,7 +165,7 @@ exports.findData = async (req, res) => {
                 {
                   $match: {
                     $and: [
-                      { [`q${i}${question_list[j - 1]}`]: "correct" },
+                      { [`q${i}${String.fromCharCode(97+j)}`]: "correct" },
                       { section: `${section}` },
                       { terminal: `${terminal}` },
                     ],
@@ -230,7 +177,7 @@ exports.findData = async (req, res) => {
                 {
                   $match: {
                     $and: [
-                      { [`q${i}${question_list[j - 1]}`]: "incorrect" },
+                      { [`q${i}${String.fromCharCode(97+j)}`]: "incorrect" },
                       { section: `${section}` },
                       { terminal: `${terminal}` },
                     ],
@@ -242,7 +189,7 @@ exports.findData = async (req, res) => {
                 {
                   $match: {
                     $and: [
-                      { [`q${i}${question_list[j - 1]}`]: "notattempt" },
+                      { [`q${i}${String.fromCharCode(97+j)}`]: "notattempt" },
                       { section: section },
                       { terminal: `${terminal}` },
                     ],
@@ -254,7 +201,7 @@ exports.findData = async (req, res) => {
                 {
                   $match: {
                     $and: [
-                      { [`q${i}${question_list[j - 1]}`]: "correctabove50" },
+                      { [`q${i}${String.fromCharCode(97+j)}`]: "correctabove50" },
                       { section: section },
                       { terminal: `${terminal}` },
                     ],
@@ -266,7 +213,7 @@ exports.findData = async (req, res) => {
                 {
                   $match: {
                     $and: [
-                      { [`q${i}${question_list[j - 1]}`]: "correctbelow50" },
+                      { [`q${i}${String.fromCharCode(97+j)}`]: "correctbelow50" },
                       { section: section },
                       { terminal: `${terminal}` },
                     ],
@@ -274,50 +221,7 @@ exports.findData = async (req, res) => {
                 },
                 { $count: "count" },
               ],
-              incorrectTerminal: [
-                {
-                  $match: {
-                    $and: [
-                      {
-                        [`q${i}${question_list[j - 1]}`]: "incorrect",
-                        terminal: `${terminal}`,
-                      },
-                      { section: section },
-                      {
-                        [`q${i}${question_list[j - 1]}`]: "incorrect",
-                        terminal: `${terminal2}`,
-                      },
-                    ],
-                  },
-                },
-                { $count: "count" },
-              ],
-              correctTerminal: [
-                {
-                  $match: {
-                    $or: [
-                      { [`q${i}${question_list[j - 1]}`]: "correct" },
-                      { section: section },
-                      { terminal: `${terminal}` },
-                      { terminal: `${terminal2}` },
-                    ],
-                  },
-                },
-                { $count: "count" },
-              ],
-              notattemptTerminal: [
-                {
-                  $match: {
-                    $or: [
-                      { [`q${i}${question_list[j - 1]}`]: "notattempt" },
-                      { section: section },
-                      { terminal: `${terminal}` },
-                      { terminal: `${terminal2}` },
-                    ],
-                  },
-                },
-                { $count: "count" },
-              ],
+              
             },
           },
           {
@@ -337,38 +241,20 @@ exports.findData = async (req, res) => {
               correctbelow50: {
                 $ifNull: [{ $arrayElemAt: ["$correctbelow50.count", 0] }, 0],
               },
-              incorrectTerminal: {
-                $ifNull: [{ $arrayElemAt: ["$incorrectTerminal.count", 0] }, 0],
-              },
-              correctTerminal: {
-                $ifNull: [{ $arrayElemAt: ["$correctTerminal.count", 0] }, 0],
-              },
-              notattemptTerminal: {
-                $ifNull: [
-                  { $arrayElemAt: ["$notattemptTerminal.count", 0] },
-                  0,
-                ],
-              },
+             
             },
           },
         ]);
 
         result.push({
-          questionNo: `q${i}${question_list[j - 1]}`,
+          questionNo: `q${i}${String.fromCharCode(97+j)}`,
           correct: analysis[0].correct,
           wrong: analysis[0].incorrect,
           notattempt: analysis[0].notattempt,
           correctabove50: analysis[0].correctabove50,
           correctbelow50: analysis[0].correctbelow50,
         });
-        term.push({
-          questionNo: `q${i}${question_list[j - 1]}`,
-          terminal1: terminal,
-          terminal2: terminal2,
-          wrong: analysis[0].incorrectTerminal,
-          correct: analysis[0].correctTerminal,
-          notattempt: analysis[0].notattemptTerminal,
-        });
+       
       }
     }
 
@@ -383,13 +269,154 @@ exports.findData = async (req, res) => {
       section,
       totalStudent,
       terminal,
-      terminal2,
-      terminal3,
+    
     });
   } catch (err) {
     console.log(err);
   }
 };
+
+exports.termwisestatus = async (req,res,next)=>{
+  res.render('termstatus')
+};
+
+exports.termwisedata = async (req,res,next)=>{
+let term = [];
+const {subjectinput,status} = req.params; 
+const model = getSubjectModel(subjectinput);
+ 
+  const currentSubject = await subjectlist.find({'subject':`${subjectinput}`})
+  const max = parseInt(currentSubject[0].max)
+  try {
+  for (let i = 1; i <= max; i++) {
+    let n = currentSubject[0][i]
+    if(currentSubject[0][i]===0){n=1}
+    for (j = 0; j < n; j++) {
+     
+        const term1data = await model.find(
+          {
+            [`q${i}${String.fromCharCode(97+j)}`]: `${status}`,
+            terminal: "first",
+          },
+          { roll: 1, name: 1, _id: 0, [`q${i}${String.fromCharCode(97+j)}`]: 1 }
+        );
+
+        const term2data = await model.find(
+          {
+            [`q${i}${String.fromCharCode(97+j)}`]: `${status}`,
+            terminal: "second",
+          },
+          { roll: 1, name: 1, _id: 0, [`q${i}${String.fromCharCode(97+j)}`]: 1 }
+        );
+        const term3data = await model.find(
+          {
+            [`q${i}${String.fromCharCode(97+j)}`]: `${status}`,
+            terminal: "third",
+          },
+          { roll: 1, name: 1, _id: 0, [`q${i}${String.fromCharCode(97+j)}`]: 1 }
+        );
+        
+
+        const incorrect2roll = new Set(term2data.map(item=>item.roll))
+        const incorrect3roll = new Set(term3data.map(item=>item.roll))
+        const common12 = term1data.filter(student=>incorrect2roll.has(student.roll))
+        const count12 = common12.length
+        const common13 = term1data.filter(student=>incorrect3roll.has(student.roll))
+        const count13 = common13.length
+        const common23 = term2data.filter(student=>incorrect3roll.has(student.roll))
+        const count23 = common23.length
+        const common123 = term1data.filter(student=>incorrect2roll.has(student.roll) && incorrect3roll.has(student.roll))
+        
+        term.push({
+          questionNo: `q${i}${String.fromCharCode(97+j)}`,
+          data12:count12,
+          data13:count13,
+          data23:count23,
+          data123:count123,
+          namedata12:common12,
+          namedata13:common13,
+          namedata23:common23,
+          namedata123:common123,
+
+        });
+      }
+    }
+    res.render('termwiseanalysis',{term,status})
+  }catch(err)
+  {
+    console.log(err)
+  }
+  
+};
+exports.termdetail = async (req,res,next)=>
+{
+  const {subjectinput,studentClass,section,status,qno,terminal} = req.params;
+  let term = [];
+  const model = getSubjectModel(subjectinput);
+   
+    
+    
+    try {
+    
+       
+          const term1data = await model.find(
+            {
+              [`${qno}`]: `${status}`,
+              terminal: "first",
+            },
+            { roll: 1, name: 1, _id: 0, [`${qno}`]: 1 }
+          );
+  
+          const term2data = await model.find(
+            {
+              [`${qno}`]: `${status}`,
+              terminal: "second",
+            },
+            { roll: 1, name: 1, _id: 0, [`${qno}`]: 1 }
+          );
+          const term3data = await model.find(
+            {
+              [`${qno}`]: `${status}`,
+              terminal: "third",
+            },
+            { roll: 1, name: 1, _id: 0, [`${qno}`]: 1 }
+          );
+          
+  
+          const incorrect2roll = new Set(term2data.map(item=>item.roll))
+          const incorrect3roll = new Set(term3data.map(item=>item.roll))
+          const common12 = term1data.filter(student=>incorrect2roll.has(student.roll))
+          
+          const common13 = term1data.filter(student=>incorrect3roll.has(student.roll))
+         
+          const common23 = term2data.filter(student=>incorrect3roll.has(student.roll))
+          
+          const common123 = term1data.filter(student=>incorrect2roll.has(student.roll) && incorrect3roll.has(student.roll))
+   
+          
+          term.push({
+            questionNo: qno,
+            data12:count12,
+            data13:count13,
+            data23:count23,
+            data123:count123,
+            namedata12:common12,
+            namedata13:common13,
+            namedata23:common23,
+            namedata123:common123,
+          });
+          
+          
+      res.render('termdetail',{term,subjectinput,studentClass,section,status,qno,terminal})
+    }catch(err)
+    {
+      console.log(err)
+    }
+
+
+
+
+}
 exports.search = async (req, res, next) => {
   const { subject, studentClass, section, terminal } = req.params;
   const { roll } = req.body;

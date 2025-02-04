@@ -23,10 +23,14 @@
 <div class="subjectcontainer">
 
 <div class="subcol1">
+  <% let n=94 %>
   <% subjects.forEach((sub)=>{%>
+    
     <% if (sub.subject) { %>
+     
 
-  <a href="/forms/<%=sub.subject.trim()%>"><div id="<%=sub.subject.trim()%>" class="subject" style="background-color: darkblue;"> <div class="logo" id="logo1"><script src="https://cdn.lordicon.com/lordicon.js"></script>
+  <a href="/forms/<%=sub.subject.trim()%>"><div id="<%=sub.subject.trim()%>" class="subject" style="background-color: #0620<%=n%>;"> <div class="logo" id="logo1"><script src="https://cdn.lordicon.com/lordicon.js"></script>
+    <% n=n-1%>
     <lord-icon
         src="https://cdn.lordicon.com/xmaezqzk.json"
         trigger="morph"
@@ -42,6 +46,9 @@
   <br>
 <footer>
 <hr style="background-color:darkblue; height: 3px; border: none;">
+<div class="footer" style="background-color:darkblue">
+<center><span style="color: white;">Designed & Developed by Ashraf Ali Miya | UEBS &reg;All right reserved</span></center>
+</div>
 
 </footer>
 
