@@ -143,6 +143,7 @@ td
   justify-content: space-around;
   margin-top: 5%;
   flex-wrap: wrap;
+  
 }
 .addclass
 {
@@ -170,8 +171,8 @@ td
 }
 .showentry
 {
-  background-color: rgba(17, 132, 255, 0.7);
-  width: 10rem;
+  background-color:coral;
+  width: 17rem;
   height: 3rem;
   text-align: center;
   padding-top: 1%;

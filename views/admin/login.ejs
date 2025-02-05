@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/login.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
 </head>
-<body><center>
+<body><%- include('partials/nav',{currentPage:'teacher'}) %><center>
   <form action="/admin/login" method="POST">
     <img src="/image.png" alt="Logo">
    

@@ -96,17 +96,36 @@ exports.showSubject = async (req, res, next) => {
   res.render("admin/subjectlist", { subjects, editing: false });
 };
 exports.addSubject = async (req, res, next) => {
+  try{
   const { subId } = req.params;
+  const oldSubjectName = await subject.findById(subId)
+ 
   const updates = req.body;
   if (subId && !undefined) {
+
     await subject.findByIdAndUpdate(
       subId,updates,
       { new: true, runValidators: true }
+    
     );
+
+    const db = mongoose.connection.db;
+
+    const newSubjectName = await subject.findById(subId)
+    await db.collection(oldSubjectName.subject).rename(newSubjectName.subject);
+
+   
+
     res.redirect("/admin/subject");
-  } else {
+  }
+  
+   else {
     await subject.create(req.body);
     res.redirect("/admin/subject");
+  }
+  }catch(err)
+  {
+    throw err
   }
 };
 

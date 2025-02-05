@@ -483,6 +483,7 @@ exports.totalStudent = async (req, res, next) => {
       ],
     })
     .lean();
+    
 
   res.render("totalstudent", {
     totalStudent: totalStudent,

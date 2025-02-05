@@ -8,6 +8,7 @@
   <title>SignUp</title>
 </head>
 <body>
+  <%- include('partials/nav',{currentPage:'teacher'}) %>
   <form action="/admin/signup" method="POST">
     Username: <input type="text" name="username" id="username">
     Password: <input type="password" name="password" id="password">

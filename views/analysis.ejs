@@ -150,6 +150,35 @@ $(document).ready(function () {
             <%})%>
         </table></div></center>
 
+        <table border="1" cellspacing="0" cellpadding="0" id="example" class="display" style="width:100%">
+            <tr>
+                <th>Question No</th>
+                <th>Wrong</th>
+                <th>Correct</th>
+                <th>Not Attempt</th>
+                <th>Correct above 50%</th>
+                <th>Correct below 50%</th>
+                <th>Wrong Percentage</th>
+            </tr>
+  <% results.forEach((result)=>
+  { %>
+        <tr>
+            <td><%= result.questionNo %></td>
+            <td><%= result.wrong %></td>
+            <td><%= result.correct %></td>
+            <td><%= result.notattempt %></td>
+            <td><%= result.correctabove50 %></td>
+            <td><%= result.correctbelow50 %></td>
+            <td><%= result.wrong/totalStudent*100%>%</td>
+        </tr>
+        <%})%>
+    </table></div></center>
+
+
+
+
+
+
 <% results.forEach((result)=>
 { %>
 
