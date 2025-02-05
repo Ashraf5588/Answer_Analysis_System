@@ -259,11 +259,10 @@ exports.findData = async (req, res) => {
     }
 
     result.sort((a, b) => b.wrong - a.wrong);
-    term.sort((a, b) => b.wrong - a.wrong);
-
+  
     res.render("analysis", {
       results: result,
-      term,
+      
       subjectname: subjectinput,
       studentClass,
       section,

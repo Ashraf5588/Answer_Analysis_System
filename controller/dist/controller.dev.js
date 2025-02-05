@@ -495,32 +495,28 @@ exports.findData = function _callee9(req, res) {
           result.sort(function (a, b) {
             return b.wrong - a.wrong;
           });
-          term.sort(function (a, b) {
-            return b.wrong - a.wrong;
-          });
           res.render("analysis", {
             results: result,
-            term: term,
             subjectname: subjectinput,
             studentClass: _studentClass,
             section: section,
             totalStudent: totalStudent,
             terminal: terminal
           });
-          _context9.next = 36;
+          _context9.next = 35;
           break;
 
-        case 33:
-          _context9.prev = 33;
+        case 32:
+          _context9.prev = 32;
           _context9.t0 = _context9["catch"](0);
           console.log(_context9.t0);
 
-        case 36:
+        case 35:
         case "end":
           return _context9.stop();
       }
     }
-  }, null, null, [[0, 33]]);
+  }, null, null, [[0, 32]]);
 };
 
 exports.termwisestatus = function _callee10(req, res, next) {
