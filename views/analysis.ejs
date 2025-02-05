@@ -18,7 +18,9 @@
   	<script>
 $(document).ready(function () {
     var persons = <%- JSON.stringify(results) %>; // Directly pass results array from EJS
-
+    var classInfo = "<%= terminal %> Terminal Examination\n" +
+                "Class: <%= studentClass %> (<%= section %>)\n" +
+                "Subject: <%= subjectname %>";  // Extra newline for spacin
     $("#example").DataTable({
         data: persons,
         columns: [
@@ -37,9 +39,31 @@ $(document).ready(function () {
             }
         ],
         dom: "Bfrtip",
-        buttons: ["copy", "csv", "excel", "pdf", "print"]
+        buttons: [
+            {
+                extend: "copy",
+                messageTop: classInfo
+            },
+            {
+                extend: "csv",
+                messageTop: classInfo
+            },
+            {
+                extend: "excel",
+                messageTop: classInfo
+            },
+            {
+                extend: "pdf",
+                messageTop: classInfo
+            },
+            {
+                extend: "print",
+                messageTop: "<h3>" + classInfo + "</h3>"
+            }
+        ]
     });
 });
+
 </script>
 
 
@@ -101,7 +125,7 @@ $(document).ready(function () {
                 <div id="math" class="subject"> <span class="spansubject" id="spanmath">No Data Available</span></div>
             </div> <%}%>
   <center>  <div class="tablecontainer">
-
+ <span><%=terminal%> Terminal Examination%> <br>Class:<%=studentClass%>(<%=section%>) <br><%=subjectname%></span>
             <table border="1" cellspacing="0" cellpadding="0" id="example" class="display" style="width:100%">
                 <tr>
                     <th>Question No</th>
