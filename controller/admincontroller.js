@@ -38,7 +38,7 @@ exports.adminloginpost = async (req, res, next) => {
       const token = jwt.sign(
         { user: user.username, role: user.role },
         "mynameisashraf!23_9&",
-        { expiresIn: "24h" }
+        { expiresIn: "720h" }
       );
       console.log("Generated Token:", token); // Log the generated token
 

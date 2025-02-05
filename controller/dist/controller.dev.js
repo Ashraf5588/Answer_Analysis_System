@@ -570,7 +570,7 @@ exports.termwisedata = function _callee11(req, res, next) {
           _loop = function _loop() {
             var _model$find, _model$find3, _model$find5;
 
-            var term1data, term2data, term3data, incorrect2roll, incorrect3roll, common12, count12, common13, count13, common23, count23, common123;
+            var term1data, term2data, term3data, incorrect2roll, incorrect3roll, common12, count12, common13, count13, common23, count23, common123, count123;
             return regeneratorRuntime.async(function _loop$(_context11) {
               while (1) {
                 switch (_context11.prev = _context11.next) {
@@ -623,6 +623,7 @@ exports.termwisedata = function _callee11(req, res, next) {
                     common123 = term1data.filter(function (student) {
                       return incorrect2roll.has(student.roll) && incorrect3roll.has(student.roll);
                     });
+                    count123 = common123.length;
                     term.push({
                       questionNo: "q".concat(i).concat(String.fromCharCode(97 + j)),
                       data12: count12,
@@ -635,7 +636,7 @@ exports.termwisedata = function _callee11(req, res, next) {
                       namedata123: common123
                     });
 
-                  case 19:
+                  case 20:
                   case "end":
                     return _context11.stop();
                 }
@@ -743,10 +744,6 @@ exports.termdetail = function _callee12(req, res, next) {
           });
           term.push({
             questionNo: qno,
-            data12: count12,
-            data13: count13,
-            data23: count23,
-            data123: count123,
             namedata12: common12,
             namedata13: common13,
             namedata23: common23,

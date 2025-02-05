@@ -325,6 +325,7 @@ const model = getSubjectModel(subjectinput);
         const common23 = term2data.filter(student=>incorrect3roll.has(student.roll))
         const count23 = common23.length
         const common123 = term1data.filter(student=>incorrect2roll.has(student.roll) && incorrect3roll.has(student.roll))
+        const count123 = common123.length
         
         term.push({
           questionNo: `q${i}${String.fromCharCode(97+j)}`,
@@ -395,10 +396,7 @@ exports.termdetail = async (req,res,next)=>
           
           term.push({
             questionNo: qno,
-            data12:count12,
-            data13:count13,
-            data23:count23,
-            data123:count123,
+           
             namedata12:common12,
             namedata13:common13,
             namedata23:common23,
