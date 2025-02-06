@@ -158,6 +158,8 @@ exports.findData = async (req, res) => {
       let n = currentSubject[0][i]
       if(currentSubject[0][i]===0){n=1}
       for (j = 0; j <= n; j++) {
+
+        
         const analysis = await model.aggregate([
           {
             $facet: {
