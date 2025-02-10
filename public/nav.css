@@ -80,6 +80,10 @@ font-size: 20px;
 #teachersubject{
   margin-top: 1%;
 }
+.reportcontainer img
+{
+width: 80%;
+}
 @media(max-width:500px)
 {
   ul li 
@@ -98,5 +102,8 @@ font-size: 20px;
   nav img
   {
     width: 3.5rem;
+  }
+  .choose{
+    font-size: 16.5px;
   }
 }

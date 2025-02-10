@@ -17,19 +17,14 @@
   <header>
     <%- include('partials/nav',{currentPage:'teacher'}) %>
     <center><h1 id="firstheading">Answer Evaluation <span id="firstspan">System</span></h1></center></header>
-    
-   <center><h3><span class="subheading">A system designed to analyze the performance of a student</span></h3></center> <br>
-
-   <div class="reportcontainer" style="display: flex;">
-    
-    <div class="subjectchoose"> 
-      <img src="/report.png" alt="Report" id="report"> 
-    </div>
+   <center><h3><span class="subheading">A system designed to analyze the performance of a student</span></h3><br><h1>Report Page</h1></center> <br>
+   <center><div> <img src="/report.png" alt="Report" id="report" width="20%"> </div></center><br>
+   
+   <div class="reportcontainer" style="display: flex;"><div class="choose">Please Choose Subject To See Report </div></div>
   
 <div class="subjectcontainer" id="teachersubject">
-  <center><div class="choose">Please Choose Subject To See Report </div></center>
+
 <div class="subcol1">
-  
   <% subjects.forEach((sub)=>{%>
 
 
@@ -44,8 +39,6 @@
     </lord-icon></div><span class="spansubject" id="spanmath"><%=sub.subject%></span></div><br></a>
 <%})%>
 </div>
-</div>
-
 </div>
   <br>
 <footer>
