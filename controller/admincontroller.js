@@ -49,6 +49,48 @@ exports.adminloginpost = async (req, res, next) => {
     console.log(err);
   }
 };
+
+
+exports.teacherlogin = async (req, res, next) => {
+  try {
+    res.render("admin/teacherlogin");
+  } catch (err) {
+    console.log(err);
+  }
+};
+exports.teacherloginpost = async (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+    const user = await admin.findOne({
+      username: `${username}`,
+      password: `${password}`,
+    });
+    if (!user) {
+      res.send("invalid credentials. Username or Password Does not Match");
+    } else {
+      const teachertoken = jwt.sign(
+        { user: user.username, role: user.role },
+        "mynameisashrafteacher!23_9&",
+        { expiresIn: "720h" }
+      );
+      // Log the generated token
+
+      res.cookie("token", teachertoken, { httpOnly: true, secure: false });
+      res.redirect("/teacher/findData");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+
+
+
+
+
+
+
 exports.admin = async (req, res, next) => {
   try {
     // Initialize array

@@ -47,13 +47,12 @@ exports.homePage = function _callee(req, res, next) {
 
         case 2:
           subject = _context.sent;
-          console.log(subject);
           res.render("index", {
             currentPage: "home",
             subjects: subject
           });
 
-        case 5:
+        case 4:
         case "end":
           return _context.stop();
       }
@@ -853,57 +852,167 @@ exports.studentData = function _callee14(req, res, next) {
 };
 
 exports.totalStudent = function _callee15(req, res, next) {
-  var _req$params12, subjectinput, studentClass, section, terminal, terminal2, terminal3, totalStudent;
+  var _req$params12, subjectinput, studentClass, section, terminal, model, incorrectdata, currentSubject, max, _loop2, _i, totalStudent;
 
-  return regeneratorRuntime.async(function _callee15$(_context16) {
+  return regeneratorRuntime.async(function _callee15$(_context18) {
     while (1) {
-      switch (_context16.prev = _context16.next) {
+      switch (_context18.prev = _context18.next) {
         case 0:
-          _req$params12 = req.params, subjectinput = _req$params12.subjectinput, studentClass = _req$params12.studentClass, section = _req$params12.section, terminal = _req$params12.terminal, terminal2 = _req$params12.terminal2, terminal3 = _req$params12.terminal3;
+          _req$params12 = req.params, subjectinput = _req$params12.subjectinput, studentClass = _req$params12.studentClass, section = _req$params12.section, terminal = _req$params12.terminal;
           model = getSubjectModel(subjectinput);
-          _context16.next = 4;
+          incorrectdata = [];
+          _context18.prev = 3;
+          _context18.next = 6;
+          return regeneratorRuntime.awrap(subjectlist.find({
+            subject: subjectinput
+          }));
+
+        case 6:
+          currentSubject = _context18.sent;
+
+          if (!(!currentSubject || currentSubject.length === 0)) {
+            _context18.next = 9;
+            break;
+          }
+
+          return _context18.abrupt("return", res.status(404).json({
+            message: "Subject not found"
+          }));
+
+        case 9:
+          max = parseInt(currentSubject[0].max);
+
+          _loop2 = function _loop2(_i) {
+            var n, _loop3, _j;
+
+            return regeneratorRuntime.async(function _loop2$(_context17) {
+              while (1) {
+                switch (_context17.prev = _context17.next) {
+                  case 0:
+                    n = currentSubject[0][_i] || 1; // Ensure n is at least 1
+
+                    _loop3 = function _loop3(_j) {
+                      var incorrectname;
+                      return regeneratorRuntime.async(function _loop3$(_context16) {
+                        while (1) {
+                          switch (_context16.prev = _context16.next) {
+                            case 0:
+                              _context16.next = 2;
+                              return regeneratorRuntime.awrap(model.find(_defineProperty({
+                                studentClass: studentClass,
+                                section: section,
+                                terminal: terminal
+                              }, "q".concat(_i).concat(String.fromCharCode(97 + _j)), "incorrect")));
+
+                            case 2:
+                              incorrectname = _context16.sent;
+                              incorrectname.forEach(function (student) {
+                                incorrectdata.push({
+                                  questionNo: "q".concat(_i).concat(String.fromCharCode(97 + _j)),
+                                  studentname: student.name // Extract names correctly
+
+                                });
+                              });
+                              console.log("Incorrect Students for", "q".concat(_i).concat(String.fromCharCode(97 + _j)), incorrectname);
+
+                            case 5:
+                            case "end":
+                              return _context16.stop();
+                          }
+                        }
+                      });
+                    };
+
+                    _j = 0;
+
+                  case 3:
+                    if (!(_j <= n)) {
+                      _context17.next = 9;
+                      break;
+                    }
+
+                    _context17.next = 6;
+                    return regeneratorRuntime.awrap(_loop3(_j));
+
+                  case 6:
+                    _j++;
+                    _context17.next = 3;
+                    break;
+
+                  case 9:
+                  case "end":
+                    return _context17.stop();
+                }
+              }
+            });
+          };
+
+          _i = 1;
+
+        case 12:
+          if (!(_i <= max)) {
+            _context18.next = 18;
+            break;
+          }
+
+          _context18.next = 15;
+          return regeneratorRuntime.awrap(_loop2(_i));
+
+        case 15:
+          _i++;
+          _context18.next = 12;
+          break;
+
+        case 18:
+          _context18.next = 20;
           return regeneratorRuntime.awrap(model.find({
-            $and: [{
-              studentClass: "".concat(studentClass)
-            }, {
-              section: "".concat(section)
-            }, {
-              terminal: "".concat(terminal)
-            }]
+            studentClass: studentClass,
+            section: section,
+            terminal: terminal
           }).lean());
 
-        case 4:
-          totalStudent = _context16.sent;
+        case 20:
+          totalStudent = _context18.sent;
           res.render("totalstudent", {
             totalStudent: totalStudent,
             subjectinput: subjectinput,
             studentClass: studentClass,
             section: section,
             terminal: terminal,
-            terminal2: terminal2,
-            terminal3: terminal3
+            incorrectdata: incorrectdata // Pass incorrect answers list to the frontend
+
+          });
+          _context18.next = 28;
+          break;
+
+        case 24:
+          _context18.prev = 24;
+          _context18.t0 = _context18["catch"](3);
+          console.error("Error fetching students:", _context18.t0);
+          res.status(500).json({
+            message: "Server error"
           });
 
-        case 6:
+        case 28:
         case "end":
-          return _context16.stop();
+          return _context18.stop();
       }
     }
-  });
+  }, null, null, [[3, 24]]);
 };
 
 exports.updateQuestion = function _callee16(req, res, next) {
   var no;
-  return regeneratorRuntime.async(function _callee16$(_context17) {
+  return regeneratorRuntime.async(function _callee16$(_context19) {
     while (1) {
-      switch (_context17.prev = _context17.next) {
+      switch (_context19.prev = _context19.next) {
         case 0:
           no = req.params.no;
           console.log(no);
 
         case 2:
         case "end":
-          return _context17.stop();
+          return _context19.stop();
       }
     }
   });

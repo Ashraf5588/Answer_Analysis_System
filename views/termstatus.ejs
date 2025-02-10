@@ -4,13 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Terminal Wise</title>
+  <link rel="stylesheet" href="/terminalstatus.css">
+  <link rel="stylesheet" href="/nav.css">
+  
 </head>
 <body>
-
+  <%- include('partials/nav',{currentPage:'teacher'}) %>
+<div class="terminalstatus">
 <a href="termwisereport/correct"><div class="correct">Correct</div></a>
 <a href="termwisereport/incorrect"><div class="incorrect">Incorrect</div></a>
 <a href="termwisereport/notattempt"><div class="notattempt">Not attempt</div></a>
 <a href="termwisereport/correctabove50"><div class="correctabove50">Correct above 50%</div></a>
 <a href="termwisereport/correctbelow50"><div class="correctbelow50">Correct below 50%</div></a>
+</div>
 </body>
 </html>

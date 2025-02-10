@@ -20,7 +20,8 @@ const getSubjectModel = (subjectinput) => {
 };
 exports.homePage = async (req, res, next) => {
   const subject = await subjectlist.find({}).lean();
-  console.log(subject);
+  
+
   res.render("index", { currentPage: "home",subjects:subject});
 };
 
@@ -465,38 +466,62 @@ exports.studentData = async (req, res, next) => {
   });
 };
 
-exports.totalStudent = async (req, res, next) => {
-  const {
-    subjectinput,
-    studentClass,
-    section,
-    terminal,
-    terminal2,
-    terminal3,
-  } = req.params;
-  model = getSubjectModel(subjectinput);
 
-  const totalStudent = await model
-    .find({
-      $and: [
-        { studentClass: `${studentClass}` },
-        { section: `${section}` },
-        { terminal: `${terminal}` },
-      ],
-    })
-    .lean();
+  exports.totalStudent = async (req, res, next) => {
+    const { subjectinput, studentClass, section, terminal } = req.params;
+    const model = getSubjectModel(subjectinput);
+    const incorrectdata = [];
     
+    try {
+      const currentSubject = await subjectlist.find({ subject: subjectinput });
+  
+      if (!currentSubject || currentSubject.length === 0) {
+        return res.status(404).json({ message: "Subject not found" });
+      }
+  
+      const max = parseInt(currentSubject[0].max);
+      
+      for (let i = 1; i <= max; i++) {
+        let n = currentSubject[0][i] || 1;  // Ensure n is at least 1
+  
+        for (let j = 0; j <= n; j++) {
+          const incorrectname = await model.find({
+            studentClass: studentClass,
+            section: section,
+            terminal: terminal,
+            [`q${i}${String.fromCharCode(97 + j)}`]: "incorrect",
+          });
+  
+          incorrectname.forEach(student => {
+            incorrectdata.push({
+              questionNo: `q${i}${String.fromCharCode(97 + j)}`,
+              studentname: student.name,  // Extract names correctly
+            });
+          });
+  
+          console.log("Incorrect Students for", `q${i}${String.fromCharCode(97 + j)}`, incorrectname);
+        }
+      }
+  
+      const totalStudent = await model
+        .find({ studentClass, section, terminal })
+        .lean();
+  
+      res.render("totalstudent", {
+        totalStudent,
+        subjectinput,
+        studentClass,
+        section,
+        terminal,
+        incorrectdata,  // Pass incorrect answers list to the frontend
+      });
+  
+    } catch (error) {
+      console.error("Error fetching students:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  };
 
-  res.render("totalstudent", {
-    totalStudent: totalStudent,
-    subjectinput,
-    studentClass,
-    section,
-    terminal,
-    terminal2,
-    terminal3,
-  });
-};
 
 exports.updateQuestion = async (req, res, next) => {
   const { no } = req.params;
