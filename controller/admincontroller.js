@@ -154,8 +154,10 @@ exports.addSubject = async (req, res, next) => {
     const db = mongoose.connection.db;
 
     const newSubjectName = await subject.findById(subId)
+    if(oldSubjectName.subject!=newSubjectName.subject)
+    {
     await db.collection(oldSubjectName.subject).rename(newSubjectName.subject);
-
+    }
    
 
     res.redirect("/admin/subject");
