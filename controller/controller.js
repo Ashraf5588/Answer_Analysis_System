@@ -370,7 +370,7 @@ exports.termdetail = async (req,res,next)=>
           const term1data = await model.find(
             {
               [`${qno}`]: `${status}`,
-              terminal: "first",
+              terminal: "first",studentClass:`${studentClass}`,section:`${section}`
             },
             { roll: 1, name: 1, _id: 0, [`${qno}`]: 1 }
           );
@@ -378,14 +378,14 @@ exports.termdetail = async (req,res,next)=>
           const term2data = await model.find(
             {
               [`${qno}`]: `${status}`,
-              terminal: "second",
+              terminal: "second",studentClass:`${studentClass}`,section:`${section}`
             },
             { roll: 1, name: 1, _id: 0, [`${qno}`]: 1 }
           );
           const term3data = await model.find(
             {
               [`${qno}`]: `${status}`,
-              terminal: "third",
+              terminal: "third",studentClass:`${studentClass}`,section:`${section}`
             },
             { roll: 1, name: 1, _id: 0, [`${qno}`]: 1 }
           );

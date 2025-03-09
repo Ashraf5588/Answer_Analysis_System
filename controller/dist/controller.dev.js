@@ -701,7 +701,7 @@ exports.termdetail = function _callee12(req, res, next) {
           model = getSubjectModel(subjectinput);
           _context13.prev = 3;
           _context13.next = 6;
-          return regeneratorRuntime.awrap(model.find((_model$find7 = {}, _defineProperty(_model$find7, "".concat(qno), "".concat(status)), _defineProperty(_model$find7, "terminal", "first"), _model$find7), _defineProperty({
+          return regeneratorRuntime.awrap(model.find((_model$find7 = {}, _defineProperty(_model$find7, "".concat(qno), "".concat(status)), _defineProperty(_model$find7, "terminal", "first"), _defineProperty(_model$find7, "studentClass", "".concat(studentClass)), _defineProperty(_model$find7, "section", "".concat(section)), _model$find7), _defineProperty({
             roll: 1,
             name: 1,
             _id: 0
@@ -710,7 +710,7 @@ exports.termdetail = function _callee12(req, res, next) {
         case 6:
           term1data = _context13.sent;
           _context13.next = 9;
-          return regeneratorRuntime.awrap(model.find((_model$find9 = {}, _defineProperty(_model$find9, "".concat(qno), "".concat(status)), _defineProperty(_model$find9, "terminal", "second"), _model$find9), _defineProperty({
+          return regeneratorRuntime.awrap(model.find((_model$find9 = {}, _defineProperty(_model$find9, "".concat(qno), "".concat(status)), _defineProperty(_model$find9, "terminal", "second"), _defineProperty(_model$find9, "studentClass", "".concat(studentClass)), _defineProperty(_model$find9, "section", "".concat(section)), _model$find9), _defineProperty({
             roll: 1,
             name: 1,
             _id: 0
@@ -719,7 +719,7 @@ exports.termdetail = function _callee12(req, res, next) {
         case 9:
           term2data = _context13.sent;
           _context13.next = 12;
-          return regeneratorRuntime.awrap(model.find((_model$find11 = {}, _defineProperty(_model$find11, "".concat(qno), "".concat(status)), _defineProperty(_model$find11, "terminal", "third"), _model$find11), _defineProperty({
+          return regeneratorRuntime.awrap(model.find((_model$find11 = {}, _defineProperty(_model$find11, "".concat(qno), "".concat(status)), _defineProperty(_model$find11, "terminal", "third"), _defineProperty(_model$find11, "studentClass", "".concat(studentClass)), _defineProperty(_model$find11, "section", "".concat(section)), _model$find11), _defineProperty({
             roll: 1,
             name: 1,
             _id: 0
