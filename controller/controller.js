@@ -289,7 +289,7 @@ exports.termwisestatus = async (req,res,next)=>{
 
 exports.termwisedata = async (req,res,next)=>{
 let term = [];
-const {subjectinput,status} = req.params; 
+const {subjectinput,studentClass,section,status} = req.params; 
 const model = getSubjectModel(subjectinput);
  
   const currentSubject = await subjectlist.find({'subject':`${subjectinput}`})
@@ -303,7 +303,7 @@ const model = getSubjectModel(subjectinput);
         const term1data = await model.find(
           {
             [`q${i}${String.fromCharCode(97+j)}`]: `${status}`,
-            terminal: "first",
+            terminal: "first",studentClass:`${studentClass}`,section:`${section}`
           },
           { roll: 1, name: 1, _id: 0, [`q${i}${String.fromCharCode(97+j)}`]: 1 }
         );
@@ -311,14 +311,14 @@ const model = getSubjectModel(subjectinput);
         const term2data = await model.find(
           {
             [`q${i}${String.fromCharCode(97+j)}`]: `${status}`,
-            terminal: "second",
+            terminal: "second",studentClass:`${studentClass}`,section:`${section}`
           },
           { roll: 1, name: 1, _id: 0, [`q${i}${String.fromCharCode(97+j)}`]: 1 }
         );
         const term3data = await model.find(
           {
             [`q${i}${String.fromCharCode(97+j)}`]: `${status}`,
-            terminal: "third",
+            terminal: "third",studentClass:`${studentClass}`,section:`${section}`
           },
           { roll: 1, name: 1, _id: 0, [`q${i}${String.fromCharCode(97+j)}`]: 1 }
         );

@@ -538,14 +538,14 @@ exports.termwisestatus = function _callee10(req, res, next) {
 };
 
 exports.termwisedata = function _callee11(req, res, next) {
-  var term, _req$params8, subjectinput, status, model, currentSubject, max, i, n, _loop;
+  var term, _req$params8, subjectinput, studentClass, section, status, model, currentSubject, max, i, n, _loop;
 
   return regeneratorRuntime.async(function _callee11$(_context12) {
     while (1) {
       switch (_context12.prev = _context12.next) {
         case 0:
           term = [];
-          _req$params8 = req.params, subjectinput = _req$params8.subjectinput, status = _req$params8.status;
+          _req$params8 = req.params, subjectinput = _req$params8.subjectinput, studentClass = _req$params8.studentClass, section = _req$params8.section, status = _req$params8.status;
           model = getSubjectModel(subjectinput);
           _context12.next = 5;
           return regeneratorRuntime.awrap(subjectlist.find({
@@ -579,7 +579,7 @@ exports.termwisedata = function _callee11(req, res, next) {
                 switch (_context11.prev = _context11.next) {
                   case 0:
                     _context11.next = 2;
-                    return regeneratorRuntime.awrap(model.find((_model$find = {}, _defineProperty(_model$find, "q".concat(i).concat(String.fromCharCode(97 + j)), "".concat(status)), _defineProperty(_model$find, "terminal", "first"), _model$find), _defineProperty({
+                    return regeneratorRuntime.awrap(model.find((_model$find = {}, _defineProperty(_model$find, "q".concat(i).concat(String.fromCharCode(97 + j)), "".concat(status)), _defineProperty(_model$find, "terminal", "first"), _defineProperty(_model$find, "studentClass", "".concat(studentClass)), _defineProperty(_model$find, "section", "".concat(section)), _model$find), _defineProperty({
                       roll: 1,
                       name: 1,
                       _id: 0
@@ -588,7 +588,7 @@ exports.termwisedata = function _callee11(req, res, next) {
                   case 2:
                     term1data = _context11.sent;
                     _context11.next = 5;
-                    return regeneratorRuntime.awrap(model.find((_model$find3 = {}, _defineProperty(_model$find3, "q".concat(i).concat(String.fromCharCode(97 + j)), "".concat(status)), _defineProperty(_model$find3, "terminal", "second"), _model$find3), _defineProperty({
+                    return regeneratorRuntime.awrap(model.find((_model$find3 = {}, _defineProperty(_model$find3, "q".concat(i).concat(String.fromCharCode(97 + j)), "".concat(status)), _defineProperty(_model$find3, "terminal", "second"), _defineProperty(_model$find3, "studentClass", "".concat(studentClass)), _defineProperty(_model$find3, "section", "".concat(section)), _model$find3), _defineProperty({
                       roll: 1,
                       name: 1,
                       _id: 0
@@ -597,7 +597,7 @@ exports.termwisedata = function _callee11(req, res, next) {
                   case 5:
                     term2data = _context11.sent;
                     _context11.next = 8;
-                    return regeneratorRuntime.awrap(model.find((_model$find5 = {}, _defineProperty(_model$find5, "q".concat(i).concat(String.fromCharCode(97 + j)), "".concat(status)), _defineProperty(_model$find5, "terminal", "third"), _model$find5), _defineProperty({
+                    return regeneratorRuntime.awrap(model.find((_model$find5 = {}, _defineProperty(_model$find5, "q".concat(i).concat(String.fromCharCode(97 + j)), "".concat(status)), _defineProperty(_model$find5, "terminal", "third"), _defineProperty(_model$find5, "studentClass", "".concat(studentClass)), _defineProperty(_model$find5, "section", "".concat(section)), _model$find5), _defineProperty({
                       roll: 1,
                       name: 1,
                       _id: 0
