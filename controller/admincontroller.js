@@ -75,7 +75,7 @@ exports.teacherloginpost = async (req, res, next) => {
       );
       // Log the generated token
 
-      res.cookie("token", teachertoken, { httpOnly: true, secure: false });
+      res.cookie("teachertoken", teachertoken, { httpOnly: true, secure: false });
       res.redirect("/teacher/findData");
     }
   } catch (err) {

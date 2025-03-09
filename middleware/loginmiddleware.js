@@ -30,7 +30,7 @@ const authenticateToken = (req, res, next) => {
 
 
 const authenticateTokenTeacher = (req, res, next) => {
-  const teachertoken = req.cookies.token;
+  const teachertoken = req.cookies.teachertoken;
  
 
   if (!teachertoken) {

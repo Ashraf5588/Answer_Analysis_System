@@ -28,7 +28,7 @@ var authenticateToken = function authenticateToken(req, res, next) {
 };
 
 var authenticateTokenTeacher = function authenticateTokenTeacher(req, res, next) {
-  var teachertoken = req.cookies.token;
+  var teachertoken = req.cookies.teachertoken;
 
   if (!teachertoken) {
     console.log("No token found in cookies");

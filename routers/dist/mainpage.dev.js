@@ -43,7 +43,7 @@ student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:termwiser
 student.post('/search/:subject/:studentClass/:section/:terminal', controller.search);
 student.get('/:controller/:subject', controller.studentclass);
 student.get('/:controller/:subject/:studentClass/:section', controller.terminal);
-student.get('/forms/:subjectinput/:studentClass/:section/:terminal', controller.showForm);
+student.get('/forms/:subjectinput/:studentClass/:section/:terminal?', controller.showForm);
 student.post('/forms/:subjectinput/:studentclass?/:section?/:terminal?', controller.saveForm);
 student.get('/studentData/:subjectinput/:studentClass/:section/:qno/:status/:terminal', authenticateTokenTeacher, controller.studentData);
 student.get('/totalStudent/:subjectinput/:studentClass/:section/:terminal', authenticateTokenTeacher, controller.totalStudent);

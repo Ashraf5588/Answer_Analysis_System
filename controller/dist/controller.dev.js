@@ -251,14 +251,18 @@ exports.showForm = function _callee7(req, res, next) {
           });
           _req$params5 = req.params, subjectinput = _req$params5.subjectinput, studentClass = _req$params5.studentClass, section = _req$params5.section, terminal = _req$params5.terminal;
 
+          if (!terminal || terminal === "''" || terminal === '"') {
+            terminal = '';
+          }
+
           if (availablesubject.includes(subjectinput)) {
-            _context7.next = 9;
+            _context7.next = 10;
             break;
           }
 
           return _context7.abrupt("return", res.render("404"));
 
-        case 9:
+        case 10:
           res.render("form", {
             subjectname: subjectinput,
             section: section,
@@ -267,7 +271,7 @@ exports.showForm = function _callee7(req, res, next) {
             subjects: subjects
           });
 
-        case 10:
+        case 11:
         case "end":
           return _context7.stop();
       }

@@ -93,7 +93,12 @@ exports.showForm = async (req, res, next) => {
   const subjects = await subjectlist.find({});
   global.availablesubject = subjects.map((sub) => sub.subject);
 
-  const { subjectinput, studentClass, section, terminal } = req.params;
+let { subjectinput, studentClass, section, terminal } = req.params;
+
+  if(!terminal || terminal === "''" || terminal=== '"')
+  {
+    terminal=''
+  }
   if (!availablesubject.includes(subjectinput)) {
     return res.render("404");
   } else {

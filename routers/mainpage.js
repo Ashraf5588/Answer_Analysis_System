@@ -45,7 +45,7 @@ student.post('/search/:subject/:studentClass/:section/:terminal',controller.sear
 student.get('/:controller/:subject',controller.studentclass)
 student.get('/:controller/:subject/:studentClass/:section',controller.terminal)
 
-student.get('/forms/:subjectinput/:studentClass/:section/:terminal',controller.showForm)
+student.get('/forms/:subjectinput/:studentClass/:section/:terminal?',controller.showForm)
 student.post('/forms/:subjectinput/:studentclass?/:section?/:terminal?',controller.saveForm)
 
 student.get('/studentData/:subjectinput/:studentClass/:section/:qno/:status/:terminal',authenticateTokenTeacher,controller.studentData)
