@@ -99,7 +99,32 @@ let { subjectinput, studentClass, section, terminal } = req.params;
   {
     terminal=''
   }
-  if (!availablesubject.includes(subjectinput)) {
+  
+  // Get total entries count for this subject, class, and section
+  let totalEntries = 0;
+  if (availablesubject.includes(subjectinput)) {
+    try {
+      const model = getSubjectModel(subjectinput);
+      const entriesCount = await model.aggregate([
+        {
+          $match: {
+            $and: [
+              { studentClass: studentClass },
+              { section: section },
+              { terminal: terminal }
+            ],
+          },
+        },
+        { $count: "count" },
+      ]);
+      
+      totalEntries = entriesCount.length > 0 && entriesCount[0].count
+        ? entriesCount[0].count
+        : 0;
+    } catch (err) {
+      console.log(err);
+    }
+  }  if (!availablesubject.includes(subjectinput)) {
     return res.render("404");
   } else {
     res.render("form", {
@@ -108,6 +133,7 @@ let { subjectinput, studentClass, section, terminal } = req.params;
       studentClass,
       terminal,
       subjects,
+      totalEntries
     });
   }
 };

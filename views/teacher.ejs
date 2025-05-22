@@ -1,54 +1,231 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher</title>
-    <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/nav.css">
+    <title>Teacher Dashboard | Answer Evaluation System</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Agbalumo&family=Alexandria:wght@100..900&family=Lexend:wght@100..900&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Agbalumo&family=Alexandria:wght@100..900&family=Lexend:wght@100..900&family=Manrope:wght@200..800&display=swap');
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/nav.css">
+    
+    <style>
+        :root {
+            --primary: #0ea5e9;  /* skyblue */
+            --primary-dark: #0284c7;  /* darker skyblue */
+            --secondary: #8b5a2b;  /* brown */
+            --secondary-dark: #6b4423;  /* darker brown */
+            --accent: #a16207;  /* amber brown for accent */
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --success: #22c55e;
+            --error: #ef4444;
+            --warning: #f59e0b;
+        }
+        
+        body {
+            background-color: #f8fafc;
+            font-family: 'Lexend', sans-serif;
+            color: var(--dark);
+            padding-bottom: 3rem;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 80%);
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            color: white;
+            padding-bottom: 1rem;
+        }
+        
+        .hero-section {
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+        
+        #firstheading {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-top: 0;
+            color: white;
+        }
+        
+        #firstspan {
+            color: var(--accent);
+            font-weight: 800;
+        }
+        
+        .subheading {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+        
+        .intro-section {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .intro-section img {
+            max-width: 150px;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .intro-section img:hover {
+            transform: scale(1.1);
+        }
+        
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .subject-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            text-decoration: none;
+            color: var(--dark);
+        }
+        
+        .subject-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subject-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+        
+        .subject-header .icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .subject-body {
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .subject-name {
+            font-size: 1.5rem;
+            color: var(--secondary-dark);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subject-action {
+            margin-top: 1rem;
+            color: var(--primary);
+            font-weight: 500;
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--primary);
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .subject-card:hover .subject-action {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 3px solid var(--accent);
+            text-align: center;
+            color: var(--gray);
+        }
     </style>
 </head>
 <body>
-  <header>
-    <%- include('partials/nav',{currentPage:'teacher'}) %>
-    <center><h1 id="firstheading">Answer Evaluation <span id="firstspan">System</span></h1></center></header>
-   <center><h3><span class="subheading">A system designed to analyze the performance of a student</span></h3><br><h1>Report Page</h1></center> <br>
-   <center><div> <img src="/report.png" alt="Report" id="report" width="20%"> </div></center><br>
-   
-   <div class="reportcontainer" style="display: flex;"><div class="choose">Please Choose Subject To See Report </div></div>
-  
-<div class="subjectcontainer" id="teachersubject">
+    <header>
+        <%- include('partials/nav',{currentPage:'teacher'}) %>
+        <div class="hero-section">
+            <h1 id="firstheading">Answer Evaluation <span id="firstspan">System</span></h1>
+            <span class="subheading">A comprehensive platform for analyzing student performance and responses</span>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="intro-section">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <img src="/report.png" alt="Report" class="img-fluid animate__animated animate__fadeInLeft" id="report">
+                </div>
+                <div class="col-md-8 text-start ps-md-4">
+                    <h2 class="mb-3">Subject Performance Reports</h2>
+                    <p class="lead mb-4">Select a subject below to view detailed assessment analytics, track student progress, and identify areas that need attention.</p>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> All reports are generated in real-time using the latest student data.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h3 class="mb-4">
+            <i class="fas fa-book me-2"></i> Available Subjects for Analysis
+        </h3>
+        
+        <div class="subject-grid">
+            <% subjects.forEach((sub, index) => { %>
+                <a href="/teacher/<%=sub.subject%>/<%=controller%>" class="subject-card">
+                    <div class="subject-header">
+                        <div class="icon">
+                            <script src="https://cdn.lordicon.com/lordicon.js"></script>
+                            <lord-icon
+                                src="https://cdn.lordicon.com/xmaezqzk.json"
+                                trigger="hover"
+                                stroke="bold"
+                                colors="primary:#ffffff,secondary:#c7d2fe"
+                                style="width:70px;height:70px;">
+                            </lord-icon>
+                        </div>
+                    </div>
+                    <div class="subject-body">
+                        <h3 class="subject-name"><%= sub.subject %></h3>
+                        <p class="mb-3">Analyze questions, student responses, and performance metrics</p>
+                        <div class="subject-action">
+                            <i class="fas fa-chart-bar me-1"></i> View Reports
+                        </div>
+                    </div>
+                </a>
+            <% }) %>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>© <%= new Date().getFullYear() %> Answer Evaluation System | All Rights Reserved</p>
+        </div>
+    </footer>
 
-<div class="subcol1">
-  <% subjects.forEach((sub)=>{%>
-
-
-  <a href="/teacher/<%=sub.subject%>/<%=controller%>"><div id="<%=sub.subject%>" class="subject" style="background-color: darkblue;"> <div class="logo" id="logo1"><script src="https://cdn.lordicon.com/lordicon.js"></script>
-    <lord-icon
-        src="https://cdn.lordicon.com/xmaezqzk.json"
-        trigger="morph"
-        stroke="bold"
-        state="morph-open"
-        colors="primary:#121331,secondary:#110a5c"
-        style="width:50px;height:70px;">
-    </lord-icon></div><span class="spansubject" id="spanmath"><%=sub.subject%></span></div><br></a>
-<%})%>
-</div>
-</div>
-  <br>
-<footer>
-<hr style="background-color:#ebbb46; height: 3px; border: none;">
-
-</footer>
-
-
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
     <script src="index.js"></script>
+</body>
     <script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
 </body>
 </html>
