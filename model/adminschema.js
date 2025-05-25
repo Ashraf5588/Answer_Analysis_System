@@ -36,4 +36,9 @@ const classSchema = new mongoose.Schema({
   "section":{ type: String,required: false},
 
 })
-module.exports = {subjectSchema,classSchema}
+const terminalSchema = new mongoose.Schema({
+
+  "terminal":{ type: String,required: false},
+
+})
+module.exports = {subjectSchema,classSchema,terminalSchema};

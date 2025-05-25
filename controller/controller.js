@@ -18,6 +18,50 @@ const getSubjectModel = (subjectinput) => {
   }
   return mongoose.model(subjectinput, studentSchema, subjectinput);
 };
+
+// Helper function to safely get subject data and handle errors with case insensitivity
+const getSubjectData = async (subjectinput, res) => {
+  try {
+    console.log(`Looking up subject: ${subjectinput}`);
+    
+    // First try exact match
+    let currentSubject = await subjectlist.find({'subject': `${subjectinput}`});
+    
+    // If no results, try case-insensitive search
+    if (!currentSubject || currentSubject.length === 0) {
+      // Try case-insensitive search using a regular expression
+      currentSubject = await subjectlist.find({
+        'subject': { $regex: new RegExp(`^${subjectinput}$`, 'i') }
+      });
+    }
+    
+    if (!currentSubject || currentSubject.length === 0) {
+      // Check if any subjects exist at all
+      const allSubjects = await subjectlist.find({}).lean();
+      const subjectsList = allSubjects.map(s => s.subject).join(', ');
+      
+      if (res) {
+        res.status(404).render('404', {
+          errorMessage: `Subject '${subjectinput}' not found in the database. Available subjects: ${subjectsList || 'None'}`,
+          currentPage: 'teacher'
+        });
+      }
+      return null;
+    }
+    
+    console.log(`Found subject data for: ${currentSubject[0].subject}`);
+    return currentSubject[0];
+  } catch (err) {
+    console.error(`Error in getSubjectData: ${err.message}`);
+    if (res) {
+      res.status(500).render('404', {
+        errorMessage: `Server error while looking up subject '${subjectinput}': ${err.message}`,
+        currentPage: 'teacher'
+      });
+    }
+    return null;
+  }
+};
 exports.homePage = async (req, res, next) => {
   const subject = await subjectlist.find({}).lean();
   
@@ -28,15 +72,27 @@ exports.homePage = async (req, res, next) => {
 
 // Edit student (get data for the form)
 exports.editStudent = async (req, res, next) => {
-  const { studentId ,subjectinput} = req.params;
+  const { studentId, subjectinput} = req.params;
   try {
     // Find student by ID
     const model = getSubjectModel(subjectinput);
-    const studentToEdit = await model.findById(studentId);
+    const studentToEdit = await model.findById(studentId).lean();
+    
+    if (!studentToEdit) {
+      return res.status(404).render('404', {
+        errorMessage: `Student record with ID ${studentId} not found`,
+        currentPage: 'teacher'
+      });
+    }
+    
+    console.log(`Editing student: ${studentToEdit.name}, Subject: ${studentToEdit.subject}`);
     res.render("admin/edit-student", { student: studentToEdit });
   } catch (err) {
-    console.error(err);
-    next(err);
+    console.error(`Error editing student: ${err.message}`);
+    res.status(500).render('404', {
+      errorMessage: `Error editing student: ${err.message}`,
+      currentPage: 'teacher'
+    });
   }
 };
 
@@ -44,13 +100,42 @@ exports.editStudent = async (req, res, next) => {
 exports.updateStudent = async (req, res, next) => {
   const { studentId } = req.params;
   const updatedData = req.body;  // The updated data comes from the form
+  
   try {
+    // Find the student first to get the subject
+    let subjectModel;
+    let student;
+    
+    // Iterate through all subject collections
+    const subjects = await subjectlist.find({}).lean();
+    for (const subject of subjects) {
+      const model = getSubjectModel(subject.subject);
+      const foundStudent = await model.findById(studentId);
+      if (foundStudent) {
+        subjectModel = model;
+        student = foundStudent;
+        break;
+      }
+    }
+    
+    if (!subjectModel || !student) {
+      return res.status(404).render('404', {
+        errorMessage: `Student record with ID ${studentId} not found in any subject`,
+        currentPage: 'teacher'
+      });
+    }
+    
     // Update the student record
-    await student.findByIdAndUpdate(studentId, updatedData, { new: true });
-    res.redirect('/admin');  // Redirect to admin dashboard or any page you prefer
+    await subjectModel.findByIdAndUpdate(studentId, updatedData, { new: true });
+    
+    // Redirect back to the student list
+    res.redirect(`/totalStudent/${student.subject}/${student.studentClass}/${student.section}/${student.terminal}`);
   } catch (err) {
-    console.error(err);
-    next(err);
+    console.error(`Error updating student: ${err.message}`);
+    res.status(500).render('404', {
+      errorMessage: `Error updating student: ${err.message}`,
+      currentPage: 'teacher'
+    });
   }
 };
 
@@ -168,7 +253,21 @@ exports.findData = async (req, res) => {
       section,
       terminal,
     } = req.params;
+    
+    console.log(`findData called with: subject=${subjectinput}, class=${studentClass}, section=${section}, terminal=${terminal}`);
+    
+    // Use the helper function to safely get subject data first
+    const subjectData = await getSubjectData(subjectinput, res);
+    
+    // If subject data is null, the helper function has already sent a response
+    if (!subjectData) {
+      console.log(`No subject data found for ${subjectinput}`);
+      return;
+    }
+    
     const model = getSubjectModel(subjectinput);
+    console.log(`Using model for subject: ${subjectinput}`);
+    
     const totalstudent = await model.aggregate([
       {
         $match: {
@@ -177,18 +276,21 @@ exports.findData = async (req, res) => {
       },
       { $count: "count" },
     ]);
+    
     const totalStudent =
       totalstudent.length > 0 && totalstudent[0].count
         ? totalstudent[0].count
         : 0;
-
+        
+    console.log(`Found ${totalStudent} students for ${subjectinput} class ${studentClass}-${section} (${terminal} term)`);
+    
     let result = [];
-    const currentSubject = await subjectlist.find({'subject':`${subjectinput}`})
-    const max = parseInt(currentSubject[0].max)
+    
+    const max = parseInt(subjectData.max)
 
     for (let i = 1; i <= max; i++) {
-      let n = currentSubject[0][i]
-      if(currentSubject[0][i]===0){n=1}
+      let n = subjectData[i]
+      if(subjectData[i]===0){n=1}
       for (j = 0; j <= n; j++) {
 
         
@@ -318,12 +420,18 @@ let term = [];
 const {subjectinput,studentClass,section,status} = req.params; 
 const model = getSubjectModel(subjectinput);
  
-  const currentSubject = await subjectlist.find({'subject':`${subjectinput}`})
-  const max = parseInt(currentSubject[0].max)
+  // Use the helper function to safely get subject data
+  const subjectData = await getSubjectData(subjectinput, res);
+  
+  // If subject data is null, the helper function has already sent a response
+  if (!subjectData) {
+    return;
+  }
+    const max = parseInt(subjectData.max)
   try {
   for (let i = 1; i <= max; i++) {
-    let n = currentSubject[0][i]
-    if(currentSubject[0][i]===0){n=1}
+    let n = subjectData[i]
+    if(subjectData[i]===0){n=1}
     for (j = 0; j < n; j++) {
      
         const term1data = await model.find(
@@ -388,7 +496,8 @@ exports.termdetail = async (req,res,next)=>
   let term = [];
   const model = getSubjectModel(subjectinput);
    
-    
+  // Explicitly extract questionNo from the route parameter qno for the view
+  const questionNo = qno;
     
     try {
     
@@ -427,8 +536,7 @@ exports.termdetail = async (req,res,next)=>
           
           const common123 = term1data.filter(student=>incorrect2roll.has(student.roll) && incorrect3roll.has(student.roll))
    
-          
-          term.push({
+            term.push({
             questionNo: qno,
            
             namedata12:common12,
@@ -438,7 +546,7 @@ exports.termdetail = async (req,res,next)=>
           });
           
           
-      res.render('termdetail',{term,subjectinput,studentClass,section,status,qno,terminal})
+      res.render('termdetail',{term,subjectinput,studentClass,section,status,qno,terminal,questionNo})
     }catch(err)
     {
       console.log(err)
@@ -497,23 +605,24 @@ exports.studentData = async (req, res, next) => {
   });
 };
 
-
   exports.totalStudent = async (req, res, next) => {
     const { subjectinput, studentClass, section, terminal } = req.params;
     const model = getSubjectModel(subjectinput);
     const incorrectdata = [];
     
     try {
-      const currentSubject = await subjectlist.find({ subject: subjectinput });
-  
-      if (!currentSubject || currentSubject.length === 0) {
-        return res.status(404).json({ message: "Subject not found" });
+      // Use the helper function to safely get subject data
+      const subjectData = await getSubjectData(subjectinput, res);
+      
+      // If subject data is null, the helper function has already sent a response
+      if (!subjectData) {
+        return;
       }
   
-      const max = parseInt(currentSubject[0].max);
+      const max = parseInt(subjectData.max);
       
       for (let i = 1; i <= max; i++) {
-        let n = currentSubject[0][i] || 1;  // Ensure n is at least 1
+        let n = subjectData[i] || 1;  // Ensure n is at least 1
   
         for (let j = 0; j <= n; j++) {
           const incorrectname = await model.find({

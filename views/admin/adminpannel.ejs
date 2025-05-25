@@ -3,73 +3,279 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin</title>
-  <link rel="stylesheet" href="/adminpannel.css">
+  <title>Admin Dashboard | AES</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">  <!-- DataTables CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
+  <link rel="stylesheet" type="text/css" href="/datatable-buttons.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css">
   <link rel="stylesheet" href="/nav.css">
+  
+  <style>
+    :root {
+      --primary: #0ea5e9;  /* skyblue */
+      --primary-dark: #0284c7;  /* darker skyblue */
+      --secondary: #8b5a2b;  /* brown */
+      --secondary-dark: #6b4423;  /* darker brown */
+      --accent: #a16207;  /* amber brown for accent */
+      --light: #f8fafc;
+      --dark: #1e293b;
+      --gray: #64748b;
+      --success: #22c55e;
+      --error: #ef4444;
+      --warning: #f59e0b;
+    }
+    
+    body {
+      font-family: 'Lexend', sans-serif;
+      background-color: #f8fafc;
+      color: var(--dark);
+    }
+    
+    .admin-greeting {
+      text-align: center;
+      padding: 2rem 0 1rem;
+    }
+    
+    .admin-greeting h1 {
+      font-weight: 700;
+      color: var(--dark);
+    }
+    
+    .admin-greeting span {
+      color: var(--primary-dark);
+    }
+    
+    .dashboard-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem auto;
+      max-width: 1200px;
+      padding: 0 1rem;
+    }
+    
+    .dashboard-card {
+      background-color: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      text-decoration: none;
+      color: var(--dark);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      border-color: var(--primary);
+    }
+    
+    .dashboard-card i {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+    
+    .dashboard-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .dashboard-card p {
+      color: var(--gray);
+      margin-bottom: 0;
+    }
+    
+    .data-section {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    
+    .data-toggle {
+      background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .data-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .data-toggle i {
+      font-size: 1.1rem;
+    }
+    
+    .data-content {
+      background-color: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      display: none;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .data-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .data-header h2 {
+      font-weight: 700;
+      color: var(--dark);
+    }
+    
+    .data-header span {
+      color: var(--primary-dark);
+    }
+    
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .data-table th {
+      background: linear-gradient(90deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+      color: white;
+      font-weight: 600;
+      padding: 1rem;
+      text-align: left;
+    }
+    
+    .data-table td {
+      padding: 1rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .data-table tbody tr:hover {
+      background-color: rgba(14, 165, 233, 0.05);
+    }
+    
+    .data-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .terminal-btn {
+      background: skyblue;
+      color: white !important;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .selected {
+      background:#082451;
+     
+      color: white !important;
+      padding: 0.7rem 1.3rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+
+      transition: all 0.3s ease;
+
+    }
+  </style>
 </head>
+
 <body>
   <%- include('../partials/nav',{currentPage:'admin'}) %>
-  <center><h1>Welcome, <span style="color: darkblue;">Admin</span></h1></center>
- 
- <div class="addclasscontainer">
-  <a href="/admin/class"><div class="addclass"><i class="fa-solid fa-chalkboard-user" style="color: #01358e;"></i><br>Class Detail</div><br></a> 
- <a href="admin/subject"><div class="addclass"><i class="fa-solid fa-book-open" style="color: #01358e;"></i><br>Subject Detail</div></a>
-</div> <br>
-<center><div class="showentry">
-  Click here to show Entry Detail...<i class="fa-solid fa-computer-mouse fa-bounce" style="color: #ffffff;"></i>
-</div></center>
-  <div class="head">
-   <center> <h1>Entry <span style="color:darkblue;"><u>Data</u></span></h1><br>
-    </center>
-    <center>
-    <table cellspacing="0px" border="1"> 
-      <tr>
-      <th id="thname">Class</th>
-      <th>Section</th>
-      <th>Subject</th>
-      <th>Total Entry</th>
-      
-    </tr>
+  
+  <div class="admin-greeting">
+    <h1>Welcome, <span>Admin</span></h1>
+  </div>
+  
+  <div class="dashboard-cards">
+    <a href="/admin/class" class="dashboard-card">
+      <i class="fa-solid fa-chalkboard-user"></i>
+      <h3>Class Management</h3>
+      <p>View and manage class details and sections</p>
+    </a>
     
+    <a href="/admin/subject" class="dashboard-card">
+      <i class="fa-solid fa-book-open"></i>
+      <h3>Subject Management</h3>
+      <p>View and manage subject details and curriculum</p>
+    </a>
+  </div>
+  
+  <div class="data-section">
+   
     
-    <% if (entryArray && entryArray.length > 0) { %>
-      <% entryArray.forEach((data) => { %>
-        <tr>
-          <td><%= data.studentClass %></td>
-          <td><%= data.section %></td>
-          <td><%= data.subject %></td>
-          <td><%= data.totalentry %></td>
-        </tr>
-      <% }); %>
-    <% } else { %>
-      <tr>
-        <td colspan="4">No data available</td>
-      </tr>
-    <% } %>
-    
-    
-    
-    </table> <br><br>
-    </center>
-    
-    <hr><hr><br></div>
-    <script>
-      const element = document.querySelector('.showentry');
-      const table = document.querySelector('.head');
-      
-      element.addEventListener('click', () => {
-        // Toggle the visibility of the table
-        if (table.style.display === 'none' || table.style.display === '') {
-          table.style.display = 'block'; // Show table
-          element.textContent = 'Hide';  // Change the text to 'Hide'
-        } else {
-          table.style.display = 'none';  // Hide table
-          element.textContent = 'Show Entry Detail';  // Revert text back
-        }
-      });
-    </script>
-    
-<script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
-<script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
+    <div class="data-conten">
+      <div class="data-header">
+        <h2>Entry <span>Data</span></h2>
+<a href="/admin/term/first"><span class="<%= terminal === 'first' ? 'selected' : 'terminal-btn' %>">First Term</span></a>
+      <a href="/admin/term/second"><span class="<%= terminal === 'second' ? 'selected' : 'terminal-btn' %>">Second Term</span></a>
+      <a href="/admin/term/third"><span class="<%= terminal === 'third' ? 'selected' : 'terminal-btn' %>">Third Term</span></a>
+      </div>
+     
+      <div class="table-responsive">
+        <table class="table" id="entryTable">
+          <thead>
+            <tr>
+              <th>Class</th>
+              <th>Section</th>
+              <th>Subject</th>
+              <th>Total Entry</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (entryArray && entryArray.length > 0 && terminal) { %>
+              <% entryArray.forEach((data) => { %>
+                <tr>
+                  <td><%= data.studentClass %></td>
+                  <td><%= data.section %></td>
+                  <td><%= data.subject %></td>
+                  <td><%= data.totalentry %></td>
+                </tr>
+              <% }); %>
+            <% } else { %>
+              <tr>
+                <td colspan="4" class="text-center">No data available</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
+  
+  
 </body>
 </html>

@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student List | <%= subject %> Class <%= studentClass %>-<%= section %></title>
+  <title>Student List | <%= subjectinput %> Class <%= studentClass %>-<%= section %></title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
   <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- DataTables CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">  <!-- DataTables CSS -->
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
+  <link rel="stylesheet" type="text/css" href="/datatable-buttons.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css">
   
   <link rel="stylesheet" href="/nav.css">
@@ -147,6 +147,32 @@
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         margin-bottom: 1.5rem;
     }
+
+    .no-data {
+      text-align: center;
+      padding: 3rem 1rem;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .no-data-icon {
+      font-size: 4rem;
+      color: var(--gray);
+      margin-bottom: 1rem;
+    }
+
+    .no-data-message {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .no-data-subtext {
+      color: var(--gray);
+      margin-bottom: 2rem;
+    }
     
     @media (max-width: 768px) {
         .action-column {
@@ -173,7 +199,7 @@
       <%- include('./partials/nav', { currentPage: 'teacher' }) %>
       <div class="hero-section">
         <h1 id="firstheading">Student <span id="firstspan">Records</span></h1>
-        <span class="subheading">Complete list of all students in <%= subject %> Class <%= studentClass %>-<%= section %></span>
+        <span class="subheading">Complete list of all students in <%= subjectinput %> Class <%= studentClass %>-<%= section %></span>
       </div>
     </header>
 
@@ -182,22 +208,21 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="/forms" class="text-decoration-none">Home</a></li>
-          <li class="breadcrumb-item"><a href="/teacher/<%= subject.toLowerCase() %>/findData" class="text-decoration-none"><%= subject %></a></li>
-          <li class="breadcrumb-item"><a href="/findData/<%= subject %>/<%= studentClass %>/<%= section %>/<%= terminal %>" class="text-decoration-none">Class <%= studentClass %> (<%= section %>)</a></li>
+          <li class="breadcrumb-item"><a href="/teacher/<%= subjectinput.toLowerCase() %>/findData" class="text-decoration-none"><%= subjectinput %></a></li>
+          <li class="breadcrumb-item"><a href="/findData/<%= subjectinput %>/<%= studentClass %>/<%= section %>/<%= terminal %>" class="text-decoration-none">Class <%= studentClass %> (<%= section %>)</a></li>
           <li class="breadcrumb-item active" aria-current="page">All Students</li>
         </ol>
       </nav>
 
+      <% if (totalStudent && totalStudent.length > 0) { %>
       <div class="card mb-4">
         <div class="card-header py-3" style="background-color: var(--primary); color: white;">
           <div class="d-flex justify-content-between align-items-center">
             <h5 class="mb-0">
-              <i class="fas fa-users me-2"></i> Student List - <%= subject %> Class <%= studentClass %>-<%= section %>
+              <i class="fas fa-users me-2"></i> Student List - <%= subjectinput %> Class <%= studentClass %>-<%= section %>
             </h5>
             <div>
-              <button type="button" class="btn btn-sm" style="background-color: var(--secondary); color: white;" onclick="window.print();">
-                <i class="fas fa-print me-1"></i> Print
-              </button>
+            
             </div>
           </div>
         </div>
@@ -274,9 +299,19 @@
           </div>
         </div>
       </div>
+      <% } else { %>
+      <div class="no-data">
+        <i class="fas fa-database no-data-icon"></i>
+        <h3 class="no-data-message">No Student Data Available</h3>
+        <p class="no-data-subtext">There are no student records for <%= subjectinput %> Class <%= studentClass %>-<%= section %> in the <%= terminal %> term.</p>
+        <a href="/forms/<%= subjectinput %>/<%= studentClass %>/<%= section %>/<%= terminal %>" class="btn btn-primary">
+          <i class="fas fa-plus-circle me-1"></i> Add Students
+        </a>
+      </div>
+      <% } %>
 
       <div class="d-flex justify-content-between mb-4">
-        <a href="/findData/<%= subject %>/<%= studentClass %>/<%= section %>/<%= terminal %>" class="btn" style="background-color: var(--primary-dark); color: white;">
+        <a href="/findData/<%= subjectinput %>/<%= studentClass %>/<%= section %>/<%= terminal %>" class="btn" style="background-color: var(--primary-dark); color: white;">
           <i class="fas fa-arrow-left me-1"></i> Back to Analysis
         </a>
         <a href="/forms" class="btn" style="background-color: var(--secondary); color: white;">
@@ -300,14 +335,15 @@
   <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
   <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
   <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>  <script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
+  <script src="/test-fixes.js"></script>
 
   <script>
     $(document).ready(function() {
+      <% if (totalStudent && totalStudent.length > 0) { %>
       var classInfo = "<%= terminal %> Terminal Examination\n" +
                  "Class: <%= studentClass %> (<%= section %>)\n" +
-                 "Subject: <%= subject %>";
+                 "Subject: <%= subjectinput %>";
                  
       $('#studentTable').DataTable({
         responsive: true,
@@ -343,6 +379,7 @@
           }
         ]
       });
+      <% } %>
 
       // Show the content once loaded
       document.querySelector('.loader').style.display = "none";

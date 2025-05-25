@@ -16,6 +16,7 @@ app.set("view", path.join(rootDir, "views"));
 
 const subject = mongoose.model("subject", subjectSchema, "subjectlist");
 const studentClass = mongoose.model("studentClass", classSchema, "classlist");
+const studentTerminal = mongoose.model("studentTerminal", classSchema, "terminal");
 const admin = mongoose.model("admin", adminSchema, "admin");
 let entryArray = [];
 exports.adminlogin = async (req, res, next) => {
@@ -43,7 +44,7 @@ exports.adminloginpost = async (req, res, next) => {
       console.log("Generated Token:", token); // Log the generated token
 
       res.cookie("token", token, { httpOnly: true, secure: false });
-      res.redirect("/admin");
+      res.redirect("/admin/term");
     }
   } catch (err) {
     console.log(err);
@@ -97,6 +98,8 @@ exports.admin = async (req, res, next) => {
     entryArray = [];
     const subjects = await subject.find({});
     const studentClasslist = await studentClass.find({});
+    const terminal = req.params.terminal;
+    console.log(terminal)
 
     // Populate entryArray
     for (const sub of subjects) {
@@ -106,7 +109,7 @@ exports.admin = async (req, res, next) => {
         const section = stuclass.section;
 
         const totalstudentthirdterminal = await model.aggregate([
-          { $match: { $and: [{ section }, { terminal: "third" }, { studentClass: stuclass.studentClass }] } },
+          { $match: { $and: [{ section }, { terminal: `${terminal}` }, { studentClass: stuclass.studentClass }] } },
           { $count: "count" },
         ]);
 
@@ -114,7 +117,7 @@ exports.admin = async (req, res, next) => {
           studentClass: stuclass.studentClass,
           section: stuclass.section,
           subject: sub.subject,
-          terminal: "third",
+          terminal: `${terminal}`,
           totalentry: totalstudentthirdterminal[0]?.count || 0,
         });
       }
@@ -125,7 +128,8 @@ exports.admin = async (req, res, next) => {
       editing: false,
       subjects,
       studentClasslist,
-      entryArray, // Ensure entryArray is passed to the template
+      entryArray,
+      terminal, // Ensure entryArray is passed to the template
     });
   } catch (err) {
     console.error(err);
@@ -238,3 +242,28 @@ exports.editClass = async (req, res, next) => {
       studentClasslist
     });
   } 
+
+exports.showTerminal = async (req, res, next) => {
+  const terminalList = await studentTerminal.find({});
+  res.render("admin/terminallist", {
+    editing: false,
+    terminalList,
+  });
+};
+
+exports.addClass = async (req, res, next) => {
+  const { classId } = req.params;
+  const updateClass = req.body.studentClass;
+  if (classId && !undefined) {
+    await studentClass.findByIdAndUpdate(
+      classId,
+      { studentClass: `${updateClass}` },
+      { new: true, runValidators: true }
+    );
+    const studentclass = await studentClass.find({});
+    res.redirect('/admin/class')
+  } else {
+    await studentClass.create(req.body);
+    res.redirect("/admin/class");
+  }
+};
