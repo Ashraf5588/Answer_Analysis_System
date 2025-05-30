@@ -36,14 +36,14 @@
 .navbar-container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   padding: 0 2rem;
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
   height: 100%;
   color: white;
-  
+  position: relative;
 }
 
 .navbar-brand {
@@ -71,7 +71,19 @@
   font-size: 1.4rem;
   font-weight: 700;
   letter-spacing: 0.5px;
-  display: none;
+  margin-left: 5px;
+}
+
+@media (max-width: 768px) {
+  .navbar-title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .navbar-title {
+    font-size: 0.95rem;
+  }
 }
 
 .navbar-toggler {
@@ -193,44 +205,59 @@
 /* Responsive styles */
 @media (max-width: 768px) {
   .horizontal-navbar {
-    height: auto;
-    padding: 15px 0;
+    height: 60px;
+    position: relative;
   }
   
   .navbar-container {
-    flex-wrap: wrap;
+    justify-content: space-between;
     padding: 0 1rem;
+  }
+  
+  .navbar-brand {
+    margin-right: auto;
   }
   
   .navbar-title {
     display: block;
+    font-size: 1.2rem;
   }
   
   .navbar-toggler {
     display: block;
+    margin-left: auto;
+    z-index: 10;
   }
   
   .navbar-links {
     position: absolute;
-    top: 70px;
+    top: 60px;
     left: 0;
     right: 0;
+    width: 100%;
     background: var(--nav-bg);
     height: auto;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease;
+    transition: max-height 0.4s ease;
     box-shadow: var(--shadow-md);
+    z-index: 1000;
   }
   
   .navbar-links.show {
     max-height: 300px;
   }
   
+  center {
+    width: 100%;
+  }
+  
   .horizontal-nav {
     flex-direction: column;
-    align-items: center;
-    padding: 1rem 0;
+    align-items: stretch;
+    padding: 0.5rem 0;
+    gap: 0;
+    width: 100%;
   }
   
   .nav-item {
@@ -241,7 +268,7 @@
   
   .nav-link {
     justify-content: center;
-    padding: 0.75rem 1rem;
+    padding: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
   
@@ -253,25 +280,37 @@
   }
 }
 
-@media (max-width: 500px) {  
+@media (max-width: 576px) {  
   .navbar-logo {
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
+    margin-right: 8px;
   }
   
   .navbar-title {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
   
   .choose {
     font-size: 16px;
+    height: 3.5rem;
+    line-height: 3.5rem;
   }
   
   .nav-link {
     font-size: 14px;
+    padding: 0.8rem;
   }
   
   .nav-link i {
     font-size: 1rem;
+  }
+  
+  .horizontal-navbar {
+    height: 55px;
+  }
+  
+  .navbar-links {
+    top: 55px;
   }
 }

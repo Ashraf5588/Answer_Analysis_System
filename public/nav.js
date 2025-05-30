@@ -1,14 +1,14 @@
 // Navigation menu functionality
 document.addEventListener('DOMContentLoaded', function() {
   const navbarToggler = document.querySelector('.navbar-toggler');
-  const navbarCollapse = document.querySelector('.navbar-collapse');
+  const navbarLinks = document.querySelector('.navbar-links');
   
   if (navbarToggler) {
     navbarToggler.addEventListener('click', function() {
-      navbarCollapse.classList.toggle('show');
+      navbarLinks.classList.toggle('show');
       
       // Update aria-expanded attribute
-      const isExpanded = navbarCollapse.classList.contains('show');
+      const isExpanded = navbarLinks.classList.contains('show');
       navbarToggler.setAttribute('aria-expanded', isExpanded);
     });
   }
@@ -16,12 +16,12 @@ document.addEventListener('DOMContentLoaded', function() {
   // Close the menu when clicking outside
   document.addEventListener('click', function(event) {
     if (
-      navbarCollapse && 
-      navbarCollapse.classList.contains('show') && 
-      !event.target.closest('.navbar-collapse') && 
+      navbarLinks && 
+      navbarLinks.classList.contains('show') && 
+      !event.target.closest('.navbar-links') && 
       !event.target.closest('.navbar-toggler')
     ) {
-      navbarCollapse.classList.remove('show');
+      navbarLinks.classList.remove('show');
       navbarToggler.setAttribute('aria-expanded', 'false');
     }
   });
