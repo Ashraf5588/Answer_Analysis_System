@@ -19,7 +19,7 @@
 Max Question:<input type="number" name="max" placeholder="Enter Maximum Number of Question" required value="<%= editing? subjectedit.max:'' %>">  <br>
 <% for(let i = 1;i<=25;i++){ %>
   
-  Sub.Q.in.<%=i%>:<input type="number" name="<%=i%>" id="totalsubin<%=i%>" placeholder="Total Question in Q.No<%=i%>"  required value="<%= editing? subjectedit[i]:'' %>"> <br>
+  Sub.Q.in.<%=i%>:<input type="number" name="<%=i%>" id="totalsubin<%=i%>" placeholder="Total Question in Q.No<%=i%>" value="<%= editing? subjectedit[i]:'' %>"> <br>
 <%}%> <br> <br>
 
 

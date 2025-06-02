@@ -395,6 +395,23 @@ exports.findData = async (req, res) => {
     }
 
     result.sort((a, b) => b.wrong - a.wrong);
+//     const allArr = [];
+//    const subjectdata =  await subjectlist.find({'subject': `${subjectinput}`}).lean();
+
+// for(i=1;i<=max;i++)
+// {
+//    if(subjectData[i]===0){n=1}
+//       for (j = 0; j <= n; j++) {
+
+//   const incorrectStudentData = await model.find({subject:`${subjectinput}`,section:`${section}`,terminal:`${terminal}`,studentClass:`${studentClass}`,[`q${i}${String.fromCharCode(97+j)}`]:'incorrect'})
+// console.log(incorrectStudentData)
+// }
+
+// }
+
+
+
+
   
     res.render("analysis", {
       results: result,

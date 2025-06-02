@@ -144,6 +144,7 @@ exports.showSubject = async (req, res, next) => {
 exports.addSubject = async (req, res, next) => {
   try{
   const { subId } = req.params;
+  
   const oldSubjectName = await subject.findById(subId)
  
   const updates = req.body;
