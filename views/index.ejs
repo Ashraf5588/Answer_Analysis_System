@@ -304,8 +304,9 @@
             
             <h2 class="section-title" id="subject-section">Select Subject to Enter Data</h2>
             <div class="subject-grid">
-                <% subjects.forEach((sub)=>{%>
-                    <% if (sub.subject) { %>
+                <% const uniqueSubjects = [...new Set(subjects.map(item => item.subject))]; %>
+                    <% uniqueSubjects.forEach((sub)=>{%>
+                    <% if (sub) { %>
                         <div class="subject-card">
                             <div class="subject-header">
                                 <div class="subject-icon">
@@ -316,16 +317,16 @@
                                         style="width:40px;height:40px">
                                     </lord-icon>
                                 </div>
-                                <h3 class="subject-name"><%= sub.subject.trim() %></h3>
+                                <h3 class="subject-name"><%= sub %></h3>
                             </div>                            <div class="subject-body">
-                                <p>Manage <%= sub.subject.trim() %> assessment data</p>
+                                <p>Manage <%= sub %> assessment data</p>
                             </div>
                             <div class="subject-action">
                                 <div class="d-flex gap-2">
-                                    <a href="/forms/<%= sub.subject.trim() %>" class="subject-btn btn-enter">
+                                    <a href="/forms/<%= sub.trim() %>" class="subject-btn btn-enter">
                                         <i class="fas fa-pen-to-square me-1"></i> Enter Data
                                     </a>
-                                    <a href="/teacher/<%= sub.subject.trim() %>/findData" class="subject-btn btn-report">
+                                    <a href="/teacher/<%= sub.trim() %>/findData" class="subject-btn btn-report">
                                         <i class="fas fa-chart-line me-1"></i> Report
                                     </a>
                                 </div>

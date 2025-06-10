@@ -22,7 +22,7 @@ const getSubjectModel = (subjectinput) => {
 // Helper function to safely get subject data and handle errors with case insensitivity
 const getSubjectData = async (subjectinput, res) => {
   try {
-    console.log(`Looking up subject: ${subjectinput}`);
+    
     
     // First try exact match
     let currentSubject = await subjectlist.find({'subject': `${subjectinput}`});
@@ -49,7 +49,7 @@ const getSubjectData = async (subjectinput, res) => {
       return null;
     }
     
-    console.log(`Found subject data for: ${currentSubject[0].subject}`);
+  
     return currentSubject[0];
   } catch (err) {
     console.error(`Error in getSubjectData: ${err.message}`);
@@ -85,7 +85,7 @@ exports.editStudent = async (req, res, next) => {
       });
     }
     
-    console.log(`Editing student: ${studentToEdit.name}, Subject: ${studentToEdit.subject}`);
+    
     res.render("admin/edit-student", { student: studentToEdit });
   } catch (err) {
     console.error(`Error editing student: ${err.message}`);
@@ -175,7 +175,10 @@ exports.terminal = (req, res, next) => {
 
 
 exports.showForm = async (req, res, next) => {
-  const subjects = await subjectlist.find({});
+  const forClass = req.params.studentClass;
+  const subjects = await subjectlist.find({'forClass':`${forClass}`}).lean();
+  console.log(subjects);
+ 
   global.availablesubject = subjects.map((sub) => sub.subject);
 
 let { subjectinput, studentClass, section, terminal } = req.params;
@@ -212,6 +215,11 @@ let { subjectinput, studentClass, section, terminal } = req.params;
   }  if (!availablesubject.includes(subjectinput)) {
     return res.render("404");
   } else {
+
+  
+
+
+
     res.render("form", {
       subjectname: subjectinput,
       section,
@@ -254,7 +262,7 @@ exports.findData = async (req, res) => {
       terminal,
     } = req.params;
     
-    console.log(`findData called with: subject=${subjectinput}, class=${studentClass}, section=${section}, terminal=${terminal}`);
+   
     
     // Use the helper function to safely get subject data first
     const subjectData = await getSubjectData(subjectinput, res);
@@ -266,7 +274,7 @@ exports.findData = async (req, res) => {
     }
     
     const model = getSubjectModel(subjectinput);
-    console.log(`Using model for subject: ${subjectinput}`);
+   
     
     const totalstudent = await model.aggregate([
       {
@@ -282,26 +290,30 @@ exports.findData = async (req, res) => {
         ? totalstudent[0].count
         : 0;
         
-    console.log(`Found ${totalStudent} students for ${subjectinput} class ${studentClass}-${section} (${terminal} term)`);
+    
     
     let result = [];
     
     const max = parseInt(subjectData.max)
+   
 
     for (let i = 1; i <= max; i++) {
-      let n = subjectData[i]
+      let n = subjectData[i][0]
       if(subjectData[i]===0){n=1}
       for (j = 0; j <= n; j++) {
-
+          
+           let fullMarks=parseInt(subjectData[i.toString()][j+1])  
+           
+            
         
         const analysis = await model.aggregate([
           {
             $facet: {
-              correct: [
+              fm: [
                 {
                   $match: {
                     $and: [
-                      { [`q${i}${String.fromCharCode(97+j)}`]: "correct" },
+                      { [`q${i}${String.fromCharCode(97+j)}`]: `${fullMarks}`.toString() },
                       { section: `${section}` },
                       { terminal: `${terminal}` },
                     ],
@@ -313,7 +325,7 @@ exports.findData = async (req, res) => {
                 {
                   $match: {
                     $and: [
-                      { [`q${i}${String.fromCharCode(97+j)}`]: "incorrect" },
+                      { [`q${i}${String.fromCharCode(97+j)}`]: "0" },
                       { section: `${section}` },
                       { terminal: `${terminal}` },
                     ],
@@ -337,7 +349,7 @@ exports.findData = async (req, res) => {
                 {
                   $match: {
                     $and: [
-                      { [`q${i}${String.fromCharCode(97+j)}`]: "correctabove50" },
+                      { [`q${i}${String.fromCharCode(97+j)}`]: { $gt: 0.5 * fullMarks, $lt: fullMarks } },
                       { section: section },
                       { terminal: `${terminal}` },
                     ],
@@ -395,19 +407,26 @@ exports.findData = async (req, res) => {
     }
 
     result.sort((a, b) => b.wrong - a.wrong);
-//     const allArr = [];
-//    const subjectdata =  await subjectlist.find({'subject': `${subjectinput}`}).lean();
+    const allArr = [];
+   
 
-// for(i=1;i<=max;i++)
-// {
-//    if(subjectData[i]===0){n=1}
-//       for (j = 0; j <= n; j++) {
+  for (let i = 1; i <= max; i++) {
+    let n = subjectData[i]
+    if(subjectData[i]===0){n=1}
+    for (j = 0; j < n; j++) {
 
-//   const incorrectStudentData = await model.find({subject:`${subjectinput}`,section:`${section}`,terminal:`${terminal}`,studentClass:`${studentClass}`,[`q${i}${String.fromCharCode(97+j)}`]:'incorrect'})
-// console.log(incorrectStudentData)
-// }
+  const incorrectStudentData = await model.find({subject:`${subjectinput}`,section:`${section}`,terminal:`${terminal}`,studentClass:`${studentClass}`,[`q${i}${String.fromCharCode(97+j)}`]:'incorrect'})
+allArr.push({
+  questionNo: `q${i}${String.fromCharCode(97+j)}`,
+  studentClass: studentClass,
+  section: section,
+  terminal: terminal,
+  studentname:incorrectStudentData.name
+    });
+}
 
-// }
+  }
+
 
 
 
@@ -656,7 +675,7 @@ exports.studentData = async (req, res, next) => {
             });
           });
   
-          console.log("Incorrect Students for", `q${i}${String.fromCharCode(97 + j)}`, incorrectname);
+         
         }
       }
   
@@ -682,5 +701,5 @@ exports.studentData = async (req, res, next) => {
 
 exports.updateQuestion = async (req, res, next) => {
   const { no } = req.params;
-  console.log(no);
+  
 };

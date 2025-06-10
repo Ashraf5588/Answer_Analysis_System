@@ -87,7 +87,7 @@
         %>
           <div class="question-list">
         <% for (let i = 1; i <= max; i++) { %>
-            <% let subQuestionCount = subjectData[i] || 0; %>
+            <% let subQuestionCount = subjectData[i][0] || 0; %>
             <% 
             // For any question with 0 sub-questions, set to 1 sub-question
             // This ensures they all have at least one option group
@@ -98,7 +98,7 @@
             
             <div class="question-card mb-3 border rounded">
                 <h2 class="question-header p-3 bg-light border-bottom">
-                    Question <%= i %>
+                    Question <%= i %> 
                 </h2>
                 <div class="question-content p-3">
                     <div class="accordion-body">
@@ -111,9 +111,9 @@
                             <div class="question-section">
                                 <h4 class="question-heading">
                                     <% if (hasNoSubQuestions) { %>
-                                        Question <%= i %>a
+                                        Question <%= i %>a 
                                     <% } else { %>
-                                        Question <%= i %><%= String.fromCharCode(97 + j) %>
+                                        Question <%= i %><%= String.fromCharCode(97 + j) %> FM : <%= subjectData[i.toString()][j+1] %>
                                     <% } %>                                </h4>                                <div class="option-container optionsinfo">
                                     <% 
                                     // Set labels and IDs correctly for ANY question without sub-questions
@@ -122,20 +122,23 @@
                                         subLabel = 'a';
                                     }
                                     %>
-                                    
+                                    <% for (let k = 0; k < parseInt(subjectData[i.toString()][j+1]); k=k+0.5) { %>
+                                        <label for="option<%= i %><%= subLabel %><%= k %>" class="ansradio">
+                                            <span class="clabel">
+                                                <i class="fas fa-circle mr-2"></i> <%=k%>
+                                            </span>
+                                            <input type="radio" id="option<%= i %><%= subLabel %><%= k %>" value="<%= k %>" name="q<%= i %><%= subLabel %>">
+                                        </label>
+                                    <% } %>
+
                                     <label for="correct<%= i %><%= subLabel %>" class="ansradio" data-color="success">
                                         <span class="clabel">
-                                            <i class="fas fa-check-circle mr-2"></i> Correct
+                                            <i class="fas fa-check-circle mr-2"></i> <%= subjectData[i.toString()][j+1] %>
                                         </span>
                                         <input type="radio" id="correct<%= i %><%= subLabel %>" value="correct" name="q<%= i %><%= subLabel %>">
                                     </label>
                                     
-                                    <label for="incorrect<%= i %><%= subLabel %>" class="ansradio" data-color="error">
-                                        <span class="clabel">
-                                            <i class="fas fa-times-circle mr-2"></i> Incorrect
-                                        </span>
-                                        <input type="radio" id="incorrect<%= i %><%= subLabel %>" value="incorrect" name="q<%= i %><%= subLabel %>">
-                                    </label>
+                                   
                                     
                                     <label for="notattempt<%= i %><%= subLabel %>" class="ansradio" data-color="gray">
                                         <span class="clabel">
@@ -144,19 +147,7 @@
                                         <input type="radio" id="notattempt<%= i %><%= subLabel %>" value="notattempt" name="q<%= i %><%= subLabel %>">
                                     </label>
                                     
-                                    <label for="cabv50<%= i %><%= subLabel %>" class="ansradio" data-color="green">
-                                        <span class="clabel">
-                                            <i class="fas fa-arrow-alt-circle-up mr-2"></i> Correct above 50%
-                                        </span>
-                                        <input type="radio" id="cabv50<%= i %><%= subLabel %>" value="correctabove50" name="q<%= i %><%= subLabel %>">
-                                    </label>
-                                    
-                                    <label for="cblw50<%= i %><%= subLabel %>" class="ansradio" data-color="warning">
-                                        <span class="clabel">
-                                            <i class="fas fa-arrow-alt-circle-down mr-2"></i> Correct below 50%
-                                        </span>
-                                        <input type="radio" id="cblw50<%= i %><%= subLabel %>" value="correctbelow50" name="q<%= i %><%= subLabel %>">
-                                    </label>
+                                
                                 </div>
                             </div>                        <% } %>
                     </div>

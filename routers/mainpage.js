@@ -13,6 +13,7 @@ student.get('/teacher/login',admincontrol.teacherlogin)
 student.post('/teacher/logins',admincontrol.teacherloginpost)
 
 student.get('/admin/term/:terminal',authenticateToken,admincontrol.admin)
+
 student.get('/admin/subject/:subId?',authenticateToken,admincontrol.showSubject)
 student.post('/admin/subjectadd/:subId?',authenticateToken,admincontrol.addSubject)
 

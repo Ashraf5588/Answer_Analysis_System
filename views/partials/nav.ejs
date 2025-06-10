@@ -24,12 +24,27 @@
             <i class="fas fa-chalkboard-teacher"></i>
             <span>Teacher</span>
           </a>
-        </li>
-        <li class="nav-item">
+        </li>        <li class="nav-item">
           <a href="/admin/term/first" class="nav-link <%= currentPage==='admin'?'active':''%>">
             <i class="fas fa-user-shield"></i>
             <span>Admin</span>
           </a>
+          <% if (locals.currentPage && (currentPage === 'admin' || currentPage === 'adminSubject' || currentPage === 'adminClass' || currentPage === 'adminFullMarks')) { %>
+          <div class="admin-submenu">
+            <a href="/admin/term/first" class="<%= currentPage==='admin'?'active':''%>">
+              <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="/admin/subject" class="<%= currentPage==='adminSubject'?'active':''%>">
+              <i class="fas fa-book"></i> Manage Subjects
+            </a>
+            <a href="/admin/class" class="<%= currentPage==='adminClass'?'active':''%>">
+              <i class="fas fa-users"></i> Manage Classes
+            </a>
+            <a href="/admin/fm" class="<%= currentPage==='adminFullMarks'?'active':''%>">
+              <i class="fas fa-star"></i> Full Marks
+            </a>
+          </div>
+          <% } %>
         </li>
       </ul>
     </div>

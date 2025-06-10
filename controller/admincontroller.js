@@ -3,10 +3,11 @@ const express = require("express");
 const app = express();
 const jwt = require("jsonwebtoken");
 
+
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const { rootDir } = require("../utils/path");
-const { classSchema, subjectSchema } = require("../model/adminschema");
+const { classSchema, subjectSchema, terminalSchema } = require("../model/adminschema");
 const { adminSchema } = require("../model/admin");
 const { studentSchema } = require("../model/schema");
 const student = require("../routers/mainpage");
@@ -14,6 +15,7 @@ const { terminal } = require("./controller");
 app.set("view engine", "ejs");
 app.set("view", path.join(rootDir, "views"));
 
+// Create mongoose models
 const subject = mongoose.model("subject", subjectSchema, "subjectlist");
 const studentClass = mongoose.model("studentClass", classSchema, "classlist");
 const studentTerminal = mongoose.model("studentTerminal", classSchema, "terminal");
@@ -139,12 +141,21 @@ exports.admin = async (req, res, next) => {
 
 exports.showSubject = async (req, res, next) => {
   const subjects = await subject.find({}).lean();
-  res.render("admin/subjectlist", { subjects, editing: false });
+    const studentClassdata = await studentClass.find({});
+  res.render("admin/subjectlist", { 
+    subjects, 
+    editing: false,
+    currentPage: 'adminSubject',
+    subjectedit: {},
+    studentClassdata,
+  });
 };
 exports.addSubject = async (req, res, next) => {
   try{
   const { subId } = req.params;
-  
+  const studentClassdata = await studentClass.find({});
+
+
   const oldSubjectName = await subject.findById(subId)
  
   const updates = req.body;
@@ -169,6 +180,20 @@ exports.addSubject = async (req, res, next) => {
   }
   
    else {
+    max = 25; // Maximum number of fields
+    for (let i = 1; i <= max; i++) {
+  let val = req.body[i]; // Comes as string from input field
+
+  // If field is missing or blank, default to 0
+  if (val === undefined || val === '') {
+    req.body[i] = 0;
+  } else {
+    req.body[i] = val;
+  }
+}
+
+  
+
     await subject.create(req.body);
     res.redirect("/admin/subject");
   }
@@ -183,22 +208,31 @@ exports.showClass = async (req, res, next) => {
   res.render("admin/classlist", {
     editing: false,
     studentClasslist,
+    currentPage: 'adminClass'
   });
 };
 
 exports.addClass = async (req, res, next) => {
   const { classId } = req.params;
+
   const updateClass = req.body.studentClass;
+  const updateSection = req.body.section;
+  console.log(updateClass)
+  
   if (classId && !undefined) {
     await studentClass.findByIdAndUpdate(
       classId,
-      { studentClass: `${updateClass}` },
+      { studentClass: `${updateClass}`, section: `${updateSection}` },
       { new: true, runValidators: true }
     );
+
     const studentclass = await studentClass.find({});
     res.redirect('/admin/class')
-  } else {
+  } 
+  else {
+    console.log(req.body)
     await studentClass.create(req.body);
+    console.log(req.body)
     res.redirect("/admin/class");
   }
 };
@@ -229,20 +263,24 @@ exports.editSub = async (req, res, next) => {
     subId,
     subjectedit,
     subjects,
+    currentPage: 'adminSubject',
+    
   });
 };
 exports.editClass = async (req, res, next) => {
   const { classId } = req.params;
   const editing = req.query.editing === "true";
   const classedit = await studentClass.findOne({ _id: `${classId}` });
+  console.log(classedit)
   const studentClasslist = await studentClass.find({});
    res.render("admin/classlist", {
       editing,
       classedit,
       classId,
-      studentClasslist
+      studentClasslist,
+      currentPage: 'adminClass'
     });
-  } 
+  }
 
 exports.showTerminal = async (req, res, next) => {
   const terminalList = await studentTerminal.find({});
@@ -255,12 +293,14 @@ exports.showTerminal = async (req, res, next) => {
 exports.addClass = async (req, res, next) => {
   const { classId } = req.params;
   const updateClass = req.body.studentClass;
+  console.log(updateClass)
   if (classId && !undefined) {
     await studentClass.findByIdAndUpdate(
       classId,
-      { studentClass: `${updateClass}` },
+      { studentClass: `${updateClass}`,section: `${req.body.section}` },
       { new: true, runValidators: true }
     );
+   
     const studentclass = await studentClass.find({});
     res.redirect('/admin/class')
   } else {

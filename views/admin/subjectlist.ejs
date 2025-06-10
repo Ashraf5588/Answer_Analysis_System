@@ -12,21 +12,115 @@
   <center><h1>Welcome, <span style="color: darkblue;">Admin</span></h1></center>
   
 <center>
+
+<!-- //creating form dyanmically popup input filed -->
+<script>
+  const editing = "<%= editing ? 'true' : 'false' %>";
+  const subjectedit = <%- JSON.stringify(subjectedit || {}) %>;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    if (editing) generateInput();
+  });
+
+  function generateInput() {
+    const number = parseInt(document.getElementById("max").value);
+    const subContainer = document.getElementById("subQuestionContainer");
+    subContainer.innerHTML = "";
+
+    if (number <= 0) {
+      alert("Enter a valid Max Question number");
+      return;
+    }
+
+    for (let i = 1; i <= number; i++) {
+      const label = document.createElement("label");
+      label.textContent = `Sub Questions in Q.No ${i}:`;
+      subContainer.appendChild(label);
+
+      const input = document.createElement("input");
+      input.type = "number";
+      input.name = `${i}`;
+      input.id = `subQuestion${i}`;
+      input.required = true;
+      input.placeholder = `Enter sub-questions count for Q${i}`;
+      input.className = "sub-input";
+      if (editing && subjectedit[`${i}`]) {
+        input.value = subjectedit[`${i}`];
+        
+      }
+      input.oninput = () => generateSubFullMarks(i, input.value,input.name);
+      subContainer.appendChild(input);
+
+      const fmDiv = document.createElement("div");
+      fmDiv.id = `subFmContainer${i}`;
+      fmDiv.className = "fm-container";
+      subContainer.appendChild(fmDiv);
+
+      subContainer.appendChild(document.createElement("br"));
+    }
+  }
+
+  function generateSubFullMarks(index, count,name) {
+   const editing = "<%= editing ? 'true' : 'false' %>";
+    const container = document.getElementById(`subFmContainer${index}`);
+    container.innerHTML = "";
+
+    const number = parseInt(count);
+
+    if ( number <=0) {
+      number=1;
+    }
+   
+
+    for (let i = 1; i <= number; i++) {
+      const fmInput = document.createElement("input");
+      fmInput.type = "number";
+      fmInput.name = name; // e.g., fm_1_1 = FM for Q1 Sub1
+      fmInput.placeholder = `FM for Q${index} - SubQ${i}`;
+      fmInput.required = true;
+       fmInput.step = "0.01";
+      container.appendChild(fmInput);
+    }
+  }
+
+</script>
+
 <form action="<%= editing ? `/admin/subjectadd/${subId}` : '/admin/subjectadd' %>" method="post">
-  
-  <label for="subject" >Subject:</label> 
-  <input type="text" id="subject" name="subject" required placeholder="Add New Subject here" value="<%= editing? subjectedit.subject:'' %>"> <br><br>
-Max Question:<input type="number" name="max" placeholder="Enter Maximum Number of Question" required value="<%= editing? subjectedit.max:'' %>">  <br>
-<% for(let i = 1;i<=25;i++){ %>
-  
-  Sub.Q.in.<%=i%>:<input type="number" name="<%=i%>" id="totalsubin<%=i%>" placeholder="Total Question in Q.No<%=i%>" value="<%= editing? subjectedit[i]:'' %>"> <br>
-<%}%> <br> <br>
+  <label for="subject">Subject:</label> 
+  <input type="text" id="subject" name="subject" required placeholder="Add New Subject here" value="<%= editing ? subjectedit.subject : '' %>"> 
+  <br><br>
 
+<label for="studentclass">Class:</label>
+<select name="forClass" id="studentclass">
+  <% studentClassdata.forEach((classItem) => { %>
+    <option value="<%= classItem.studentClass%>"><%= classItem.studentClass %></option>
+  <% }); %>
+</select>
+  <br><br>
+  <label for="max">Max Question:</label>
+  <input type="number" id="max" name="max" required oninput="generateInput()" value="<%= editing ? subjectedit.max : '' %>" placeholder="Enter Max Question Number"> 
+  <br><br>
 
-  <button type="submit" id="subjectadd" class="addbutton"><%= editing?"Update":"Add New"%> &ensp;<i class="fa-solid fa-plus"></i></button>
-  
+  <div id="subQuestionContainer"></div>
 
+  <button type="submit" id="subjectadd" class="addbutton">
+    <%= editing ? "Update" : "Add New" %> &ensp;<i class="fa-solid fa-plus"></i>
+  </button>
 </form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <div class="head">
 <h1>Subject <span style="color:darkblue;"><u>List</u></span></h1></div><br>
