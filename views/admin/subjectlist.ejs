@@ -127,11 +127,9 @@
       const label = document.createElement("label");
       label.textContent = `Sub Questions in Q.No ${i}:`;
       label.className = "question-label";
-      questionContainer.appendChild(label);
-
-      const input = document.createElement("input");
+      questionContainer.appendChild(label);      const input = document.createElement("input");
       input.type = "number";
-      input.name = `q${i}`; // This will be the array name for this question
+      input.name = `subq_count${i}`; // This will hold the count for UI only, not submitted
       input.id = `subQuestion${i}`;
       input.required = true;
       input.placeholder = `Enter sub-questions count for Q${i}`;
@@ -182,8 +180,7 @@
         generateSubFullMarks(i, input.value, i);
       }
     }
-  }
-  function generateSubFullMarks(index, count, name) {
+  }  function generateSubFullMarks(index, count, name) {
     const container = document.getElementById(`subFmContainer${index}`);
     container.innerHTML = "";
 
@@ -199,15 +196,16 @@
     heading.className = "fm-heading";
     heading.textContent = `Full marks for each sub-question in Q.${index}:`;
     container.appendChild(heading);
-
+    
     // Create a wrapper for the inputs
     const inputsWrapper = document.createElement("div");
     inputsWrapper.className = "fm-inputs-wrapper";
-      // Create a hidden input for the count with a different name
+    
+    // Add a hidden input with the sub-question count as the first element in the array
     const countInput = document.createElement("input");
     countInput.type = "hidden";
-    countInput.name = `q${name}_count`; // Use different naming pattern for count
-    countInput.value = number;
+    countInput.name = `${index}`; // Same name as mark inputs to be part of array
+    countInput.value = number;    // This is the sub-question count
     inputsWrapper.appendChild(countInput);
     
     // Now add the mark inputs - all with the same name to create an array

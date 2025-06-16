@@ -306,15 +306,21 @@ exports.showSubject = async (req, res, next) => {
     studentClassdata
   });
 };
-exports.addSubject = async (req, res, next) => {
-  try {
+exports.addSubject = async (req, res, next) => {  try {
     const { subId } = req.params;
     console.log("File uploaded:", req.file);
     console.log("Form data:", req.body);
 
     // Process the form data
     const formData = req.body;
-    const processedData = {};
+    
+    // Create a clean object with ONLY the fields we want
+    const processedData = {
+      // Basic fields
+      subject: formData.subject,
+      forClass: formData.forClass,
+      max: formData.max
+    };
 
     // Handle file upload
     if (req.file) {
@@ -325,48 +331,31 @@ exports.addSubject = async (req, res, next) => {
       console.log(`Keeping existing file: ${formData.currentQuestionPaper}`);
     }
     
-    // Remove currentQuestionPaper from further processing
-    delete formData.currentQuestionPaper;
-
-    // Copy non-numeric fields directly (like subject, forClass, max)
-    for (const key in formData) {
-      if (!/^\d+$/.test(key)) {
-        processedData[key] = formData[key];
-      }
-    }    // Process questions with their counts and marks
-    // First get all question numbers
+    // We don't need to delete or filter anything since we're building a new object
+    
+    // Process questions with their marks
     const numericKeys = Object.keys(formData)
       .filter(key => /^\d+$/.test(key))
       .map(key => parseInt(key))
       .sort((a, b) => a - b);
     
-    // Also identify all the count fields (q1_count, q2_count, etc.)
-    const countKeys = Object.keys(formData)
-      .filter(key => /^q\d+_count$/.test(key));
-    
     console.log("Question numbers found:", numericKeys);
-    console.log("Count fields found:", countKeys);
 
+    // Process all questions that have mark inputs
     for (const qNum of numericKeys) {
-      // Get the count value for this question
-      const countKey = `q${qNum}_count`;
-      const count = formData[countKey] ? parseInt(formData[countKey]) : 0;
-      
-      // Get the marks for this question
-      let marks = [];
+      // Get the marks array which now includes the count as first element
       if (Array.isArray(formData[qNum])) {
-        marks = formData[qNum].map(val => 
-          // Convert numeric strings to numbers
+        // Convert all values to numbers
+        processedData[qNum] = formData[qNum].map(val => 
           !isNaN(parseFloat(val)) ? parseFloat(val) : val
         );
-      } else if (formData[qNum]) {
-        // If it's a single value, convert to number and add to array
-        marks = [!isNaN(parseFloat(formData[qNum])) ? parseFloat(formData[qNum]) : formData[qNum]];
+        console.log(`Question ${qNum} values (array):`, processedData[qNum]);
+      } else {
+        // If it's a single value, convert to a one-element array
+        const value = !isNaN(parseFloat(formData[qNum])) ? 
+          parseFloat(formData[qNum]) : formData[qNum];        processedData[qNum] = [value];
+        console.log(`Question ${qNum} value (single):`, processedData[qNum]);
       }
-      
-      // Create the final array with count as the first element
-      processedData[qNum] = [count, ...marks];
-      console.log(`Question ${qNum}: count=${count}, marks=${marks}, final array:`, processedData[qNum]);
     }
 
     if (subId) {

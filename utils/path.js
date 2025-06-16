@@ -1,4 +1,3 @@
-const rootDir = __dirname;
-exports.rootDir = rootDir;
+const path = require("path");
 
-
+exports.rootDir = path.dirname(require.main.filename);
