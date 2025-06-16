@@ -436,12 +436,19 @@ exports.addClass = async (req, res, next) => {
 
 exports.deleteSubject = async (req, res, next) => {
   const { subjectId,subjectname } = req.params;
+  try
+  {
+
+ 
   await mongoose.connection.db.dropCollection(`${subjectname}`);
  
 
   await subject.findByIdAndDelete(subjectId);
-
   res.redirect("/admin/subject");
+ } catch (err) {
+  console.error("Error deleting subject collection:", err);
+  res.status(500).send("Error deleting subject: " + err.message);
+ }
 };
 
 exports.deleteStudentClass = async (req, res, next) => {
