@@ -1,4 +1,6 @@
 const path = require("path");
+var docxConverter = require('docx-pdf');
+const fs= require("fs");
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -261,21 +263,46 @@ exports.findData = async (req, res) => {
       section,
       terminal,
     } = req.params;
+
+    
+//    docxConverter('./../aes/uploads/question.docx','./../aes/public/output.pdf',function(err,result){
+
+//   if(err){
+//     console.log(err);
+//   }
+//   //remove file after conversion
+//   fs.unlink('./../aes/public/question.docx', (err) => {
+//     if (err) {
+//       console.error('Error deleting file:', err);
+//     }
+//   });
+
+//   console.log('result'+result);
+// });
     
    
-    
-    // Use the helper function to safely get subject data first
     const subjectData = await getSubjectData(subjectinput, res);
     
-    // If subject data is null, the helper function has already sent a response
+    
     if (!subjectData) {
       console.log(`No subject data found for ${subjectinput}`);
       return;
     }
     
     const model = getSubjectModel(subjectinput);
+
    
+
+
+
+//check the data of collection social
     
+
+
+
+
+
+
     const totalstudent = await model.aggregate([
       {
         $match: {
@@ -293,27 +320,93 @@ exports.findData = async (req, res) => {
     
     
     let result = [];
-    
+    // let obtained=[];
+    let Correct=[], inCorrect=[], fifty=[], CorrectAbove50=[], CorrectBelow50=[];
     const max = parseInt(subjectData.max)
-   
 
     for (let i = 1; i <= max; i++) {
       let n = subjectData[i][0]
       if(subjectData[i]===0){n=1}
-      for (j = 0; j <= n; j++) {
+      for (j = 0; j < n; j++) {
           
-           let fullMarks=parseInt(subjectData[i.toString()][j+1])  
-           
-            
-        
-        const analysis = await model.aggregate([
-          {
-            $facet: {
-              fm: [
-                {
-                  $match: {
-                    $and: [
-                      { [`q${i}${String.fromCharCode(97+j)}`]: `${fullMarks}`.toString() },
+           let fullMarks=parseFloat(subjectData[i.toString()][j+1]) 
+             let s= 0;
+ const data = await model.find({}, { _id: 0, __v: 0 }).lean();
+ data.forEach((item) => {
+  
+    s=s+item[`q${i}${String.fromCharCode(97+j)}`];
+    
+
+
+ })
+
+ const inCorrectData = await model.find({
+  subject: `${subjectinput}`,studentClass: `${studentClass}`, section: `${section}`, terminal: `${terminal}`,
+  [`q${i}${String.fromCharCode(97+j)}`]: 0,
+}, { _id: 0,[`q${i}${String.fromCharCode(97+j)}`]:1,name:1,roll:1 }).lean();
+inCorrect.push({
+ qno: `q${i}${String.fromCharCode(97+j)}`,
+ studentName: inCorrectData.map(item => item.name),
+ total: inCorrectData.length,
+  fullMarks: fullMarks,
+obtainedMarks:inCorrectData.map(item=>item[`q${i}${String.fromCharCode(97+j)}`]),
+});
+const CorrectData = await model.find({
+  subject: `${subjectinput}`,studentClass: `${studentClass}`, section: `${section}`, terminal: `${terminal}`,
+  [`q${i}${String.fromCharCode(97+j)}`]: fullMarks,
+}, { _id: 0,[`q${i}${String.fromCharCode(97+j)}`]:1,name:1,roll:1 }).lean();
+Correct.push({
+  qno: `q${i}${String.fromCharCode(97+j)}`,
+  studentName: CorrectData.map(item => item.name),
+  total: CorrectData.length,
+  fullMarks: fullMarks,
+  obtainedMarks:CorrectData.map(item=>item[`q${i}${String.fromCharCode(97+j)}`]),
+});
+const fiftyData = await model.find({
+  subject: `${subjectinput}`,studentClass: `${studentClass}`, section: `${section}`, terminal: `${terminal}`,
+  [`q${i}${String.fromCharCode(97+j)}`]:  0.5 * fullMarks,
+}, { _id: 0,[`q${i}${String.fromCharCode(97+j)}`]:1,name:1,roll:1 }).lean();
+
+fifty.push({
+  qno: `q${i}${String.fromCharCode(97+j)}`,
+  studentName: fiftyData.map(item => item.name),
+  total: fiftyData.length,
+  fullMarks: fullMarks,
+  obtainedMarks:fiftyData.map(item=>item[`q${i}${String.fromCharCode(97+j)}`]),
+});
+
+const CorrectAbove50Data = await model.find({
+  subject: `${subjectinput}`,studentClass: `${studentClass}`, section: `${section}`, terminal: `${terminal}`,
+  [`q${i}${String.fromCharCode(97+j)}`]: { $gt: 0.5 * fullMarks, $lt: fullMarks },
+}, { _id: 0,[`q${i}${String.fromCharCode(97+j)}`]:1,name:1,roll:1 }).lean();
+CorrectAbove50.push({ 
+  qno: `q${i}${String.fromCharCode(97+j)}`,
+  studentName: CorrectAbove50Data.map(item => item.name),
+  total: CorrectAbove50Data.length,
+  fullMarks: fullMarks,
+  obtainedMarks:CorrectAbove50Data.map(item=>item[`q${i}${String.fromCharCode(97+j)}`]),
+});
+const CorrectBelow50Data = await model.find({
+  subject: `${subjectinput}`,studentClass: `${studentClass}`, section: `${section}`, terminal: `${terminal}`,
+  [`q${i}${String.fromCharCode(97+j)}`]: { $lt: 0.5 * fullMarks, $gt: 0 },
+}, { _id: 0,[`q${i}${String.fromCharCode(97+j)}`]:1,name:1,roll:1 }).lean();
+
+CorrectBelow50.push({
+  qno: `q${i}${String.fromCharCode(97+j)}`,
+  studentName: CorrectBelow50Data.map(item => item.name),
+  total: CorrectBelow50Data.length,
+  fullMarks: fullMarks,
+  obtainedMarks:CorrectBelow50Data.map(item=>item[`q${i}${String.fromCharCode(97+j)}`]),
+});
+
+       const analysis = await model.aggregate([
+         {
+           $facet: {
+             correct: [
+               {
+                 $match: {
+                   $and: [
+                      { [`q${i}${String.fromCharCode(97+j)}`]: fullMarks },
                       { section: `${section}` },
                       { terminal: `${terminal}` },
                     ],
@@ -325,7 +418,7 @@ exports.findData = async (req, res) => {
                 {
                   $match: {
                     $and: [
-                      { [`q${i}${String.fromCharCode(97+j)}`]: "0" },
+                      { [`q${i}${String.fromCharCode(97+j)}`]: 0 },
                       { section: `${section}` },
                       { terminal: `${terminal}` },
                     ],
@@ -333,7 +426,7 @@ exports.findData = async (req, res) => {
                 },
                 { $count: "count" },
               ],
-              notattempt: [
+              averageMarks: [
                 {
                   $match: {
                     $and: [
@@ -361,7 +454,7 @@ exports.findData = async (req, res) => {
                 {
                   $match: {
                     $and: [
-                      { [`q${i}${String.fromCharCode(97+j)}`]: "correctbelow50" },
+                      { [`q${i}${String.fromCharCode(97+j)}`]: { $lt: 0.5 * fullMarks, $gt: 0 } },
                       { section: section },
                       { terminal: `${terminal}` },
                     ],
@@ -401,14 +494,23 @@ exports.findData = async (req, res) => {
           notattempt: analysis[0].notattempt,
           correctabove50: analysis[0].correctabove50,
           correctbelow50: analysis[0].correctbelow50,
+          fullMarks
         });
        
       }
     }
 
     result.sort((a, b) => b.wrong - a.wrong);
-    const allArr = [];
+    
    
+// showing q1a = incorrect student name
+
+
+
+
+
+    const allArr = [];
+
 
   for (let i = 1; i <= max; i++) {
     let n = subjectData[i]
@@ -429,17 +531,22 @@ allArr.push({
 
 
 
+const totalcountmarks = await model.find({ subject: `${subjectinput}`, section: `${section}`, terminal: `${terminal}`, studentClass: `${studentClass}` },
+      { roll: 1, name: 1 ,totalMarks: 1,_id:0}).lean();
 
-
-  
     res.render("analysis", {
       results: result,
-      
+      totalcountmarks,
       subjectname: subjectinput,
       studentClass,
       section,
       totalStudent,
       terminal,
+      Correct,
+      inCorrect,  
+      fifty,
+      CorrectAbove50,
+      CorrectBelow50,
     
     });
   } catch (err) {

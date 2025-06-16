@@ -26,7 +26,6 @@ table{
 }
 tbody
 {
-  display: block;
   overflow-x: auto;
   overflow-y: auto;
   

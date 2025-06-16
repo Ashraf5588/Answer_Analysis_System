@@ -109,9 +109,8 @@
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
     });
-    </script>
-
-    <link rel="stylesheet" href="/nav.css">
+    </script>    <link rel="stylesheet" href="/nav.css">
+    <link rel="stylesheet" href="/student-analysis.css">
     
     <style>
         :root {
@@ -556,7 +555,27 @@
                     </div>
                 </div>
             </div>
-            
+            <!-- total marks -->
+             <div class="totalMarksTable" style="margin-bottom: 20px;">
+
+           
+             <table border="1" cellspacing="0" class="table table-striped table-bordered " style="width: 20%; text-align: center;" scroll="yes">
+                <tr>
+                <th>Roll</th>
+                <th>Name</th>
+                <th>Total Marks</th>
+</tr>
+
+<% totalcountmarks.forEach((marks, index) => { %>
+    <tr>
+    <td><%=marks.roll %></td>
+    <td><%=marks.name %></td>
+    <td><%=marks.totalMarks %></td> 
+   <% }) %>
+   </tr>
+
+             </table> 
+             </div>
             <!-- DataTable -->
             <div class="row mb-4">
                 <div class="col-12">
@@ -576,7 +595,197 @@
                     </div>
                 </div>
             </div>
-            
+
+<!-- Student Performance Data - 5 Column Layout -->
+<div class="student-performance-section mt-5 mb-4">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="section-header text-center mb-4">
+          <h4 class="fw-bold">Student Response Analysis by Question</h4>
+          <p class="text-muted">Detailed breakdown of student performance grouped by question and response type</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create a mapping of questions to group all categories by question number -->
+  <% 
+    // Create a map to store question data grouped by question number
+    const questionMap = new Map();
+
+    // Helper function to add data to the question map
+    function addToQuestionMap(questionNo, categoryName, data) {
+      if (!questionMap.has(questionNo)) {
+        questionMap.set(questionNo, {
+          questionNo: questionNo,
+          fullMarks: data.fullMarks,
+          categories: {}
+        });
+      }
+      
+      questionMap.get(questionNo).categories[categoryName] = {
+        total: data.total,
+        studentName: data.studentName,
+        obtainedMarks: data.obtainedMarks
+      };
+    }
+
+    // Add all categories to the map
+    Correct.forEach(student => {
+      addToQuestionMap(student.qno, 'correct', student);
+    });
+    
+    inCorrect.forEach(student => {
+      addToQuestionMap(student.qno, 'incorrect', student);
+    });
+    
+    fifty.forEach(student => {
+      addToQuestionMap(student.qno, 'fifty', student);
+    });
+    
+    CorrectBelow50.forEach(student => {
+      addToQuestionMap(student.qno, 'correctBelow50', student);
+    });
+    
+    // Sort the questions by question number
+    const sortedQuestionData = Array.from(questionMap.values()).sort((a, b) => {
+      return a.questionNo.localeCompare(b.questionNo, undefined, { numeric: true });
+    });
+  %>
+
+<!-- Display each question's data in a 5-column layout -->
+<% sortedQuestionData.forEach(questionData => { %>
+  <div class="card mb-4 question-analysis-card">
+    <div class="card-header py-3 text-center" style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary-dark) 100%); color: white;">
+      <h5 class="mb-0">
+        <i class="fas fa-clipboard-check me-2"></i> Question <%= questionData.questionNo %> - Student Performance
+        <span class="badge bg-light text-dark ms-2">Full Marks: <%= questionData.fullMarks %></span>
+      </h5>
+    </div>
+    
+    <div class="card-body p-0">
+      <div class="row g-0">
+        <!-- Column 1: Correct Answers -->
+        <div class="col">
+          <div class="student-list-column correct-column h-100">
+            <div class="column-header bg-success text-white p-2">
+              <i class="fas fa-check-circle me-1"></i> Correct
+              <span class="badge bg-light text-dark float-end">
+                <%= questionData.categories.correct ? questionData.categories.correct.total : 0 %>
+              </span>
+            </div>
+            <div class="column-body p-3">
+              <% if (questionData.categories.correct) { %>
+                <% questionData.categories.correct.studentName.forEach((name, idx) => { %>
+                  <div class="student-item">
+                    <span class="student-name"><%= name %></span>
+                    <span class="student-marks badge bg-light text-success">
+                      <%= questionData.categories.correct.obtainedMarks[idx] %>
+                    </span>
+                  </div>
+                <% }) %>
+              <% } else { %>
+                <div class="text-muted text-center py-3">No students in this category</div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Column 2: Incorrect Answers -->
+        <div class="col">
+          <div class="student-list-column incorrect-column h-100">
+            <div class="column-header bg-danger text-white p-2">
+              <i class="fas fa-times-circle me-1"></i> Incorrect
+              <span class="badge bg-light text-dark float-end">
+                <%= questionData.categories.incorrect ? questionData.categories.incorrect.total : 0 %>
+              </span>
+            </div>
+            <div class="column-body p-3">
+              <% if (questionData.categories.incorrect) { %>
+                <% questionData.categories.incorrect.studentName.forEach((name, idx) => { %>
+                  <div class="student-item">
+                    <span class="student-name"><%= name %></span>
+                    <span class="student-marks badge bg-light text-danger">
+                      <%= questionData.categories.incorrect.obtainedMarks[idx] %>
+                    </span>
+                  </div>
+                <% }) %>
+              <% } else { %>
+                <div class="text-muted text-center py-3">No students in this category</div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Column 3: 50% Correct -->
+        <div class="col">
+          <div class="student-list-column fifty-column h-100">
+            <div class="column-header bg-primary text-white p-2">
+              <i class="fas fa-percentage me-1"></i> 50% Correct
+              <span class="badge bg-light text-dark float-end">
+                <%= questionData.categories.fifty ? questionData.categories.fifty.total : 0 %>
+              </span>
+            </div>
+            <div class="column-body p-3">
+              <% if (questionData.categories.fifty) { %>
+                <% questionData.categories.fifty.studentName.forEach((name, idx) => { %>
+                  <div class="student-item">
+                    <span class="student-name"><%= name %></span>
+                    <span class="student-marks badge bg-light text-primary">
+                      <%= questionData.categories.fifty.obtainedMarks[idx] %>
+                    </span>
+                  </div>
+                <% }) %>
+              <% } else { %>
+                <div class="text-muted text-center py-3">No students in this category</div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Column 4: Below 50% Correct -->
+        <div class="col">
+          <div class="student-list-column below50-column h-100">
+            <div class="column-header bg-warning text-dark p-2">
+              <i class="fas fa-arrow-down me-1"></i> Below 50%
+              <span class="badge bg-light text-dark float-end">
+                <%= questionData.categories.correctBelow50 ? questionData.categories.correctBelow50.total : 0 %>
+              </span>
+            </div>
+            <div class="column-body p-3">
+              <% if (questionData.categories.correctBelow50) { %>
+                <% questionData.categories.correctBelow50.studentName.forEach((name, idx) => { %>
+                  <div class="student-item">
+                    <span class="student-name"><%= name %></span>
+                    <span class="student-marks badge bg-light text-warning">
+                      <%= questionData.categories.correctBelow50.obtainedMarks[idx] %>
+                    </span>
+                  </div>
+                <% }) %>
+              <% } else { %>
+                <div class="text-muted text-center py-3">No students in this category</div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Column 5: Not Attempted (Empty placeholder since we don't have this data) -->
+        <div class="col">
+          <div class="student-list-column not-attempted-column h-100">
+            <div class="column-header bg-secondary text-white p-2">
+              <i class="fas fa-minus-circle me-1"></i> Not Attempted
+              <span class="badge bg-light text-dark float-end">0</span>
+            </div>
+            <div class="column-body p-3">
+              <div class="text-muted text-center py-3">No data available</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% }) %>
             <!-- Individual Question Cards -->
             <div class="row">
                 <div class="col-12">
@@ -593,7 +802,7 @@
                                     <span>Correct Answers</span>
                                     <span>
                                         <%= result.correct %> 
-                                        <a href="/studentData/<%= subjectname %>/<%= studentClass %>/<%= section %>/<%= result.questionNo %>/correct/<%= terminal %>" 
+                                        <a href="/studentData/<%= subjectname %>/<%= studentClass %>/<%= section %>/<%= result.questionNo %>/<%=result.fullMarks%>/<%= terminal %>" 
                                            class="see-students-btn btn-correct ms-2" data-bs-toggle="tooltip" title="View students with correct answers">
                                             <i class="fas fa-eye"></i> View
                                         </a>
@@ -603,7 +812,7 @@
                                     <span>Incorrect Answers</span>
                                     <span>
                                         <%= result.wrong %> 
-                                        <a href="/studentData/<%= subjectname %>/<%= studentClass %>/<%= section %>/<%= result.questionNo %>/incorrect/<%= terminal %>" 
+                                        <a href="/studentData/<%= subjectname %>/<%= studentClass %>/<%= section %>/<%= result.questionNo %>/0/<%= terminal %>" 
                                            class="see-students-btn btn-wrong ms-2" data-bs-toggle="tooltip" title="View students with incorrect answers">
                                             <i class="fas fa-eye"></i> View
                                         </a>
@@ -623,7 +832,7 @@
                                     <span>Correct Above 50%</span>
                                     <span>
                                         <%= result.correctabove50 %> 
-                                        <a href="/studentData/<%= subjectname %>/<%= studentClass %>/<%= section %>/<%= result.questionNo %>/correctabove50/<%= terminal %>" 
+                                        <a href="/studentData/<%= subjectname %>/<%= studentClass %>/<%= section %>/<%= result.questionNo %>/<%= 0.5*result.fullMarks%>/<%= terminal %>" 
                                            class="see-students-btn btn-above50 ms-2" data-bs-toggle="tooltip" title="View students with >50% correct">
                                             <i class="fas fa-eye"></i> View
                                         </a>

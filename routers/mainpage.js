@@ -1,6 +1,26 @@
 const express = require('express');
 const student = express.Router();
 const controller = require('../controller/controller')
+const multer  = require('multer')
+
+
+
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads/') 
+    // Ensure this directory exists
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname)
+     // Use original name or modify as needed
+
+  }
+ //exports filename to controller.js
+})
+
+const upload = multer({ storage: storage })
+
 
 const {authenticateToken} = require('../middleware/loginmiddleware')
 const {authenticateTokenTeacher} = require('../middleware/loginmiddleware')
@@ -15,7 +35,7 @@ student.post('/teacher/logins',admincontrol.teacherloginpost)
 student.get('/admin/term/:terminal',authenticateToken,admincontrol.admin)
 
 student.get('/admin/subject/:subId?',authenticateToken,admincontrol.showSubject)
-student.post('/admin/subjectadd/:subId?',authenticateToken,admincontrol.addSubject)
+student.post('/admin/subjectadd/:subId?',authenticateToken,upload.single('questionPaperOfClass'),admincontrol.addSubject)
 
 student.get('/admin/class/:classId?',authenticateToken,admincontrol.showClass)
 student.post('/admin/class/:classId?',authenticateToken,admincontrol.addClass)

@@ -122,30 +122,36 @@
                                         subLabel = 'a';
                                     }
                                     %>
-                                    <% for (let k = 0; k < parseInt(subjectData[i.toString()][j+1]); k=k+0.5) { %>
+                                    <% for (let k = 0; k <= parseInt(subjectData[i.toString()][j+1]); k=k+0.5) { %>
                                         <label for="option<%= i %><%= subLabel %><%= k %>" class="ansradio">
                                             <span class="clabel">
                                                 <i class="fas fa-circle mr-2"></i> <%=k%>
                                             </span>
-                                            <input type="radio" id="option<%= i %><%= subLabel %><%= k %>" value="<%= k %>" name="q<%= i %><%= subLabel %>">
+                                            <input type="radio" id="option<%= i %><%= subLabel %><%= k %>" value="<%= k %>" name="q<%= i %><%= subLabel %>" onclick="sum()">
+                                            
                                         </label>
+                                       
+                                        <script>
+  function sum() {
+    let total = 0;
+    // Get all radio buttons that are checked
+    const selectedOptions = document.querySelectorAll('input[type="radio"]:checked');
+
+    selectedOptions.forEach(option => {
+       
+      total += parseFloat(option.value);
+    });
+
+    let totalmarks = document.getElementById('totalmarks');
+    totalmarks.value = total// Update the total marks input
+
+    
+  }
+</script>
+
                                     <% } %>
 
-                                    <label for="correct<%= i %><%= subLabel %>" class="ansradio" data-color="success">
-                                        <span class="clabel">
-                                            <i class="fas fa-check-circle mr-2"></i> <%= subjectData[i.toString()][j+1] %>
-                                        </span>
-                                        <input type="radio" id="correct<%= i %><%= subLabel %>" value="correct" name="q<%= i %><%= subLabel %>">
-                                    </label>
-                                    
-                                   
-                                    
-                                    <label for="notattempt<%= i %><%= subLabel %>" class="ansradio" data-color="gray">
-                                        <span class="clabel">
-                                            <i class="fas fa-minus-circle mr-2"></i> Not Attempted
-                                        </span>
-                                        <input type="radio" id="notattempt<%= i %><%= subLabel %>" value="notattempt" name="q<%= i %><%= subLabel %>">
-                                    </label>
+                                  
                                     
                                 
                                 </div>
@@ -153,9 +159,13 @@
                     </div>
                 </div>
             </div>
+            
         <% } %>
         </div>
-    </section>    <div class="text-center">
+    </section>  
+      <div class="text-center">
+         <input type="number" name="totalMarks" id="totalmarks" class="form-container" placeholder="Total Marks" step="0.01"> <br>
+
         <button type="submit" id="submit" class="submit-btn">
             <i class="fas fa-save me-2"></i> Save Assessment
         </button>

@@ -15,12 +15,129 @@ const { terminal } = require("./controller");
 app.set("view engine", "ejs");
 app.set("view", path.join(rootDir, "views"));
 
+
+const multer = require('multer')
+const fs = require('fs')
+
+// Configure storage with better file naming
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    // Create uploads directory if it doesn't exist
+    if (!fs.existsSync('uploads')) {
+      fs.mkdirSync('uploads')
+    }
+    cb(null, 'uploads/')
+  },
+  filename: function (req, file, cb) {
+    // Create unique filename with original extension
+    const uniqueSuffix = Date.now() + '-' + file.originalname
+    cb(null, uniqueSuffix)
+  }
+})
+
+const upload = multer({ storage: storage })
+
 // Create mongoose models
 const subject = mongoose.model("subject", subjectSchema, "subjectlist");
 const studentClass = mongoose.model("studentClass", classSchema, "classlist");
 const studentTerminal = mongoose.model("studentTerminal", classSchema, "terminal");
 const admin = mongoose.model("admin", adminSchema, "admin");
 let entryArray = [];
+
+/**
+ * Transform entry array data into a pivoted format for better data visualization
+ * 
+ * This function takes the MongoDB aggregation results and creates a pivot table structure:
+ * - Rows represent unique subjects (math, science, etc.)
+ * - Columns represent unique class-section combinations (4-janak, 2-chanakya, etc.)
+ * - Each cell contains the totalentry value for that subject and class-section
+ * - Empty cells are represented as 0
+ * 
+ * The returned object has three properties:
+ * - subjects: Array of unique subject names sorted alphabetically
+ * - headers: Array of class-section combinations sorted by class number then section name
+ * - pivotTable: Nested object where pivotTable[subject][classSection] gives the entry count
+ * 
+ * Example output:
+ * {
+ *   subjects: ["English", "Math", "Science"],
+ *   headers: ["1-A", "1-B", "2-A"],
+ *   pivotTable: {
+ *     "English": { "1-A": 20, "1-B": 15, "2-A": 18 },
+ *     "Math": { "1-A": 22, "1-B": 17, "2-A": 19 },
+ *     "Science": { "1-A": 21, "1-B": 16, "2-A": 17 }
+ *   }
+ * }
+ * 
+ * @param {Array} entries - The original entry array data from MongoDB aggregation
+ * @returns {Object} Object containing subjects, headers and pivoted table data
+ */
+function transformToPivotedFormat(entries) {
+  if (!Array.isArray(entries) || entries.length === 0) {
+    return { subjects: [], headers: [], pivotTable: {} };
+  }
+
+  try {
+    // Extract unique subjects and class-section combinations
+    const subjects = [...new Set(entries.map(entry => entry.subject))].sort();
+    
+    // Create headers by combining class and section (e.g., "4-janak")
+    const classSections = [...new Set(entries.map(entry => `${entry.studentClass}-${entry.section}`))];
+    
+    // Sort headers by class number first, then section
+    const headers = classSections.sort((a, b) => {
+      try {
+        const classA = parseInt(a.split('-')[0]);
+        const classB = parseInt(b.split('-')[0]);
+        
+        // If classes are different, sort by class number
+        if (classA !== classB) {
+          return classA - classB;
+        }
+        
+        // If classes are the same, sort
+        const sectionA = a.split('-')[1];
+        const sectionB = b.split('-')[1];
+        return sectionA.localeCompare(sectionB);
+      } catch (error) {
+        console.error("Error sorting headers:", error);
+        return 0;
+      }
+    });
+    
+    // Create a pivot table as an object
+    const pivotTable = {};
+    
+    // Initialize the pivot table with zeros for all combinations
+    subjects.forEach(subject => {
+      pivotTable[subject] = {};
+      headers.forEach(header => {
+        pivotTable[subject][header] = 0;
+      });
+    });
+    
+    // Fill in the pivot table with actual values
+    entries.forEach(entry => {
+      try {
+        const subject = entry.subject;
+        const header = `${entry.studentClass}-${entry.section}`;
+        pivotTable[subject][header] = entry.totalentry;
+      } catch (error) {
+        console.error("Error setting pivot table value:", error);
+      }
+    });
+    
+    return {
+      subjects,
+      headers,
+      pivotTable
+    };
+  } catch (error) {
+    console.error("Error in transformToPivotedFormat:", error);
+    return { subjects: [], headers: [], pivotTable: {} };
+  }
+}
+
 exports.adminlogin = async (req, res, next) => {
   try {
     res.render("admin/login");
@@ -94,15 +211,13 @@ exports.teacherloginpost = async (req, res, next) => {
 
 
 
-exports.admin = async (req, res, next) => {
-  try {
+exports.admin = async (req, res, next) => {    try {
     // Initialize array
     entryArray = [];
     const subjects = await subject.find({});
     const studentClasslist = await studentClass.find({});
     const terminal = req.params.terminal;
-    console.log(terminal)
-
+ 
     // Populate entryArray
     for (const sub of subjects) {
       const model = mongoose.model(sub.subject, studentSchema, `${sub.subject}`);
@@ -124,14 +239,56 @@ exports.admin = async (req, res, next) => {
         });
       }
     }
-
-    // Render with entryArray
+      // Transform entryArray into pivoted format
+    let pivotedData;
+    try {
+      const studentClassdata = await studentClass.find({});
+      // Only use the transformation function if it exists
+      if (typeof transformToPivotedFormat === 'function') {
+        pivotedData = transformToPivotedFormat(entryArray);
+        console.log("Pivoted data generated successfully");
+      } else {
+        console.error("transformToPivotedFormat function is not defined");
+        // Create a simple pivoted data format manually
+        pivotedData = { subjects: [], headers: [], pivotTable: {} };
+        
+        // Extract unique subjects and class-sections
+        const subjects = [...new Set(entryArray.map(e => e.subject))].sort();
+        const headers = [...new Set(entryArray.map(e => `${e.studentClass}-${e.section}`))].sort();
+        
+        // Create pivot table
+        const pivotTable = {};
+        subjects.forEach(subject => {
+          pivotTable[subject] = {};
+          headers.forEach(header => {
+            pivotTable[subject][header] = 0;
+          });
+        });
+        
+        // Fill in values
+        entryArray.forEach(entry => {
+          const header = `${entry.studentClass}-${entry.section}`;
+          if (pivotTable[entry.subject]) {
+            pivotTable[entry.subject][header] = entry.totalentry;
+          }
+        });
+        
+        pivotedData = { subjects, headers, pivotTable };
+      }
+    } catch (error) {
+      console.error("Error transforming data:", error);
+      pivotedData = { subjects: [], headers: [], pivotTable: {} };
+    }
+const studentClassdata = await studentClass.find({});
+    // Render with entryArray and pivotedData
     res.render("admin/adminpannel", {
       editing: false,
       subjects,
       studentClasslist,
       entryArray,
-      terminal, // Ensure entryArray is passed to the template
+      pivotedData,
+      terminal, 
+      studentClassdata// Ensure entryArray is passed to the template
     });
   } catch (err) {
     console.error(err);
@@ -141,67 +298,118 @@ exports.admin = async (req, res, next) => {
 
 exports.showSubject = async (req, res, next) => {
   const subjects = await subject.find({}).lean();
-    const studentClassdata = await studentClass.find({});
+  const studentClassdata = await studentClass.find({});
   res.render("admin/subjectlist", { 
     subjects, 
     editing: false,
     currentPage: 'adminSubject',
-    subjectedit: {},
-    studentClassdata,
+    studentClassdata
   });
 };
 exports.addSubject = async (req, res, next) => {
-  try{
-  const { subId } = req.params;
-  const studentClassdata = await studentClass.find({});
+  try {
+    const { subId } = req.params;
+    console.log("File uploaded:", req.file);
+    console.log("Form data:", req.body);
 
+    // Process the form data
+    const formData = req.body;
+    const processedData = {};
 
-  const oldSubjectName = await subject.findById(subId)
- 
-  const updates = req.body;
-  if (subId && !undefined) {
-
-    await subject.findByIdAndUpdate(
-      subId,updates,
-      { new: true, runValidators: true }
-    
-    );
-
-    const db = mongoose.connection.db;
-
-    const newSubjectName = await subject.findById(subId)
-    if(oldSubjectName.subject!=newSubjectName.subject)
-    {
-    await db.collection(oldSubjectName.subject).rename(newSubjectName.subject);
+    // Handle file upload
+    if (req.file) {
+      processedData.questionPaperOfClass = req.file.filename;
+      console.log(`New file uploaded: ${req.file.filename}`);
+    } else if (formData.currentQuestionPaper) {
+      processedData.questionPaperOfClass = formData.currentQuestionPaper;
+      console.log(`Keeping existing file: ${formData.currentQuestionPaper}`);
     }
-   
+    
+    // Remove currentQuestionPaper from further processing
+    delete formData.currentQuestionPaper;
 
-    res.redirect("/admin/subject");
-  }
-  
-   else {
-    max = 25; // Maximum number of fields
-    for (let i = 1; i <= max; i++) {
-  let val = req.body[i]; // Comes as string from input field
+    // Copy non-numeric fields directly (like subject, forClass, max)
+    for (const key in formData) {
+      if (!/^\d+$/.test(key)) {
+        processedData[key] = formData[key];
+      }
+    }    // Process questions with their counts and marks
+    // First get all question numbers
+    const numericKeys = Object.keys(formData)
+      .filter(key => /^\d+$/.test(key))
+      .map(key => parseInt(key))
+      .sort((a, b) => a - b);
+    
+    // Also identify all the count fields (q1_count, q2_count, etc.)
+    const countKeys = Object.keys(formData)
+      .filter(key => /^q\d+_count$/.test(key));
+    
+    console.log("Question numbers found:", numericKeys);
+    console.log("Count fields found:", countKeys);
 
-  // If field is missing or blank, default to 0
-  if (val === undefined || val === '') {
-    req.body[i] = 0;
-  } else {
-    req.body[i] = val;
-  }
-}
+    for (const qNum of numericKeys) {
+      // Get the count value for this question
+      const countKey = `q${qNum}_count`;
+      const count = formData[countKey] ? parseInt(formData[countKey]) : 0;
+      
+      // Get the marks for this question
+      let marks = [];
+      if (Array.isArray(formData[qNum])) {
+        marks = formData[qNum].map(val => 
+          // Convert numeric strings to numbers
+          !isNaN(parseFloat(val)) ? parseFloat(val) : val
+        );
+      } else if (formData[qNum]) {
+        // If it's a single value, convert to number and add to array
+        marks = [!isNaN(parseFloat(formData[qNum])) ? parseFloat(formData[qNum]) : formData[qNum]];
+      }
+      
+      // Create the final array with count as the first element
+      processedData[qNum] = [count, ...marks];
+      console.log(`Question ${qNum}: count=${count}, marks=${marks}, final array:`, processedData[qNum]);
+    }
 
-  
+    if (subId) {
+      // Edit mode
+      console.log("Edit mode - updating subject");
+      const oldSubject = await subject.findById(subId);
+      
+      if (!oldSubject) {
+        return res.status(404).send("Subject not found");
+      }
 
-    await subject.create(req.body);
-    res.redirect("/admin/subject");
-  }
-  }catch(err)
-  {
-    throw err
+      // Update the subject
+      await subject.findByIdAndUpdate(
+        subId,
+        processedData,
+        { new: true, runValidators: true }
+      );
+
+      // Handle collection rename if subject name changed
+      if (oldSubject.subject !== processedData.subject) {
+        try {
+          const db = mongoose.connection.db;
+          await db.collection(oldSubject.subject).rename(processedData.subject);
+          console.log(`Renamed collection from ${oldSubject.subject} to ${processedData.subject}`);
+        } catch (err) {
+          console.error(`Error renaming collection: ${err.message}`);
+          // Continue anyway as the document is updated
+        }
+      }
+
+      res.redirect("/admin/subject");
+    } else {
+      // Create mode
+      console.log("Create mode - adding new subject with data:", processedData);
+      await subject.create(processedData);
+      res.redirect("/admin/subject");
+    }
+  } catch (err) {
+    console.error("Error in addSubject:", err);
+    res.status(500).send("An error occurred while processing the subject data: " + err.message);
   }
 };
+
 
 exports.showClass = async (req, res, next) => {
   const studentClasslist = await studentClass.find({});
@@ -254,18 +462,31 @@ exports.deleteStudentClass = async (req, res, next) => {
 };
 
 exports.editSub = async (req, res, next) => {
-  const { subId } = req.params;
-  const editing = req.query.editing === "true";
-  const subjects = await subject.find({}).lean();
-  const subjectedit = await subject.findOne({ _id: `${subId}` });
-  res.render("admin/subjectlist", {
-    editing,
-    subId,
-    subjectedit,
-    subjects,
-    currentPage: 'adminSubject',
+  try {
+    const { subId } = req.params;
+    const editing = req.query.editing === "true";
+    const subjects = await subject.find({}).lean();
+    const subjectedit = await subject.findOne({ _id: `${subId}` });
+     const studentClassdata = await studentClass.find({});
     
-  });
+    if (!subjectedit) {
+      return res.status(404).send("Subject not found");
+    }
+    
+    console.log("Editing subject:", subjectedit);
+    
+    // Get student class data for form dropdown
+    res.render("admin/subjectlist", {
+      editing,
+      subId,
+      subjectedit,
+      subjects,
+      studentClassdata
+    });
+  } catch (err) {
+    console.error("Error in editSub function:", err);
+    res.status(500).send("Error loading subject edit form: " + err.message);
+  }
 };
 exports.editClass = async (req, res, next) => {
   const { classId } = req.params;

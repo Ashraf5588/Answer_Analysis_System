@@ -3,108 +3,296 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin</title>
+  <title>Subject Management | AES Admin</title>  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/adminpannel.css">
   <link rel="stylesheet" href="/nav.css">
+  <link rel="stylesheet" href="/subject-list.css">
+  <link rel="stylesheet" href="/bootstrap-table.css">
 </head>
 <body>
   <%- include('../partials/nav',{currentPage:'admin'}) %>
-  <center><h1>Welcome, <span style="color: darkblue;">Admin</span></h1></center>
-  
-<center>
-
-<!-- //creating form dyanmically popup input filed -->
-<script>
+  <div class="subject-container">
+  <h1 class="subject-title">Welcome to <span>Subject Management</span></h1>
+    <!-- Creating form dynamically popup input fields -->  <script>
   const editing = "<%= editing ? 'true' : 'false' %>";
-  const subjectedit = <%- JSON.stringify(subjectedit || {}) %>;
+  const subjectedit = <%- editing ? JSON.stringify(subjectedit || {}) : '{}' %>;
 
   document.addEventListener("DOMContentLoaded", () => {
-    if (editing) generateInput();
+    if (editing === 'true') {
+      generateInput();
+      
+      // Add form validation on submit
+      const form = document.querySelector('.subject-form');
+      form.addEventListener('submit', validateForm);
+    } else {
+      // Make form field generation happen for new subjects too
+      const maxField = document.getElementById("max");
+      if (maxField && maxField.value) {
+        generateInput();
+      }
+      
+      // Add form validation on submit
+      const form = document.querySelector('.subject-form');
+      form.addEventListener('submit', validateForm);
+    }
   });
-
+    // Form validation function
+  function validateForm(event) {
+    const subjectField = document.getElementById('subject');
+    const maxField = document.getElementById('max');
+    
+    // Basic validation
+    if (!subjectField.value.trim()) {
+      alert('Please enter a subject name');
+      event.preventDefault();
+      return false;
+    }
+    
+    if (!maxField.value || parseInt(maxField.value) <= 0) {
+      alert('Please enter a valid number of maximum questions');
+      event.preventDefault();
+      return false;
+    }
+    
+    // Check if all sub-question counts are valid
+    const max = parseInt(maxField.value);
+    for (let i = 1; i <= max; i++) {
+      const subQInput = document.getElementById(`subQuestion${i}`);
+      if (!subQInput || !subQInput.value || parseInt(subQInput.value) <= 0) {
+        alert(`Please enter a valid number of sub-questions for question ${i}`);
+        event.preventDefault();
+        return false;
+      }
+      
+      // Check all marks inputs for this question - now they all have the same name
+      const subQCount = parseInt(subQInput.value);
+      const markInputs = document.querySelectorAll(`#subFmContainer${i} input[type="number"].fm-input`);
+      
+      // Verify we have the correct number of inputs
+      if (markInputs.length !== subQCount) {
+        console.warn(`Expected ${subQCount} mark inputs for Q${i}, found ${markInputs.length}`);
+      }
+      
+      // Check each mark input
+      for (let j = 0; j < markInputs.length; j++) {
+        const markInput = markInputs[j];
+        if (!markInput.value || isNaN(parseFloat(markInput.value)) || parseFloat(markInput.value) < 0) {
+          const subQ = j + 1; // Add 1 because j is 0-based
+          alert(`Please enter a valid mark value for Q${i}.${String.fromCharCode(96 + subQ)}`);
+          markInput.focus();
+          event.preventDefault();
+          return false;
+        }
+      }
+    }
+    
+    // If we're in edit mode but no file is selected, make sure we have the current file
+    if (editing === 'true') {
+      const fileInput = document.getElementById('questionPaper');
+      if (fileInput.files.length === 0) {
+        const currentFileInput = document.querySelector('input[name="currentQuestionPaper"]');
+        if (!currentFileInput || !currentFileInput.value) {
+          // If we don't have a current file and no new file is selected, alert the user
+          if (!confirm('No question paper selected. Continue without a question paper?')) {
+            event.preventDefault();
+            return false;
+          }
+        }
+      }
+    }
+    
+    return true;
+  }
   function generateInput() {
     const number = parseInt(document.getElementById("max").value);
     const subContainer = document.getElementById("subQuestionContainer");
     subContainer.innerHTML = "";
 
     if (number <= 0) {
-      alert("Enter a valid Max Question number");
+      subContainer.innerHTML = '<div style="color: red; margin-top: 10px;">Please enter a valid maximum question number</div>';
       return;
     }
 
+    console.log("Generating input fields for", number, "questions");
+    console.log("Edit mode:", editing);
+    if (editing === 'true') {
+      console.log("Subject data:", subjectedit);
+    }
+
     for (let i = 1; i <= number; i++) {
+      // Create question container for better organization
+      const questionContainer = document.createElement("div");
+      questionContainer.className = "question-container";
+      
       const label = document.createElement("label");
       label.textContent = `Sub Questions in Q.No ${i}:`;
-      subContainer.appendChild(label);
+      label.className = "question-label";
+      questionContainer.appendChild(label);
 
       const input = document.createElement("input");
       input.type = "number";
-      input.name = `${i}`;
+      input.name = `q${i}`; // This will be the array name for this question
       input.id = `subQuestion${i}`;
       input.required = true;
       input.placeholder = `Enter sub-questions count for Q${i}`;
       input.className = "sub-input";
-      if (editing && subjectedit[`${i}`]) {
-        input.value = subjectedit[`${i}`];
-        
+      input.min = "1"; // Ensure at least one sub-question
+      input.dataset.questionNumber = i;
+      
+      // Check for existing values in edit mode
+      let subQCount = 0;
+      if (editing === 'true' && typeof subjectedit !== 'undefined') {
+        if (subjectedit[i]) {
+          if (Array.isArray(subjectedit[i])) {
+            // If it's an array, the first element could be the count or we determine count from array length
+            if (subjectedit[i][0] && !isNaN(parseInt(subjectedit[i][0]))) {
+              // First element is the count
+              subQCount = parseInt(subjectedit[i][0]);
+            } else {
+              // Count is the array length minus the hidden count field
+              subQCount = subjectedit[i].length > 0 ? subjectedit[i].length - 1 : 0;
+            }
+            
+            input.value = subQCount;
+            console.log(`Question ${i}: Setting sub-question count to ${subQCount} from array:`, subjectedit[i]);
+          } else {
+            // If not an array, use the value directly
+            input.value = subjectedit[i];
+            subQCount = parseInt(subjectedit[i]);
+            console.log(`Question ${i}: Setting sub-question count to ${subQCount} from value:`, subjectedit[i]);
+          }
+        }
       }
-      input.oninput = () => generateSubFullMarks(i, input.value,input.name);
-      subContainer.appendChild(input);
+      
+      input.addEventListener('input', function() {
+        generateSubFullMarks(i, this.value, i); // Use i as the name to group all inputs by question number
+      });
+      
+      questionContainer.appendChild(input);
 
       const fmDiv = document.createElement("div");
       fmDiv.id = `subFmContainer${i}`;
       fmDiv.className = "fm-container";
-      subContainer.appendChild(fmDiv);
+      questionContainer.appendChild(fmDiv);
 
-      subContainer.appendChild(document.createElement("br"));
+      subContainer.appendChild(questionContainer);
+      
+      // Generate initial full marks inputs if value exists
+      if (input.value && parseInt(input.value) > 0) {
+        generateSubFullMarks(i, input.value, i);
+      }
     }
   }
-
-  function generateSubFullMarks(index, count,name) {
-   const editing = "<%= editing ? 'true' : 'false' %>";
+  function generateSubFullMarks(index, count, name) {
     const container = document.getElementById(`subFmContainer${index}`);
     container.innerHTML = "";
 
-    const number = parseInt(count);
+    let number = parseInt(count);
 
-    if ( number <=0) {
-      number=1;
+    if (isNaN(number) || number <= 0) {
+      container.innerHTML = '<div style="color: red; margin: 10px 0;">Please enter a valid count (minimum 1)</div>';
+      return;
     }
    
+    // Create a heading for the sub-questions section
+    const heading = document.createElement("div");
+    heading.className = "fm-heading";
+    heading.textContent = `Full marks for each sub-question in Q.${index}:`;
+    container.appendChild(heading);
 
+    // Create a wrapper for the inputs
+    const inputsWrapper = document.createElement("div");
+    inputsWrapper.className = "fm-inputs-wrapper";
+      // Create a hidden input for the count with a different name
+    const countInput = document.createElement("input");
+    countInput.type = "hidden";
+    countInput.name = `q${name}_count`; // Use different naming pattern for count
+    countInput.value = number;
+    inputsWrapper.appendChild(countInput);
+    
+    // Now add the mark inputs - all with the same name to create an array
     for (let i = 1; i <= number; i++) {
+      const inputContainer = document.createElement("div");
+      inputContainer.className = "fm-input-container";
+      
+      const label = document.createElement("label");
+      label.textContent = `Q${index}.${String.fromCharCode(96 + i)}:`;
+      label.className = "fm-label";
+      inputContainer.appendChild(label);
+      
       const fmInput = document.createElement("input");
       fmInput.type = "number";
-      fmInput.name = name; // e.g., fm_1_1 = FM for Q1 Sub1
-      fmInput.placeholder = `FM for Q${index} - SubQ${i}`;
+      fmInput.name = `${name}`; // Using the same name to make all inputs part of the same array
+      fmInput.placeholder = `Marks`;
       fmInput.required = true;
-       fmInput.step = "0.01";
-      container.appendChild(fmInput);
+      fmInput.step = "0.01";
+      fmInput.className = "fm-input";
+      fmInput.dataset.subQuestion = i; // Add data attribute to help with debugging
+      
+      // Set value if editing and value exists in subjectedit
+      if (editing === 'true' && subjectedit) {
+        if (subjectedit[index] && Array.isArray(subjectedit[index]) && i < subjectedit[index].length) {
+          fmInput.value = subjectedit[index][i];
+          console.log(`Setting mark for Q${index}.${String.fromCharCode(96+i)} to ${subjectedit[index][i]}`);
+        }
+      }
+      
+      inputContainer.appendChild(fmInput);
+      inputsWrapper.appendChild(inputContainer);
     }
+    
+    container.appendChild(inputsWrapper);
+    console.log(`Generated ${number} mark inputs for question ${index} with name ${name}`);
   }
 
 </script>
 
-<form action="<%= editing ? `/admin/subjectadd/${subId}` : '/admin/subjectadd' %>" method="post">
-  <label for="subject">Subject:</label> 
-  <input type="text" id="subject" name="subject" required placeholder="Add New Subject here" value="<%= editing ? subjectedit.subject : '' %>"> 
-  <br><br>
+<form action="<%= editing ? `/admin/subjectadd/${subId}` : '/admin/subjectadd' %>" method="post" class="subject-form" enctype="multipart/form-data">
+  <div class="form-group">
+    <label for="subject">Subject:</label> 
+    <input type="text" id="subject" name="subject" required placeholder="Add New Subject here" 
+           value="<%= editing ? subjectedit.subject : '' %>" class="form-control"> 
+  </div>
 
-<label for="studentclass">Class:</label>
-<select name="forClass" id="studentclass">
-  <% studentClassdata.forEach((classItem) => { %>
-    <option value="<%= classItem.studentClass%>"><%= classItem.studentClass %></option>
-  <% }); %>
-</select>
-  <br><br>
-  <label for="max">Max Question:</label>
-  <input type="number" id="max" name="max" required oninput="generateInput()" value="<%= editing ? subjectedit.max : '' %>" placeholder="Enter Max Question Number"> 
-  <br><br>
+  <div class="form-group">
+    <label for="studentclass">Class:</label>
+    <select name="forClass" id="studentclass" class="form-select" >
+    <%
+      const uniqueClass = new Set(studentClassdata.map(item => item.studentClass));
+    %>
+    <% for (const uniqsub of uniqueClass) { %>
+      <option   value="<%= uniqsub %>" <%= editing && subjectedit.forClass === uniqsub ? 'selected' : '' %> >
+        <%= uniqsub %>
+      </option >
+    <% } %>
+    </select>
+  </div>
+ 
+<div class="form-group">
+    <label for="questionPaper">Question Paper:</label>
+    <input type="file" <%= editing ? '' : '' %> name="questionPaperOfClass" id="questionPaper" class="form-control mb-3" 
+         accept=".pdf, .doc, .docx, .txt" 
+         title="Upload Question Paper">
+    <% if (editing && subjectedit.questionPaperOfClass) { %>
+      <div class="mt-2">
+        <small class="text-muted">Current file: <%= subjectedit.questionPaperOfClass %></small>
+        <input type="hidden" name="currentQuestionPaper" value="<%= subjectedit.questionPaperOfClass %>">
+      </div>
+    <% } %>
+  </div>
+
+  <div class="form-group">
+    <label for="max">Maximum Questions:</label> same as: <input type="checkbox" class="checkbox" id="">Class 4 <input type="checkbox" class="checkbox" id="">Class 5
+    <input type="number" id="max" name="max" required oninput="generateInput()" 
+           value="<%= editing ? subjectedit.max : '' %>" placeholder="Enter Maximum Question Number" 
+           class="form-control" min="1"> 
+  </div>
 
   <div id="subQuestionContainer"></div>
 
   <button type="submit" id="subjectadd" class="addbutton">
-    <%= editing ? "Update" : "Add New" %> &ensp;<i class="fa-solid fa-plus"></i>
+    <i class="fa-solid fa-<%= editing ? 'pen' : 'plus' %>"></i>
+    <%= editing ? "Update Subject" : "Add New Subject" %>
   </button>
 </form>
 
@@ -122,53 +310,68 @@
 
 
 
-<div class="head">
-<h1>Subject <span style="color:darkblue;"><u>List</u></span></h1></div><br>
-</center>
-<center>
-<table cellspacing="0px" border="1"> 
-  <% 
-  // Collect all unique keys from the array
-  const allKeys = [...new Set(subjects.flatMap(Object.keys))].filter(key => key !== "__v" && key !== "_id"); 
-  %>
-  
-  <tr>
-    <% allKeys.forEach((key) => { %>
-      <th id="thname"><%= key %></th>
-    <% }); %>
-    <th id="thaction">Action</th>
-  </tr>
-  
+<h2 class="subject-title">Subject <span>List</span></h2>
+
+<div class="table-container">
+  <!-- Bootstrap-styled table with responsive features -->
+  <div class="table-responsive">
+    <table class="table table-striped table-hover table-bordered"> 
+      <% 
+     
+  // Define the order you want
+  const orderedKeys = ['subject', 'forClass','max'];
+
+  // Get all numeric or other keys that are not subject/forClass/_id/__v
+  const otherKeys = [...new Set(subjects.flatMap(Object.keys))]
+    .filter(key => !orderedKeys.includes(key) && key !== "__v" && key !== "_id")
+    .sort((a, b) => parseInt(a) - parseInt(b)); // Sort numeric keys
+
+  const allKeys = [...orderedKeys, ...otherKeys];
 
 
-    <% subjects.forEach((sub) => { %>
-      <tr>
-        <% allKeys.forEach((key) => { %>
-          <td><%= sub[key] %></td> <!-- Access the value of each key in the document -->
+
+      %>
+      
+      <thead class="table-dark">
+        <tr>
+          <% allKeys.forEach((key) => { %>
+            <th scope="col"><%= key.charAt(0).toUpperCase() + key.slice(1) %></th>
+          <% }); %>
+          <th scope="col" class="action-column">Action</th>
+        </tr>
+      </thead>
+      
+      <tbody>
+        <% subjects.forEach((sub) => { %>
+          <tr>
+            <% allKeys.forEach((key) => { %>
+              <td><%= sub[key] %></td> <!-- Access the value of each key in the document -->
+            <% }); %>
+            <td class="action-column">
+              <a href="/admin/editsub/<%= sub._id %>?editing=true" class="me-2">
+                <button class="btn btn-primary btn-sm edit-btn">Edit</button>
+              </a>
+              <a 
+                href="/delete/subject/<%= sub._id %>/<%= sub.subject %>" 
+                onclick="return confirm('Are you sure you want to delete <%= sub.subject %> subject')" 
+                class="deletebtn"
+              >
+                <i class="fa-solid fa-trash" style="color: #ff0000;"></i>
+              </a>
+            </td>
+          </tr>
         <% }); %>
-        <td>
-          <a href="/admin/editsub/<%= sub._id %>?editing=true">
-            <button id="subjectedit">Edit</button>
-          </a>
-          <a 
-            href="/delete/subject/<%= sub._id %>/<%= sub.subject %>" 
-            onclick="return confirm('Are you sure you want to delete <%= sub.subject %> subject')" 
-            class="deletebtn"
-          >
-            Delete <i class="fa-solid fa-trash" style="color: #ff0000;"></i>
-          </a>
-        </td>
-      </tr>
-    <% }); %>
- 
-</table> <br><br>
-</center>
+      </tbody>
+    </table>
+  </div>
+</div>
 
 <hr><hr><br>
 
 
   
 <script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
-<script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/bootstrap-table.js"></script>
 </body>
 </html>
