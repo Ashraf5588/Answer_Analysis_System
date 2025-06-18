@@ -10,6 +10,7 @@ const { studentSchema } = require("../model/schema");
 const { classSchema, subjectSchema } = require("../model/adminschema");
 const subjectlist = mongoose.model("subjectlist", subjectSchema, "subjectlist");
 const studentClass = mongoose.model("studentClass", classSchema, "classlist");
+const filePath = require("./admincontroller");
 
 app.set("view engine", "ejs");
 app.set("view", path.join(rootDir, "views"));
@@ -301,6 +302,9 @@ exports.findData = async (req, res) => {
 
 
 
+const paper = await subjectlist.findOne({ subject: subjectinput ,class: studentClass}, { questionPaperOfClass: 1 }).lean().questionPaperOfClass;
+
+
 
 
     const totalstudent = await model.aggregate([
@@ -547,6 +551,7 @@ const totalcountmarks = await model.find({ subject: `${subjectinput}`, section: 
       fifty,
       CorrectAbove50,
       CorrectBelow50,
+      paper,
     
     });
   } catch (err) {

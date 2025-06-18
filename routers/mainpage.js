@@ -35,7 +35,9 @@ student.post('/teacher/logins',admincontrol.teacherloginpost)
 student.get('/admin/term/:terminal',authenticateToken,admincontrol.admin)
 
 student.get('/admin/subject/:subId?',authenticateToken,admincontrol.showSubject)
+
 student.post('/admin/subjectadd/:subId?',authenticateToken,upload.single('questionPaperOfClass'),admincontrol.addSubject)
+student.get('/admin/get_subject_data',authenticateToken,admincontrol.subjectData)
 
 student.get('/admin/class/:classId?',authenticateToken,admincontrol.showClass)
 student.post('/admin/class/:classId?',authenticateToken,admincontrol.addClass)

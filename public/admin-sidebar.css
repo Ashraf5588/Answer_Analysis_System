@@ -4,9 +4,9 @@
 :root {
   --primary: #0ea5e9;  /* skyblue */
   --primary-dark: #0284c7;  /* darker skyblue */
-  --secondary: #8b5a2b;  /* brown */
-  --secondary-dark: #6b4423;  /* darker brown */
-  --accent: #a16207;  /* amber brown for accent */
+  --secondary: #334155;  /* slate gray */
+  --secondary-dark: #1e293b;  /* darker slate */
+  --accent: #8b5cf6;  /* purple accent */
   --light: #f8fafc;
   --dark: #1e293b;
   --gray: #64748b;
@@ -15,6 +15,10 @@
   --warning: #f59e0b;
   --sidebar-width: 280px;
   --topbar-height: 70px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 body {
@@ -34,16 +38,17 @@ body {
 /* Sidebar */
 .admin-sidebar {
   width: var(--sidebar-width);
-  background: linear-gradient(180deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+  background: linear-gradient(to bottom, var(--secondary-dark) 0%, var(--secondary) 100%);
   color: white;
   position: fixed;
   left: 0;
   top: 0;
   height: 100vh;
-  box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-lg);
   z-index: 1000;
-  transition: all 0.3s ease;
+  transition: var(--transition);
   overflow-y: auto;
+  border-right: 1px solid rgba(255,255,255,0.05);
 }
 
 .sidebar-header {

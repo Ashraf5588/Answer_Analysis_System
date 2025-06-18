@@ -116,7 +116,9 @@
     console.log("Generating input fields for", number, "questions");
     console.log("Edit mode:", editing);
     if (editing === 'true') {
-      console.log("Subject data:", subjectedit);
+      console.log("Subject edit data:");
+    } else {
+      console.log("Not in edit mode, generating new fields"); 
     }
 
     for (let i = 1; i <= number; i++) {
@@ -279,8 +281,20 @@
     <% } %>
   </div>
 
+
   <div class="form-group">
-    <label for="max">Maximum Questions:</label> same as: <input type="checkbox" class="checkbox" id="">Class 4 <input type="checkbox" class="checkbox" id="">Class 5
+    <label for="max">Maximum Questions:</label>    <div class="d-flex align-items-center mb-2">
+      <span class="me-2"><b>Copy format of class:</b> </span>
+      
+    
+    <% for (const uniqsub of uniqueClass) { %>
+      <button  style="margin: 1%;" type="button" class="btn btn-info sameas" checked> &ensp;
+        <%= uniqsub %>&ensp;
+      </button>
+    <% } %>
+    
+      
+    </div>
     <input type="number" id="max" name="max" required oninput="generateInput()" 
            value="<%= editing ? subjectedit.max : '' %>" placeholder="Enter Maximum Question Number" 
            class="form-control" min="1"> 
@@ -294,6 +308,111 @@
   </button>
 </form>
 
+<script>
+// Function to fetch and autofill data from another class
+async function autofillFromClass(classNameParam) {
+  try {
+    // Make sure we have a valid class name
+    const className = classNameParam;
+    console.log("autofillFromClass called with className:", className);
+    
+    if (!className) {
+      alert('Please select a valid class');
+      return;
+    }
+    
+    const subjectName = document.getElementById('subject').value;
+    
+    if (!subjectName) {
+      alert('Please enter a subject name first');
+      return;
+    }
+    
+    console.log("Fetching data for Class:", className, "Subject:", subjectName);
+    
+    // Construct the URL with the parameters
+    const url = `/admin/get_subject_data?className=${encodeURIComponent(className)}&subjectName=${encodeURIComponent(subjectName)}`;
+    console.log("Fetch URL:", url);
+    
+    // Fetch subject data from the server
+    const res = await fetch(url);
+    
+    if (!res.ok) {
+      console.error("Fetch error:", res.status, res.statusText);
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    
+    const data = await res.json();
+    console.log("Received data:", data);
+    
+    if (!data || !data.max) {
+      alert(`No data found for ${subjectName} in Class ${className}`);
+      return;
+    }
+    
+    // Update the max questions field
+    let maxInput = document.querySelector('#max');
+    maxInput.value = parseInt(data.max);
+    
+    // Generate input fields based on the new max value
+    generateInput();
+    
+    // Now populate the sub-question counts and marks
+    for (let i = 1; i <= data.max; i++) {
+      if (data[i] && Array.isArray(data[i]) && data[i].length > 0) {
+        // Get the count from the first element in the array
+        const subQCount = parseInt(data[i][0]);
+        
+        // Find the sub-question input
+        const subQInput = document.getElementById(`subQuestion${i}`);
+        if (subQInput) {
+          subQInput.value = subQCount;
+          
+          // Generate mark fields for this question
+          generateSubFullMarks(i, subQCount, i);
+          
+          // Now populate the mark values
+          for (let j = 1; j <= subQCount; j++) {
+            if (data[i][j]) {
+              // Find the mark input and set its value
+              const markInputs = document.querySelectorAll(`#subFmContainer${i} input[type="number"].fm-input`);
+              if (markInputs && markInputs[j-1]) {
+                markInputs[j-1].value = data[i][j];
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    console.log("Autofill complete for Class", className);
+    
+  } catch (err) {
+    console.error("Error occurred during autofill:", err);
+    alert(`Error getting data: ${err.message}`);
+  }
+}
+
+// Add event listener to the "Same as" button
+// This will trigger the autofill function when a class is selected
+document.getElementByIAlld(.sameas').forEach(button => {
+  button.addEventListener('click', function() {
+    const selectedClass = parseInt(this.innerText);
+    button.backgroundColor = "#0d6efd"; // Change button color to indicate selection
+  
+      console.log("Selected class from button:", selectedClass);
+
+  if (selectedClass) {
+    // Call the autofill function with the selected class value
+    autofillFromClass(selectedClass);
+  } else {
+    console.warn("No class selected");
+  }
+    });
+});
+
+
+  </script>
 
 
 

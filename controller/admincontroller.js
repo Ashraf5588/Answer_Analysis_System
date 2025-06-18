@@ -203,14 +203,6 @@ exports.teacherloginpost = async (req, res, next) => {
   }
 };
 
-
-
-
-
-
-
-
-
 exports.admin = async (req, res, next) => {    try {
     // Initialize array
     entryArray = [];
@@ -299,15 +291,19 @@ const studentClassdata = await studentClass.find({});
 exports.showSubject = async (req, res, next) => {
   const subjects = await subject.find({}).lean();
   const studentClassdata = await studentClass.find({});
+    const className = req.query.className;
   res.render("admin/subjectlist", { 
     subjects, 
     editing: false,
     currentPage: 'adminSubject',
-    studentClassdata
+    studentClassdata,
+    className
   });
 };
 exports.addSubject = async (req, res, next) => {  try {
-    const { subId } = req.params;
+    const { subId} = req.params;
+      const className = req.query.className;
+    
     console.log("File uploaded:", req.file);
     console.log("Form data:", req.body);
 
@@ -322,10 +318,19 @@ exports.addSubject = async (req, res, next) => {  try {
       max: formData.max
     };
 
+
     // Handle file upload
     if (req.file) {
-      processedData.questionPaperOfClass = req.file.filename;
-      console.log(`New file uploaded: ${req.file.filename}`);
+
+      const filePath = path.join('./uploads', req.file.filename);
+      processedData.questionPaperOfClass = filePath; // Store the file path in the processed data
+      // Store the file path in exports for later use
+      // Ensure the file exists before logging
+      if (fs.existsSync(filePath)) {
+        console.log(`New file uploaded: ${req.file.filename}`);
+      } else {
+        console.error(`File not found: ${filePath}`);
+      }
     } else if (formData.currentQuestionPaper) {
       processedData.questionPaperOfClass = formData.currentQuestionPaper;
       console.log(`Keeping existing file: ${formData.currentQuestionPaper}`);
@@ -362,11 +367,9 @@ exports.addSubject = async (req, res, next) => {  try {
       // Edit mode
       console.log("Edit mode - updating subject");
       const oldSubject = await subject.findById(subId);
-      
       if (!oldSubject) {
         return res.status(404).send("Subject not found");
       }
-
       // Update the subject
       await subject.findByIdAndUpdate(
         subId,
@@ -390,12 +393,13 @@ exports.addSubject = async (req, res, next) => {  try {
     } else {
       // Create mode
       console.log("Create mode - adding new subject with data:", processedData);
-      await subject.create(processedData);
+
+     
+     await subject.create(processedData);
       res.redirect("/admin/subject");
     }
   } catch (err) {
-    console.error("Error in addSubject:", err);
-    res.status(500).send("An error occurred while processing the subject data: " + err.message);
+   console.log(err)
   }
 };
 
@@ -408,6 +412,45 @@ exports.showClass = async (req, res, next) => {
     currentPage: 'adminClass'
   });
 };
+
+
+exports.subjectData = async (req, res, next) => {
+  try {
+    // Get parameters from query string
+    const className = req.query.className;
+    const subjectName = req.query.subjectName;
+    
+    console.log("Fetching subject data for:", { className, subjectName });
+    
+    // Validate parameters
+    if (!className || !subjectName) {
+      return res.status(400).json({ 
+        error: "Missing parameters", 
+        message: "Both className and subjectName are required" 
+      });
+    }
+
+    // Find the subject in the database
+    const result = await subject.findOne({ subject: subjectName, forClass: className });
+    
+    if (!result) {
+      console.log(`No subject found for ${subjectName} in Class ${className}`);
+      return res.status(404).json({ 
+        error: "Subject not found", 
+        message: `Cannot find ${subjectName} for Class ${className}` 
+      });
+    }
+    
+    console.log("Found subject data:", result);
+    res.json(result);
+  } catch (err) {
+    console.error("Error in subjectData controller:", err);
+    res.status(500).json({ 
+      error: "Server error", 
+      message: err.message 
+    });
+  }
+}
 
 exports.addClass = async (req, res, next) => {
   const { classId } = req.params;
@@ -470,14 +513,15 @@ exports.editSub = async (req, res, next) => {
     }
     
     console.log("Editing subject:", subjectedit);
-    
+      const className = req.query.className;
     // Get student class data for form dropdown
     res.render("admin/subjectlist", {
       editing,
       subId,
       subjectedit,
       subjects,
-      studentClassdata
+      studentClassdata,
+      className,
     });
   } catch (err) {
     console.error("Error in editSub function:", err);
