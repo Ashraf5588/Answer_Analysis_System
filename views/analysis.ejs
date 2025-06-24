@@ -435,9 +435,12 @@
         </header>
 
     
+
+
+
        
 
-        
+
         <div class="container-fluid">
             <!-- Breadcrumb Navigation -->
             <nav aria-label="breadcrumb" class="mb-4">
@@ -659,7 +662,10 @@
   %>
 
 <!-- Display each question's data in a 5-column layout -->
+ 
 <% sortedQuestionData.forEach(questionData => { %>
+    <div class="page" style="display: flex;">
+ <div class="parts">
   <div class="card mb-4 question-analysis-card">
     <div class="card-header py-3 text-center" style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary-dark) 100%); color: white;">
       <h5 class="mb-0">
@@ -789,86 +795,16 @@
       </div>
     </div>
   </div>
+   </div>
+    <div class="questionpart">
+     <iframe   src="/uploads/<%=file%>" frameborder="0" width="200%" height="200px"></iframe> 
+</div> </div>
 <% }) %>
-            <!-- Individual Question Cards -->
-            <div class="row">
-                <div class="col-12">
-                    <h4 class="mb-3">Detailed Question Analysis</h4>
-                </div>
-                <% results.forEach((result, index) => { %>
-                    <div class="col-md-6 col-lg-4 fade-in" style="animation-delay: <%= index * 0.1 %>s;">
-                        <div class="question-card">
-                            <div class="question-header">
-                                Question <%= result.questionNo %>
-                            </div>
-                            <div class="question-body">
-                                <div class="status-item">
-                                    <span>Correct Answers</span>
-                                    <span>
-                                        <%= result.correct %> 
-                                        <a href="/studentData/<%= subjectname %>/<%= studentClass %>/<%= section %>/<%= result.questionNo %>/<%=result.fullMarks%>/<%= terminal %>" 
-                                           class="see-students-btn btn-correct ms-2" data-bs-toggle="tooltip" title="View students with correct answers">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
-                                    </span>
-                                </div>
-                                <div class="status-item">
-                                    <span>Incorrect Answers</span>
-                                    <span>
-                                        <%= result.wrong %> 
-                                        <a href="/studentData/<%= subjectname %>/<%= studentClass %>/<%= section %>/<%= result.questionNo %>/0/<%= terminal %>" 
-                                           class="see-students-btn btn-wrong ms-2" data-bs-toggle="tooltip" title="View students with incorrect answers">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
-                                    </span>
-                                </div>
-                                <div class="status-item">
-                                    <span>Not Attempted</span>
-                                    <span>
-                                        <%= result.notattempt %> 
-                                        <a href="/studentData/<%= subjectname %>/<%= studentClass %>/<%= section %>/<%= result.questionNo %>/notattempt/<%= terminal %>" 
-                                           class="see-students-btn btn-notattempt ms-2" data-bs-toggle="tooltip" title="View students who didn't attempt">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
-                                    </span>
-                                </div>
-                                <div class="status-item">
-                                    <span>Correct Above 50%</span>
-                                    <span>
-                                        <%= result.correctabove50 %> 
-                                        <a href="/studentData/<%= subjectname %>/<%= studentClass %>/<%= section %>/<%= result.questionNo %>/<%= 0.5*result.fullMarks%>/<%= terminal %>" 
-                                           class="see-students-btn btn-above50 ms-2" data-bs-toggle="tooltip" title="View students with >50% correct">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
-                                    </span>
-                                </div>
-                                <div class="status-item">
-                                    <span>Correct Below 50%</span>
-                                    <span>
-                                        <%= result.correctbelow50 %> 
-                                        <a href="/studentData/<%= subjectname %>/<%= studentClass %>/<%= section %>/<%= result.questionNo %>/correctbelow50/<%= terminal %>" 
-                                           class="see-students-btn btn-below50 ms-2" data-bs-toggle="tooltip" title="View students with <50% correct">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
-                                    </span>
-                                </div>
-                                <div class="status-item">
-                                    <span>Wrong Percentage</span>
-                                    <span class="text-<%= (result.wrong/totalStudent*100) > 50 ? 'danger' : (result.wrong/totalStudent*100) > 25 ? 'warning' : 'success' %>">
-                                        <%= (result.wrong/totalStudent*100).toFixed(1) %>%
-                                    </span>
-                                </div>
-                                <div class="progress">
-                                    <div class="progress-bar" data-value="<%= (result.wrong/totalStudent*100) %>" style="width: <%= result.wrong/totalStudent*100 %>%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                <% }) %>
-            </div>
-        </div>
-    </div>
-    
+
+
+ 
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
     <script>

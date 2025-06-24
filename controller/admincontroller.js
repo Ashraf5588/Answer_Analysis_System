@@ -2,7 +2,7 @@ const path = require("path");
 const express = require("express");
 const app = express();
 const jwt = require("jsonwebtoken");
-
+var docxConverter = require('docx-pdf');
 
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
@@ -20,22 +20,7 @@ const multer = require('multer')
 const fs = require('fs')
 
 // Configure storage with better file naming
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    // Create uploads directory if it doesn't exist
-    if (!fs.existsSync('uploads')) {
-      fs.mkdirSync('uploads')
-    }
-    cb(null, 'uploads/')
-  },
-  filename: function (req, file, cb) {
-    // Create unique filename with original extension
-    const uniqueSuffix = Date.now() + '-' + file.originalname
-    cb(null, uniqueSuffix)
-  }
-})
 
-const upload = multer({ storage: storage })
 
 // Create mongoose models
 const subject = mongoose.model("subject", subjectSchema, "subjectlist");
@@ -202,8 +187,41 @@ exports.teacherloginpost = async (req, res, next) => {
     console.log(err);
   }
 };
+exports.studentlogin = async (req, res, next) => {
+  try {
+    res.render("admin/studentlogin");
+  } catch (err) {
+    console.log(err);
+  }
+};
+exports.studentloginpost = async (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+    const user = await admin.findOne({
+      username: `${username}`,
+      password: `${password}`,
+    });
+    if (!user) {
+      res.send("invalid credentials");
+    } else {
+      const studenttoken = jwt.sign(
+        { user: user.username, role: user.role },
+        "mynameisashrafstudent!23_9&",
+        { expiresIn: "720h" }
+      );
+      console.log("Generated Token:", studenttoken); // Log the generated token
 
-exports.admin = async (req, res, next) => {    try {
+      res.cookie("studenttoken", studenttoken, { httpOnly: true, secure: false });
+      res.redirect("/");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+exports.admin = async (req, res, next) => {
+  try {
     // Initialize array
     entryArray = [];
     const subjects = await subject.find({});
@@ -301,6 +319,9 @@ exports.showSubject = async (req, res, next) => {
   });
 };
 exports.addSubject = async (req, res, next) => {  try {
+
+ 
+
     const { subId} = req.params;
       const className = req.query.className;
     
@@ -319,28 +340,48 @@ exports.addSubject = async (req, res, next) => {  try {
     };
 
 
+
     // Handle file upload
     if (req.file) {
+      
+      console.log(req.file);
+       docxConverter(`./../aes/uploads/${req.file.filename}`,`./../aes/uploads/${req.file.filename.replace('.docx', '.pdf')}`,function(err,result){
+  if(err){
+    console.log(err);
+  }
+  fs.unlink(`./../aes/uploads/${req.file.filename.replace('.pdf', '.docx')}`, (err) => {
+    if (err) {
+      console.error(`Error deleting file: ${err.message}`);
+    } else {
+      console.log(`File deleted successfully: ${req.file.filename}`);
+    }
+  });
+});
 
-      const filePath = path.join('./uploads', req.file.filename);
-      processedData.questionPaperOfClass = filePath; // Store the file path in the processed data
+req.file.filename = req.file.filename.replace('.docx', '.pdf'); // Convert filename to PDF
+
+      processedData.questionPaperOfClass = req.file.filename;
+
+      // Store the file path in the processed data
       // Store the file path in exports for later use
       // Ensure the file exists before logging
-      if (fs.existsSync(filePath)) {
-        console.log(`New file uploaded: ${req.file.filename}`);
-      } else {
-        console.error(`File not found: ${filePath}`);
-      }
-    } else if (formData.currentQuestionPaper) {
-      processedData.questionPaperOfClass = formData.currentQuestionPaper;
-      console.log(`Keeping existing file: ${formData.currentQuestionPaper}`);
+      console.log(`New file uploaded: ${req.file.filename}`);
     }
-    
-    // We don't need to delete or filter anything since we're building a new object
-    
-    // Process questions with their marks
-    const numericKeys = Object.keys(formData)
-      .filter(key => /^\d+$/.test(key))
+    if(!req.file)
+{
+  req.file = { filename: "default.pdf" };
+  processedData.questionPaperOfClass = req.file.filename; // Fallback if no file uploaded
+}
+  else if (formData.currentQuestionPaper) {
+    processedData.questionPaperOfClass = formData.currentQuestionPaper;
+    console.log(`Keeping existing file: ${formData.currentQuestionPaper}`);
+  }
+
+  // We don't need to delete or filter anything since we're building a new object
+
+  // Process questions with their marks
+  const numericKeys = Object.keys(formData)
+    .filter(key => /^\d+$/.test(key))
       .map(key => parseInt(key))
       .sort((a, b) => a - b);
     

@@ -12,6 +12,7 @@ const storage = multer.diskStorage({
     // Ensure this directory exists
   },
   filename: function (req, file, cb) {
+    
     cb(null, Date.now() + '-' + file.originalname)
      // Use original name or modify as needed
 
@@ -24,13 +25,17 @@ const upload = multer({ storage: storage })
 
 const {authenticateToken} = require('../middleware/loginmiddleware')
 const {authenticateTokenTeacher} = require('../middleware/loginmiddleware')
+const {authenticateTokenStudent} = require('../middleware/loginmiddleware')
 const admincontrol = require('../controller/admincontroller')
-student.get('/',controller.homePage)
+student.get('/',authenticateTokenStudent,controller.homePage)
+
 
 student.get('/admin/login',admincontrol.adminlogin)
 student.post('/admin/login',admincontrol.adminloginpost)
 student.get('/teacher/login',admincontrol.teacherlogin)
 student.post('/teacher/logins',admincontrol.teacherloginpost)
+student.get('/student/login/home',admincontrol.studentlogin)
+student.post('/student/login/home',admincontrol.studentloginpost)
 
 student.get('/admin/term/:terminal',authenticateToken,admincontrol.admin)
 
@@ -47,29 +52,29 @@ student.get('/delete/class/:classId',authenticateToken,admincontrol.deleteStuden
 student.get('/admin/editsub/:subId/:editing?',authenticateToken,admincontrol.editSub)
 student.get('/admin/editclass/:classId/:editing?',authenticateToken,admincontrol.editClass)
 // Route for editing a student
-student.get('/edit-student/:studentId/:subjectinput?', controller.editStudent);
+student.get('/edit-student/:studentId/:subjectinput?',authenticateToken, controller.editStudent);
 
 // Route for updating a student
-student.post('/update-student/:studentId', controller.updateStudent);
+student.post('/update-student/:studentId', authenticateToken,controller.updateStudent);
 
 // Route for deleting a student
-student.get('/delete-student/:studentId/:subjectinput?/:studentClass?/:section?/:terminal?', controller.deleteStudent);
+student.get('/delete-student/:studentId/:subjectinput?/:studentClass?/:section?/:terminal?',authenticateToken, controller.deleteStudent);
 
 student.get('/teacher/:controller?',authenticateTokenTeacher,controller.teacherPage)
 student.get('/teacher/:subject/:controller',authenticateTokenTeacher,controller.studentclass)
 
-student.get('/findData/:subjectinput/:studentClass/:section/:terminal',controller.findData)
-student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:status',controller.termwisestatus)
-student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:termwisereport/:status',controller.termwisedata)
-student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:termwisereport/:status/:qno/:terminal',controller.termdetail)
+student.get('/findData/:subjectinput/:studentClass/:section/:terminal',authenticateToken,controller.findData)
+student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:status',authenticateToken,controller.termwisestatus)
+student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:termwisereport/:status',authenticateToken,controller.termwisedata)
+student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:termwisereport/:status/:qno/:terminal',authenticateToken,controller.termdetail)
 
 
-student.post('/search/:subject/:studentClass/:section/:terminal',controller.search)
-student.get('/:controller/:subject',controller.studentclass)
-student.get('/:controller/:subject/:studentClass/:section',controller.terminal)
+student.post('/search/:subject/:studentClass/:section/:terminal',authenticateToken,controller.search)
+student.get('/:controller/:subject',authenticateTokenStudent,controller.studentclass)
+student.get('/:controller/:subject/:studentClass/:section',authenticateToken,controller.terminal)
 
-student.get('/forms/:subjectinput/:studentClass/:section/:terminal?',controller.showForm)
-student.post('/forms/:subjectinput/:studentclass?/:section?/:terminal?',controller.saveForm)
+student.get('/forms/:subjectinput/:studentClass/:section/:terminal?',authenticateTokenStudent,controller.showForm)
+student.post('/forms/:subjectinput/:studentclass?/:section?/:terminal?',authenticateTokenStudent,controller.saveForm)
 
 // Temporary debug route
 student.get('/debug/:subjectinput/:studentClass/:section/:terminal', (req, res) => {
@@ -97,8 +102,8 @@ student.get('/debug/:subjectinput/:studentClass/:section/:terminal', (req, res) 
     });
 });
 
-student.get('/studentData/:subjectinput/:studentClass/:section/:qno/:status/:terminal',controller.studentData)
-student.get('/totalStudent/:subjectinput/:studentClass/:section/:terminal',controller.totalStudent)
+student.get('/studentData/:subjectinput/:studentClass/:section/:qno/:status/:terminal',authenticateToken,controller.studentData)
+student.get('/totalStudent/:subjectinput/:studentClass/:section/:terminal',authenticateToken,controller.totalStudent)
 
 // Debug route to check available subjects
 student.get('/debug/subjects', async (req, res) => {

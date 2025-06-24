@@ -1,7 +1,11 @@
+
 const express = require('express');
 const student  = require('./routers/mainpage');
+
 const app = express();
 const connection = require('./config/connection')
+// Serve static files from 'uploads' folder
+app.use('/uploads', express.static(__dirname + '/uploads'));
 const path = require('path')
 
 const jwt = require("jsonwebtoken");

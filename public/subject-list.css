@@ -166,6 +166,8 @@ body {
     var(--primary) 0%,
     var(--primary-dark) 100%
   );
+  width: 50%;
+  height: 3rem;
   color: white;
   border: none;
   padding: 12px 24px;

@@ -1,5 +1,5 @@
 const path = require("path");
-var docxConverter = require('docx-pdf');
+
 const fs= require("fs");
 const express = require("express");
 const app = express();
@@ -10,7 +10,7 @@ const { studentSchema } = require("../model/schema");
 const { classSchema, subjectSchema } = require("../model/adminschema");
 const subjectlist = mongoose.model("subjectlist", subjectSchema, "subjectlist");
 const studentClass = mongoose.model("studentClass", classSchema, "classlist");
-const filePath = require("./admincontroller");
+
 
 app.set("view engine", "ejs");
 app.set("view", path.join(rootDir, "views"));
@@ -264,22 +264,26 @@ exports.findData = async (req, res) => {
       section,
       terminal,
     } = req.params;
-
+ if (!studentClass || studentClass === '') {
+      return res.status(404).render('404', {
+        errorMessage: 'Class parameter is missing or empty',
+        currentPage: 'teacher'
+      });
+    }
+     const subjectExists = await subjectlist.findOne({ 
+      subject: subjectinput, 
+      forClass: studentClass 
+    });
     
-//    docxConverter('./../aes/uploads/question.docx','./../aes/public/output.pdf',function(err,result){
+    if (!subjectExists) {
+      return res.status(404).render('404', {
+        errorMessage: `Subject '${subjectinput}' does not exist for Class ${studentClass}`,
+        currentPage: 'teacher'
+      });
+    }
+    
 
-//   if(err){
-//     console.log(err);
-//   }
-//   //remove file after conversion
-//   fs.unlink('./../aes/public/question.docx', (err) => {
-//     if (err) {
-//       console.error('Error deleting file:', err);
-//     }
-//   });
-
-//   console.log('result'+result);
-// });
+  
     
    
     const subjectData = await getSubjectData(subjectinput, res);
@@ -300,9 +304,6 @@ exports.findData = async (req, res) => {
     
 
 
-
-
-const paper = await subjectlist.findOne({ subject: subjectinput ,class: studentClass}, { questionPaperOfClass: 1 }).lean().questionPaperOfClass;
 
 
 
@@ -339,9 +340,6 @@ const paper = await subjectlist.findOne({ subject: subjectinput ,class: studentC
  data.forEach((item) => {
   
     s=s+item[`q${i}${String.fromCharCode(97+j)}`];
-    
-
-
  })
 
  const inCorrectData = await model.find({
@@ -510,9 +508,6 @@ CorrectBelow50.push({
 // showing q1a = incorrect student name
 
 
-
-
-
     const allArr = [];
 
 
@@ -534,6 +529,20 @@ allArr.push({
   }
 
 
+try {
+
+const paper = await subjectlist.findOne({ subject: `${subjectinput}`, forClass: `${studentClass}` }, { questionPaperOfClass: 1,_id:0 });
+if(paper.questionPaperOfClass===null || paper.questionPaperOfClass===undefined || paper.questionPaperOfClass===''){
+const file =''
+console.log(file);
+}
+else
+{
+  const file = paper.questionPaperOfClass;
+
+  
+
+
 
 const totalcountmarks = await model.find({ subject: `${subjectinput}`, section: `${section}`, terminal: `${terminal}`, studentClass: `${studentClass}` },
       { roll: 1, name: 1 ,totalMarks: 1,_id:0}).lean();
@@ -551,13 +560,23 @@ const totalcountmarks = await model.find({ subject: `${subjectinput}`, section: 
       fifty,
       CorrectAbove50,
       CorrectBelow50,
-      paper,
-    
+      file, 
     });
+  }
+} catch (err) {
+  console.error(`Error fetching question paper for ${subjectinput} in class ${studentClass}: ${err.message}`);
+  return;
+}
+
+
+
   } catch (err) {
     console.log(err);
   }
 };
+
+
+
 
 exports.termwisestatus = async (req,res,next)=>{
   res.render('termstatus')

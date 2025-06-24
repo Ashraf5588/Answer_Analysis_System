@@ -286,12 +286,16 @@
     <label for="max">Maximum Questions:</label>    <div class="d-flex align-items-center mb-2">
       <span class="me-2"><b>Copy format of class:</b> </span>
       
-    
+    <select name="sameas" id="sameas">
+
     <% for (const uniqsub of uniqueClass) { %>
-      <button  style="margin: 1%;" type="button" class="btn btn-info sameas" checked> &ensp;
-        <%= uniqsub %>&ensp;
-      </button>
-    <% } %>
+
+    
+    <option value="<%= uniqsub %>"><%= uniqsub %></option>
+        <% } %>
+      </select>
+      
+  
     
       
     </div>
@@ -395,12 +399,11 @@ async function autofillFromClass(classNameParam) {
 
 // Add event listener to the "Same as" button
 // This will trigger the autofill function when a class is selected
-document.getElementByIAlld(.sameas').forEach(button => {
-  button.addEventListener('click', function() {
-    const selectedClass = parseInt(this.innerText);
-    button.backgroundColor = "#0d6efd"; // Change button color to indicate selection
-  
-      console.log("Selected class from button:", selectedClass);
+document.getElementById('sameas').addEventListener('change', function() {
+  const selectedClass = parseInt(this.value);
+  this.style.backgroundColor = "#0d6efd"; // Change button color to indicate selection
+
+  console.log("Selected class from button:", selectedClass);
 
   if (selectedClass) {
     // Call the autofill function with the selected class value
@@ -409,7 +412,6 @@ document.getElementByIAlld(.sameas').forEach(button => {
     console.warn("No class selected");
   }
     });
-});
 
 
   </script>
