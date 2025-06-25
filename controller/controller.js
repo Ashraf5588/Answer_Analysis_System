@@ -185,6 +185,10 @@ exports.showForm = async (req, res, next) => {
   global.availablesubject = subjects.map((sub) => sub.subject);
 
 let { subjectinput, studentClass, section, terminal } = req.params;
+subjectinput = subjectinput?.trim();
+studentClass = studentClass?.trim();
+section = section?.trim();
+terminal = terminal?.trim();
 
   if(!terminal || terminal === "''" || terminal=== '"')
   {
