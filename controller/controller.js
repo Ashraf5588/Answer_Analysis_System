@@ -7,9 +7,11 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const { rootDir } = require("../utils/path");
 const { studentSchema } = require("../model/schema");
+const { studentrecordschema } = require("../model/adminschema");
 const { classSchema, subjectSchema } = require("../model/adminschema");
 const subjectlist = mongoose.model("subjectlist", subjectSchema, "subjectlist");
 const studentClass = mongoose.model("studentClass", classSchema, "classlist");
+const studentRecord = mongoose.model("studentRecord", studentrecordschema, "studentrecord");
 
 
 app.set("view engine", "ejs");
@@ -180,6 +182,7 @@ exports.terminal = (req, res, next) => {
 exports.showForm = async (req, res, next) => {
   const forClass = req.params.studentClass;
   const subjects = await subjectlist.find({'forClass':`${forClass}`}).lean();
+
   console.log(subjects);
  
   global.availablesubject = subjects.map((sub) => sub.subject);
@@ -189,6 +192,8 @@ subjectinput = subjectinput?.trim();
 studentClass = studentClass?.trim();
 section = section?.trim();
 terminal = terminal?.trim();
+
+
 
   if(!terminal || terminal === "''" || terminal=== '"')
   {
@@ -549,8 +554,8 @@ else
 
 
 const totalcountmarks = await model.find({ subject: `${subjectinput}`, section: `${section}`, terminal: `${terminal}`, studentClass: `${studentClass}` },
-      { roll: 1, name: 1 ,totalMarks: 1,_id:0}).lean();
-
+      { roll: 1, name: 1 ,totalMarks: 1,_id:0,studentClass:1,section:1,subject:1}).lean();
+module.exports = totalcountmarks;
     res.render("analysis", {
       results: result,
       totalcountmarks,
@@ -838,3 +843,36 @@ exports.updateQuestion = async (req, res, next) => {
   const { no } = req.params;
   
 };
+
+exports.studentrecord = async (req, res, next) => {
+  
+  
+   const roll = parseInt(req.query.roll?.trim());
+   
+   const { studentClass, section, terminal } = req.params;
+   let dbSection = section.toUpperCase();
+   if (!section || section === '') {
+     return res.status(404).render('404', {
+       errorMessage: 'Section parameter is missing or empty',
+       currentPage: 'teacher'
+     });
+   }
+ console.log(roll)
+ console.log(section)
+
+  try{
+
+
+
+      const record = await studentRecord.find({section:dbSection,
+    roll: roll})
+console.log(record)
+  res.json(record);
+  }catch(err)
+  {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+

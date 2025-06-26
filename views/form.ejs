@@ -47,27 +47,30 @@
                 </div>
             </div>
         </div>
+
         
         <div class="form-container mt-4">    <form action="/forms/<%=subjectname%>/<%=studentClass%>/<%=section%>/<%=terminal%>" method="POST">
         
         <section class="mb-5">
             <h2 class="section-title">Student Information</h2>
             <div class="row g-3">
-                <div class="col-md-6">
-                    <label for="name" class="form-label">Student Name</label>
-                    <input type="text" name="name" id="name" placeholder="Enter student name" class="form-control" required>
-                </div>
-                <div class="col-md-6">
+                 <div class="col-md-6">
                     <label for="roll" class="form-label">Roll Number</label>
                     <input type="number" name="roll" id="roll" placeholder="Enter roll number" class="form-control" required>
                 </div>
+                <div class="col-md-6">
+
+                    <label for="name" class="form-label">Student Name</label>
+                    <input type="text" name="name" id="name" placeholder="Enter student name" class="form-control" required>
+                </div>
+               
                 <div class="col-md-3">
                     <label for="studentClass" class="form-label">Class</label>
                     <input type="text" name="studentClass" id="studentClass" value="<%=studentClass%>" class="form-control" readonly required>
                 </div>
                 <div class="col-md-3">
                     <label for="section" class="form-label">Section</label>
-                    <input type="text" name="section" id="section" value="<%=section%>" class="form-control" readonly>
+                    <input type="text" name="section" id="section" value="<%=section%>" class="form-control form-control-sm fw-bold text-center bg-light" readonly>
                 </div>
                 <div class="col-md-3">
                     <label for="subject" class="form-label">Subject</label>
@@ -191,6 +194,39 @@
             }
         });
     });    </script>
+
+
+
+
+
+
+    <!-- script for autofill name -->
+     <script>
+        const subject = document.getElementById('subject').value.trim();
+const studentClass = document.getElementById('studentClass').value.trim();
+const section = document.getElementById('section').value.trim();
+const terminal = document.getElementById('terminal').value.trim();
+
+        const rollInput = document.getElementById('roll');
+        rollInput.addEventListener('input',async function() {
+
+             const res = await fetch(`/student_data/${encodeURIComponent(subject)}/${studentClass}/${encodeURIComponent(section)}/${terminal}?roll=${encodeURIComponent(rollInput.value)}`);
+            if (!res.ok) {
+                console.error('Error fetching student data:', res.statusText);
+                return;
+            }
+
+            const data = await res.json();
+            console.log(data)
+            if (data && data.length > 0) {
+                // Autofill the other fields with the retrieved data
+               document.getElementById('name').value = data[0].name || '';
+                document.getElementById('roll').value = data[0].roll || '';
+            }
+            // Do something with the data
+        });
+        
+     </script>
     <script src="https://kit.fontawesome.com/368eb67b69.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/form.js"></script>

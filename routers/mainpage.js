@@ -27,13 +27,14 @@ const {authenticateToken} = require('../middleware/loginmiddleware')
 const {authenticateTokenTeacher} = require('../middleware/loginmiddleware')
 const {authenticateTokenStudent} = require('../middleware/loginmiddleware')
 const admincontrol = require('../controller/admincontroller')
-student.get('/',authenticateTokenStudent,controller.homePage)
+
 
 
 student.get('/admin/login',admincontrol.adminlogin)
 student.post('/admin/login',admincontrol.adminloginpost)
 student.get('/teacher/login',admincontrol.teacherlogin)
 student.post('/teacher/logins',admincontrol.teacherloginpost)
+student.get('/',authenticateTokenStudent,controller.homePage)
 student.get('/student/login/home',admincontrol.studentlogin)
 student.post('/student/login/home',admincontrol.studentloginpost)
 
@@ -59,19 +60,19 @@ student.post('/update-student/:studentId', authenticateToken,controller.updateSt
 
 // Route for deleting a student
 student.get('/delete-student/:studentId/:subjectinput?/:studentClass?/:section?/:terminal?',authenticateToken, controller.deleteStudent);
-
+student.get('/crossheet',authenticateTokenStudent,admincontrol.cross_sheet)
 student.get('/teacher/:controller?',authenticateTokenTeacher,controller.teacherPage)
 student.get('/teacher/:subject/:controller',authenticateTokenTeacher,controller.studentclass)
 
-student.get('/findData/:subjectinput/:studentClass/:section/:terminal',authenticateToken,controller.findData)
-student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:status',authenticateToken,controller.termwisestatus)
-student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:termwisereport/:status',authenticateToken,controller.termwisedata)
-student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:termwisereport/:status/:qno/:terminal',authenticateToken,controller.termdetail)
+student.get('/findData/:subjectinput/:studentClass/:section/:terminal',authenticateTokenTeacher,controller.findData)
+student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:status',authenticateTokenTeacher,controller.termwisestatus)
+student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:termwisereport/:status',authenticateTokenTeacher,controller.termwisedata)
+student.get('/findData/:subjectinput/:studentClass/:section/:termwise/:termwisereport/:status/:qno/:terminal',authenticateTokenTeacher,controller.termdetail)
 
-
-student.post('/search/:subject/:studentClass/:section/:terminal',authenticateToken,controller.search)
+student.get('/student_data/:subjectinput/:studentClass/:section/:terminal', authenticateTokenStudent, controller.studentrecord)
+student.post('/search/:subject/:studentClass/:section/:terminal',authenticateTokenTeacher,controller.search)
 student.get('/:controller/:subject',authenticateTokenStudent,controller.studentclass)
-student.get('/:controller/:subject/:studentClass/:section',authenticateToken,controller.terminal)
+student.get('/:controller/:subject/:studentClass/:section',authenticateTokenStudent,controller.terminal)
 
 student.get('/forms/:subjectinput/:studentClass/:section/:terminal?',authenticateTokenStudent,controller.showForm)
 student.post('/forms/:subjectinput/:studentclass?/:section?/:terminal?',authenticateTokenStudent,controller.saveForm)
@@ -102,8 +103,8 @@ student.get('/debug/:subjectinput/:studentClass/:section/:terminal', (req, res) 
     });
 });
 
-student.get('/studentData/:subjectinput/:studentClass/:section/:qno/:status/:terminal',authenticateToken,controller.studentData)
-student.get('/totalStudent/:subjectinput/:studentClass/:section/:terminal',authenticateToken,controller.totalStudent)
+student.get('/studentData/:subjectinput/:studentClass/:section/:qno/:status/:terminal',authenticateTokenStudent,controller.studentData)
+student.get('/totalStudent/:subjectinput/:studentClass/:section/:terminal',authenticateTokenStudent,controller.totalStudent)
 
 // Debug route to check available subjects
 student.get('/debug/subjects', async (req, res) => {

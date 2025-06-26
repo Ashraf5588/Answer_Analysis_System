@@ -44,4 +44,10 @@ const terminalSchema = new mongoose.Schema({
 
 })
 
-module.exports = {subjectSchema,classSchema,terminalSchema};
+const studentrecordschema = new mongoose.Schema({
+  "name":{ type: String,required: false},
+  "studentClass":{ type: String,required: false},
+  "section":{ type: String,required: false},
+  "roll":{ type: Number,required: false},
+})
+module.exports = {subjectSchema,classSchema,terminalSchema,studentrecordschema};
