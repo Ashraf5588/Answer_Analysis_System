@@ -287,17 +287,12 @@
       <span class="me-2"><b>Copy format of class:</b> </span>
       
     <select name="sameas" id="sameas">
-
+   <option value=""  disabled selected>--Copy format of class--</option>
     <% for (const uniqsub of uniqueClass) { %>
-
-    
     <option value="<%= uniqsub %>"><%= uniqsub %></option>
         <% } %>
       </select>
-      
-  
-    
-      
+
     </div>
     <input type="number" id="max" name="max" required oninput="generateInput()" 
            value="<%= editing ? subjectedit.max : '' %>" placeholder="Enter Maximum Question Number" 

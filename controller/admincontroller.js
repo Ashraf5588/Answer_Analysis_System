@@ -615,16 +615,27 @@ exports.addClass = async (req, res, next) => {
 };
 exports.cross_sheet = async (req, res, next) => {
 
+  const subjectlist = await subject.find({},{_id:0,subject:1,forClass:1});
+  const sortedsubjectlist = subjectlist.sort((a,b)=>Number(a.forClass)-Number(b.forClass))
+
+  console.log(sortedsubjectlist)
+
   const subjectdata = mongoose.model(req.query.subject, studentSchema, `${req.query.subject}`);
  const slipclass =req.query.class
- const subject = req.query.subject
-  const markslip = await subjectdata.find({ class: slipclass, subject: subject });
-  console.log("Markslip data:", markslip);
+ const subjectinput = req.query.subject
+  const markslip = await subjectdata.find({ studentClass: slipclass, subject: subjectinput},{_id:0,__V:0});
+const sortedMarkslip = markslip.sort((a, b) => {
+  if (a.section === b.section) {
+    return Number(a.roll) - Number(b.roll);
+  }
+  return a.section.localeCompare(b.section);
+});
 
-console.log(markslip)
+console.log(sortedMarkslip)
 res.render("admin/crosssheet", {
     editing: false,
-    markslip,
-    currentPage: 'crossSheet'
+    sortedMarkslip,
+    currentPage: 'crossSheet',
+    sortedsubjectlist,
   });
 }
