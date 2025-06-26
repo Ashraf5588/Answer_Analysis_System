@@ -615,34 +615,16 @@ exports.addClass = async (req, res, next) => {
 };
 exports.cross_sheet = async (req, res, next) => {
 
-const availableclasses = await studentClass.find({});
-const cross_sheet = []
+  const subjectdata = mongoose.model(req.query.subject, studentSchema, `${req.query.subject}`);
+ const slipclass =req.query.class
+ const subject = req.query.subject
+  const markslip = await subjectdata.find({ class: slipclass, subject: subject });
+  console.log("Markslip data:", markslip);
 
-
-  const subjects = await subject.find({});
-  const availablesubject = new Set(...[subjects.map(sub => sub.subject)]);
-
-console.log(availablesubject)
-for (const clas of availableclasses) {
-for (const sub of subjects) 
-  {
-    const model = await mongoose.model(sub.subject, studentSchema, `${sub.subject}`);
-    const crossheet = await model.find({studentClass:clas,section:clas.section},{totalMarks:1,studentClass:1,section:1,subject:1,terminal:1,roll:1,_id:0,name:1}).lean();
-      cross_sheet.push({
-      studentClass: clas.studentClass,
-      section: clas.section,
-      subject: sub.subject,
-      terminal: crossheet.terminal,
-      totalMarks: crossheet.totalMarks,
-      roll: crossheet.roll,
-      name: crossheet.name,
-    });
-  }
-}
-console.log(cross_sheet)
+console.log(markslip)
 res.render("admin/crosssheet", {
     editing: false,
-    availableclasses,
+    markslip,
     currentPage: 'crossSheet'
   });
 }

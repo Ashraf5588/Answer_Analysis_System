@@ -556,6 +556,11 @@ else
 const totalcountmarks = await model.find({ subject: `${subjectinput}`, section: `${section}`, terminal: `${terminal}`, studentClass: `${studentClass}` },
       { roll: 1, name: 1 ,totalMarks: 1,_id:0,studentClass:1,section:1,subject:1}).lean();
 module.exports = totalcountmarks;
+
+
+
+inCorrect.sort((a, b) => parseInt(b.total) - parseInt(a.total));
+
     res.render("analysis", {
       results: result,
       totalcountmarks,
@@ -863,10 +868,11 @@ exports.studentrecord = async (req, res, next) => {
   try{
 
 
+const regex = new RegExp(`^${dbSection}\\s*$`, 'i');
 
-      const record = await studentRecord.find({section:dbSection,
+      const record = await studentRecord.find({section:regex,
     roll: roll})
-console.log(record)
+
   res.json(record);
   }catch(err)
   {

@@ -73,7 +73,6 @@ student.get('/student_data/:subjectinput/:studentClass/:section/:terminal', auth
 student.post('/search/:subject/:studentClass/:section/:terminal',authenticateTokenTeacher,controller.search)
 student.get('/:controller/:subject',authenticateTokenStudent,controller.studentclass)
 student.get('/:controller/:subject/:studentClass/:section',authenticateTokenStudent,controller.terminal)
-
 student.get('/forms/:subjectinput/:studentClass/:section/:terminal?',authenticateTokenStudent,controller.showForm)
 student.post('/forms/:subjectinput/:studentclass?/:section?/:terminal?',authenticateTokenStudent,controller.saveForm)
 

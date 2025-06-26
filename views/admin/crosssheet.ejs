@@ -6,6 +6,21 @@
   <title>CrossSheet</title>
 </head>
 <body>
+
+  <select name="subjectClass" id="subjectClass">
+    <option value="" selected disabled>--choose a class and subject--</option>
+    <option value="/crossheet?class=5&subject=Math">Class 5-Math</option>
+    <option value="/crossheet?class=4&section=chanakya">Class 4-chanakya</option>
+  </select>
+
+  <script>
+    document.getElementById('subjectClass').addEventListener('change', function() {
+      window.location.href = this.value;
+    });
+
+  </script>
+
+
   <div>select term</div><br>
   <div>first</div>
   <div>second</div>
