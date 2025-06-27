@@ -334,6 +334,10 @@
     $(document).ready(function() {
       var table = $('#crossSheetTable').DataTable({
         dom: 'Bfrtip',
+        order: [[3, 'asc'], [1, 'asc']],
+        columnDefs: [
+  { targets: 4, orderable: false } // Disable sorting on "Marks" column
+],
         buttons: [
           {
             extend: 'copy',
@@ -368,30 +372,56 @@
           searchPlaceholder: 'Search records'
         }
       });
+    
       
-      // Click-to-copy column feature
-      $('#crossSheetTable thead th').css('cursor', 'pointer').attr('title', 'Click to copy column');
-      
-      // Add click event to table headers for column copying
-      $('#crossSheetTable').on('click', 'thead th', function() {
-        var columnIndex = $(this).index();
-        var columnData = [];
-        
-        // Get header text
-        var headerText = $(this).text().trim();
-        columnData.push(headerText);
-        
-        // Get all data from this column
-        table.column(columnIndex).nodes().each(function(cell) {
-          columnData.push($(cell).text().trim());
-        });
-        
-        // Create temporary textarea to copy data to clipboard
-        var $temp = $("<textarea>");
-        $("body").append($temp);
-        $temp.val(columnData.join('\n')).select();
-        document.execCommand("copy");
-        $temp.remove();
+     $('#crossSheetTable thead th').eq(4).css('cursor', 'pointer').attr('title', 'Click to copy Marks');
+
+$('#crossSheetTable').on('click', 'thead th:eq(4)', function () {
+  var columnIndex = 4;
+  var columnData = [];
+
+  // Add header
+  var headerText = $(this).text().trim();
+  columnData.push(headerText);
+
+  // Add all cell data from this column
+  table.column(columnIndex).nodes().each(function (cell) {
+    columnData.push($(cell).text().trim());
+  });
+
+  // Copy to clipboard
+  var $temp = $('<textarea>');
+  $('body').append($temp);
+  $temp.val(columnData.join('\n')).select();
+  document.execCommand('copy');
+  $temp.remove();
+
+  // Optional: highlight and tooltip
+  var originalBgColor = $(this).css('background-color');
+  $(this).css('background-color', 'var(--secondary-color)').css('color', 'white');
+
+  var $tooltip = $('<div class="copy-tooltip">Marks column copied!</div>');
+  $tooltip.css({
+    position: 'absolute',
+    top: $(this).offset().top - 30,
+    left: $(this).offset().left + ($(this).width() / 2) - 60,
+    background: 'var(--secondary-color)',
+    color: 'white',
+    padding: '5px 10px',
+    borderRadius: '4px',
+    zIndex: 1000,
+    opacity: 0
+  });
+
+  $('body').append($tooltip);
+  $tooltip.animate({ opacity: 1, top: '-=10' }, 200).delay(1000).animate({ opacity: 0, top: '-=10' }, 200, function () {
+    $(this).remove();
+  });
+
+  setTimeout(function () {
+    $('#crossSheetTable thead th').eq(4).css('background-color', originalBgColor).css('color', 'var(--text-dark)');
+  }, 500);
+});
         
         // Show copy feedback
         var originalBgColor = $(this).css('background-color');
@@ -445,7 +475,15 @@
           alert('Selected Term: ' + selectedTerm + ' (This would update the data in a real application)');
         });
       });
-    });
-  </script>
+    </script>
+        <script>
+        function copy(event) {
+            var target = event.target || event.srcElement;
+            var copyText = target.innerText || target.textContent;
+            navigator.clipboard.writeText(copyText);
+        }
+
+        document.querySelectorAll("td:nth-child(5)").forEach(elem => elem.addEventListener("click", copy));
+    </script>
 </body>
 </html>
