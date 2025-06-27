@@ -74,7 +74,7 @@ student.post('/search/:subject/:studentClass/:section/:terminal',authenticateTok
 student.get('/:controller/:subject',authenticateTokenStudent,controller.studentclass)
 student.get('/:controller/:subject/:studentClass/:section',authenticateTokenStudent,controller.terminal)
 student.get('/forms/:subjectinput/:studentClass/:section/:terminal?',authenticateTokenStudent,controller.showForm)
-student.post('/forms/:subjectinput/:studentclass?/:section?/:terminal?',authenticateTokenStudent,controller.saveForm)
+student.post('/forms/:subjectinput/:studentClass?/:section?/:terminal?',authenticateTokenStudent,controller.saveForm)
 
 // Temporary debug route
 student.get('/debug/:subjectinput/:studentClass/:section/:terminal', (req, res) => {

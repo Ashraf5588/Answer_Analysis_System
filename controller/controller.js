@@ -12,8 +12,6 @@ const { classSchema, subjectSchema } = require("../model/adminschema");
 const subjectlist = mongoose.model("subjectlist", subjectSchema, "subjectlist");
 const studentClass = mongoose.model("studentClass", classSchema, "classlist");
 const studentRecord = mongoose.model("studentRecord", studentrecordschema, "studentrecord");
-
-
 app.set("view engine", "ejs");
 app.set("view", path.join(rootDir, "views"));
 const getSubjectModel = (subjectinput) => {
@@ -53,8 +51,6 @@ const getSubjectData = async (subjectinput, res) => {
       }
       return null;
     }
-    
-  
     return currentSubject[0];
   } catch (err) {
     console.error(`Error in getSubjectData: ${err.message}`);
@@ -69,12 +65,8 @@ const getSubjectData = async (subjectinput, res) => {
 };
 exports.homePage = async (req, res, next) => {
   const subject = await subjectlist.find({}).lean();
-  
-
   res.render("index", { currentPage: "home",subjects:subject});
 };
-
-
 // Edit student (get data for the form)
 exports.editStudent = async (req, res, next) => {
   const { studentId, subjectinput} = req.params;
@@ -180,16 +172,19 @@ exports.terminal = (req, res, next) => {
 
 
 exports.showForm = async (req, res, next) => {
-  const forClass = req.params.studentClass;
-  const subjects = await subjectlist.find({'forClass':`${forClass}`}).lean();
+  const { studentClass } = req.params;
+  console.log(studentClass)
+
+  const subjects = await subjectlist.find({ forClass: `${studentClass}` }).lean();
 
   console.log(subjects);
  
   global.availablesubject = subjects.map((sub) => sub.subject);
 
-let { subjectinput, studentClass, section, terminal } = req.params;
+  console.log()
+
+let { subjectinput, section, terminal } = req.params;
 subjectinput = subjectinput?.trim();
-studentClass = studentClass?.trim();
 section = section?.trim();
 terminal = terminal?.trim();
 
@@ -245,8 +240,13 @@ terminal = terminal?.trim();
 
 exports.saveForm = async (req, res, next) => {
   const { subjectinput } = req.params;
-  const { studentclass, section, terminal } = req.params;
+  const { studentClass, section, terminal } = req.params;
 
+  const subjects = await subjectlist.find({ forClass: `${studentClass}` }).lean();
+
+  console.log(subjects);
+ 
+  global.availablesubject = subjects.map((sub) => sub.subject);
   if (!availablesubject.includes(subjectinput)) {
     return res.render("404");
   } else {
@@ -255,7 +255,7 @@ exports.saveForm = async (req, res, next) => {
       await model.create(req.body);
       res.render("FormPostMessage", {
         subjectinput,
-        studentclass,
+        studentClass,
         section,
         terminal,
       });
