@@ -125,7 +125,7 @@
                                         subLabel = 'a';
                                     }
                                     %>
-                                    <% for (let k = 0; k <= parseInt(subjectData[i.toString()][j+1]); k=k+0.5) { %>
+                                    <% for (let k = 0; k <= parseFloat(subjectData[i.toString()][j+1]); k=k+0.5) { %>
                                         <label for="option<%= i %><%= subLabel %><%= k %>" class="ansradio">
                                             <span class="clabel">
                                                 <i class="fas fa-circle mr-2"></i> <%=k%>
