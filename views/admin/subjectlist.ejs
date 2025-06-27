@@ -12,7 +12,7 @@
 <body>
   <%- include('../partials/nav',{currentPage:'admin'}) %>
   <div class="subject-container">
-  <h1 class="subject-title">Welcome to <span>Subject Management</span></h1>
+  <h1 class="subject-title">Welcome to <span>Subject Management,</span></h1>
     <!-- Creating form dynamically popup input fields -->  <script>
   const editing = "<%= editing ? 'true' : 'false' %>";
   const subjectedit = <%- editing ? JSON.stringify(subjectedit || {}) : '{}' %>;
