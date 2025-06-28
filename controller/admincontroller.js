@@ -616,6 +616,8 @@ exports.addClass = async (req, res, next) => {
 exports.cross_sheet = async (req, res, next) => {
 
   const subjectlist = await subject.find({},{_id:0,subject:1,forClass:1});
+  const classlist = await studentClass.find({},{_id:0,studentClass:1,section:1});
+  const sortedClassList = classlist.sort((a,b)=>Number(a.studentClass)-Number(b.studentClass))
   const sortedsubjectlist = subjectlist.sort((a,b)=>Number(a.forClass)-Number(b.forClass))
 
   console.log(sortedsubjectlist)
@@ -623,7 +625,12 @@ exports.cross_sheet = async (req, res, next) => {
   const subjectdata = mongoose.model(req.query.subject, studentSchema, `${req.query.subject}`);
  const slipclass =req.query.class
  const subjectinput = req.query.subject
-  const markslip = await subjectdata.find({ studentClass: slipclass, subject: subjectinput},{_id:0,__V:0});
+ const section = req.query.section;
+
+  const markslip = await subjectdata.find({ studentClass: slipclass, subject: subjectinput,section:section},{_id:0,__V:0});
+
+
+
 const sortedMarkslip = markslip.sort((a, b) => {
   if (a.section === b.section) {
     return Number(a.roll) - Number(b.roll);
@@ -637,5 +644,6 @@ res.render("admin/crosssheet", {
     sortedMarkslip,
     currentPage: 'crossSheet',
     sortedsubjectlist,
+    sortedClassList
   });
 }

@@ -231,29 +231,17 @@
               <div class="col-md-6">
                 <label for="subjectClass" class="form-label fw-bold">Select Class & Subject</label>
                 <select name="subjectClass" id="subjectClass" class="form-select">
-                  <option value="" selected disabled>--Choose a Class and Subject--</option>
-                  <% 
-                    // Group the subjects by class
-                    const classes = {};
-                    sortedsubjectlist.forEach(sub => {
-                      if (!classes[sub.forClass]) {
-                        classes[sub.forClass] = [];
-                      }
-                      classes[sub.forClass].push(sub);
-                    });
-                    
-                    // Sort the classes numerically
-                    const sortedClasses = Object.keys(classes).sort((a, b) => Number(a) - Number(b));
-                    
-                    // Render optgroups for each class
-                    sortedClasses.forEach(className => {
-                  %>
-                    <optgroup label="Class <%= className %>">
-                      <% classes[className].forEach(sub => { %>
-                        <option value="/crossheet?class=<%= sub.forClass %>&subject=<%= sub.subject %>">
-                          <%= sub.subject %>
-                        </option>
-                      <% }); %>
+                  <option value="" selected disabled>--Choose a Class and Subject--</opttion>
+                  <% sortedClassList.forEach(sub => { %>
+                  
+                    <optgroup label="<%= sub.studentClass %> - <%= sub.section %>">
+                      <% const uniqeSub = new Set(sortedsubjectlist.map(s => s.subject));%> 
+                    <% uniqeSub.forEach(subject => { %>
+
+                      <option value="/crossheet?class=<%= sub.studentClass %>&section=<%= sub.section %>&subject=<%= subject %>">
+                        <%= subject %>
+                      </option>
+                    <% }); %>
                     </optgroup>
                   <% }); %>
                 </select>
