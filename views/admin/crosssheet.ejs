@@ -280,8 +280,9 @@
                   <th>Roll</th>
                   <th>Class</th>
                   <th>Section</th>
-                  <th>Original Marks</th>
                   <th>Final Marks</th>
+                  <th>Original Marks</th>
+                  
                   <th>Subject</th>
                 </tr>
               </thead>
@@ -292,7 +293,7 @@
                     <td><%= student.roll %></td>
                     <td><%= student.studentClass %></td>
                     <td><%= student.section %></td>
-                    <td><%= student.totalMarks %></td>
+                    
                    
 
                       <td>
@@ -326,7 +327,7 @@
     } 
   %>
 </td>
-
+<td><%= student.totalMarks %></td>
                     <td><%= student.subject %></td>
                   </tr>
                 <% }); %>
