@@ -128,6 +128,7 @@
           </div>
         </div>
         
+        
         <% 
           // Process all question fields
           Object.keys(student).forEach(key => {
@@ -136,24 +137,25 @@
           <div class="row mb-3">
             <div class="col-md-6">
               <label for="<%= key %>" class="form-label">Question <%= key %></label>
-              <select class="form-select" id="<%= key %>" name="<%= key %>">
-                
-
-
-
-
-                <option value="correct" <%= student[key] === 'correct' ? 'selected' : '' %>>Correct</option>
-                <option value="incorrect" <%= student[key] === 'incorrect' ? 'selected' : '' %>>Incorrect</option>
-                <option value="notattempt" <%= student[key] === 'notattempt' ? 'selected' : '' %>>Not Attempted</option>
-                <option value="correctabove50" <%= student[key] === 'correctabove50' ? 'selected' : '' %>>Correct Above 50%</option>
-                <option value="correctbelow50" <%= student[key] === 'correctbelow50' ? 'selected' : '' %>>Correct Below 50%</option>
-              </select>
+              <input type="Number" class="form-control box" id="<%= key %>" name="<%= key %>" value="<%= student[key] %>" required oninput="sum(this.value)" step="0.01">
             </div>
           </div>
-        <% 
-            }
-          });
+        <% }});
         %>
+        <input type="number" name="totalMarks" id="totalmarks" class="form-container" placeholder="Total Marks" step="0.01"> <br>
+         <script>
+           allinput = document.querySelectorAll('.box');
+           allinput.forEach(element => {
+             element.addEventListener('input', () => {
+               let totalMarks = 0;
+               allinput.forEach(input => {
+                 totalMarks += parseFloat(input.value) || 0;
+               });
+               document.getElementById('totalmarks').value = totalMarks;
+             });
+           });
+
+         </script>
         
         <div class="d-flex justify-content-between mt-4">
           <a href="/totalStudent/<%= student.subject %>/<%= student.studentClass %>/<%= student.section %>/<%= student.terminal %>" class="btn btn-secondary">

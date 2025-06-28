@@ -207,7 +207,7 @@
       <!-- Breadcrumb Navigation -->
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/forms" class="text-decoration-none">Home</a></li>
+          <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
           <li class="breadcrumb-item"><a href="/teacher/<%= subjectinput.toLowerCase() %>/findData" class="text-decoration-none"><%= subjectinput %></a></li>
           <li class="breadcrumb-item"><a href="/findData/<%= subjectinput %>/<%= studentClass %>/<%= section %>/<%= terminal %>" class="text-decoration-none">Class <%= studentClass %> (<%= section %>)</a></li>
           <li class="breadcrumb-item active" aria-current="page">All Students</li>
@@ -283,7 +283,7 @@
                       </td>
                     <% }); %>
                     <td>
-                      <a href="/edit-student/<%= student._id %>/<%= student.subject %>" class="action-btn edit-btn">
+                      <a href="/edit-student/<%= student._id %>/<%= student.subject %>/<%= student.studentClass %>/<%= student.section %>/<%= student.terminal %>" class="action-btn edit-btn">
                         <i class="fas fa-pencil-alt"></i>
                       </a>
                       <a href="/delete-student/<%= student._id %>/<%= student.subject %>/<%= student.studentClass %>/<%= student.section %>/<%= student.terminal %>" 
@@ -314,8 +314,8 @@
         <a href="/findData/<%= subjectinput %>/<%= studentClass %>/<%= section %>/<%= terminal %>" class="btn" style="background-color: var(--primary-dark); color: white;">
           <i class="fas fa-arrow-left me-1"></i> Back to Analysis
         </a>
-        <a href="/forms" class="btn" style="background-color: var(--secondary); color: white;">
-          <i class="fas fa-home me-1"></i> Home
+        <a href="/forms/<%= subjectinput %>/<%= studentClass %>/<%= section %>/<%= terminal %>" class="btn" style="background-color: var(--secondary); color: white;">
+          <i class="fas fa-home me-1"></i> Go to Data Entry
         </a>
       </div>
     </div>

@@ -69,21 +69,23 @@ exports.homePage = async (req, res, next) => {
 };
 // Edit student (get data for the form)
 exports.editStudent = async (req, res, next) => {
-  const { studentId, subjectinput} = req.params;
+  const { studentId, subjectinput,studentClass} = req.params;
   try {
     // Find student by ID
     const model = getSubjectModel(subjectinput);
     const studentToEdit = await model.findById(studentId).lean();
     
+ 
+
     if (!studentToEdit) {
       return res.status(404).render('404', {
         errorMessage: `Student record with ID ${studentId} not found`,
         currentPage: 'teacher'
       });
     }
-    
-    
-    res.render("admin/edit-student", { student: studentToEdit });
+
+
+    res.render("admin/edit-student", { student: studentToEdit  });
   } catch (err) {
     console.error(`Error editing student: ${err.message}`);
     res.status(500).render('404', {

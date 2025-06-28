@@ -53,7 +53,7 @@ student.get('/delete/class/:classId',authenticateToken,admincontrol.deleteStuden
 student.get('/admin/editsub/:subId/:editing?',authenticateToken,admincontrol.editSub)
 student.get('/admin/editclass/:classId/:editing?',authenticateToken,admincontrol.editClass)
 // Route for editing a student
-student.get('/edit-student/:studentId/:subjectinput?',authenticateToken, controller.editStudent);
+student.get('/edit-student/:studentId/:subjectinput?/:studentClass?/:section?/:terminal?',authenticateToken, controller.editStudent);
 
 // Route for updating a student
 student.post('/update-student/:studentId', authenticateToken,controller.updateStudent);
