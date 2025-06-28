@@ -53,14 +53,14 @@ student.get('/delete/class/:classId',authenticateToken,admincontrol.deleteStuden
 student.get('/admin/editsub/:subId/:editing?',authenticateToken,admincontrol.editSub)
 student.get('/admin/editclass/:classId/:editing?',authenticateToken,admincontrol.editClass)
 // Route for editing a student
-student.get('/edit-student/:studentId/:subjectinput?/:studentClass?/:section?/:terminal?',authenticateToken, controller.editStudent);
+student.get('/edit-student/:studentId/:subjectinput?/:studentClass?/:section?/:terminal?',authenticateTokenTeacher, controller.editStudent);
 
 // Route for updating a student
-student.post('/update-student/:studentId', authenticateToken,controller.updateStudent);
+student.post('/update-student/:studentId', authenticateTokenTeacher,controller.updateStudent);
 
 // Route for deleting a student
-student.get('/delete-student/:studentId/:subjectinput?/:studentClass?/:section?/:terminal?',authenticateToken, controller.deleteStudent);
-student.get('/crossheet',authenticateTokenStudent,admincontrol.cross_sheet)
+student.get('/delete-student/:studentId/:subjectinput?/:studentClass?/:section?/:terminal?',authenticateTokenTeacher, controller.deleteStudent);
+student.get('/crossheet',authenticateToken,admincontrol.cross_sheet)
 student.get('/teacher/:controller?',authenticateTokenTeacher,controller.teacherPage)
 student.get('/teacher/:subject/:controller',authenticateTokenTeacher,controller.studentclass)
 

@@ -422,7 +422,27 @@
             colors="primary:#0ea5e9,secondary:#8b5a2b"
             style="width:100px;height:100px;">
         </lord-icon>
-        <div class="mt-3">Generating Analysis...</div>
+    <script>
+  let textArray = [
+    "Generating Analysis...",
+    "Ah, I got the data...",
+    "Thinking....",
+    "Let me analyze it...",
+    "Almost there...",
+    "Just a moment...",
+    "Thank you for waiting...",
+    "Something best is coming..."
+  ];
+
+  textArray.forEach((text, index) => {
+    setTimeout(() => {
+      document.getElementById('loadtext').innerHTML = text;
+    }, index * 800); // each one shows after 1.5s delay
+  });
+</script>
+
+<div class="mt-3" id="loadtext"></div>
+
     </div>
     
     <div class="wholecontainer">

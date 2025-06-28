@@ -371,6 +371,35 @@ hr {
     border-top: 1px solid #e2e8f0;
     margin: 1.5rem 0;
 }
+/* Responsive adjustments */
+@media (max-width: 995px) {
+   form
+   {
+    width: 150%;
+    margin-left: -25%;
+   }
+}
+
+@media (max-width: 875px) {
+   form
+   {
+    width: 130%;
+    margin-left: -15%;
+   }
+   .question-card
+   {
+    width: 105%;
+    margin-left: -2%;
+   }
+   .ansradio
+{
+   min-width: 120px !important;
+}
+}
+
+
+
+
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
@@ -396,14 +425,49 @@ hr {
         min-width: 120px;
         font-size: 0.85rem;
     }
+
+
+
+     form
+   {
+    width: 160%;
+    margin-left: -32%;
+   }
+   .question-card
+   {
+    width: 110%;
+    margin-left: -2%;
+   }
+   .ansradio
+{
+   min-width: 120px !important;
+}
 }
 
-@media (max-width: 480px) {
+
+@media (max-width: 690px) {
+   form
+   {
+    width: 130%;
+    margin-left: -15%;
+   }
+   .question-card
+   {
+    width: 105%;
+    margin-left: -2%;
+   }
+   .ansradio
+{
+   min-width: 80px !important;
+}
+}
+
+@media (max-width: 510px) {
     .ansradio {
-        min-width: 100px;
+        min-width: 60px !important;
         padding: 0.4rem 0.6rem;
         margin: 0.3rem;
-        font-size: 0.8rem;
+        font-size: 0.6rem;
     }
     
     .clabel {
@@ -415,4 +479,11 @@ hr {
         height: 14px;
         margin-right: 6px;
     }
+}
+@media (max-width: 480px) {
+ .question-card
+ {
+    width: 130%;
+    margin-left: -11%;
+ }
 }
