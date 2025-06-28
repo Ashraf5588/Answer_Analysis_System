@@ -346,13 +346,14 @@ exports.addSubject = async (req, res, next) => {  try {
 
     // Handle file upload
     if (req.file) {
-      
+      const {rootDir} = require("../utils/path");
+  
       console.log(req.file);
-       docxConverter(`./../aes/uploads/${req.file.filename}`,`./../aes/uploads/${req.file.filename.replace('.docx', '.pdf')}`,function(err,result){
+       docxConverter(`${rootDir}/uploads/${req.file.filename}`,`${rootDir}/uploads/${req.file.filename.replace('.docx', '.pdf')}`,function(err,result){
   if(err){
     console.log(err);
   }
-  fs.unlink(`./../aes/uploads/${req.file.filename.replace('.pdf', '.docx')}`, (err) => {
+  fs.unlink(`${rootDir}/uploads/${req.file.filename.replace('.pdf', '.docx')}`, (err) => {
     if (err) {
       console.error(`Error deleting file: ${err.message}`);
     } else {
@@ -628,7 +629,6 @@ exports.cross_sheet = async (req, res, next) => {
  const section = req.query.section;
 
   const markslip = await subjectdata.find({ studentClass: slipclass, subject: subjectinput,section:section},{_id:0,__V:0});
-
 
 
 const sortedMarkslip = markslip.sort((a, b) => {

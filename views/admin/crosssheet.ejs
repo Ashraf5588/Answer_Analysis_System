@@ -239,6 +239,9 @@
                     <% uniqeSub.forEach(subject => { %>
 
                       <option value="/crossheet?class=<%= sub.studentClass %>&section=<%= sub.section %>&subject=<%= subject %>">
+                      
+
+
                         <%= subject %>
                       </option>
                     <% }); %>
@@ -277,7 +280,8 @@
                   <th>Roll</th>
                   <th>Class</th>
                   <th>Section</th>
-                  <th>Marks</th>
+                  <th>Original Marks</th>
+                  <th>Final Marks</th>
                   <th>Subject</th>
                 </tr>
               </thead>
@@ -289,6 +293,40 @@
                     <td><%= student.studentClass %></td>
                     <td><%= student.section %></td>
                     <td><%= student.totalMarks %></td>
+                   
+
+                      <td>
+  <% 
+    const subject = student.subject;
+    const marks = Math.ceil(student.totalMarks);
+    const studentClass = student.studentClass;
+    
+    const isSpecialSubject = (subject === "Computer" && studentClass !== '9' && studentClass !== '10' || subject === "Opt.Math" && studentClass !== '9' && studentClass !== '10'|| subject === "Delight");
+
+    if (!isSpecialSubject) {
+      if (marks >= 15 && marks <= 18) {
+  %>
+        18
+  <% 
+      } else { 
+  %>
+        <%= marks %>
+  <% 
+      } 
+    } else {
+      if (marks >= 7 && marks <= 9) {
+  %>
+        9
+  <%
+      } else { 
+  %>
+        <%= marks %>
+  <% 
+      } 
+    } 
+  %>
+</td>
+
                     <td><%= student.subject %></td>
                   </tr>
                 <% }); %>
