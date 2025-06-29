@@ -23,18 +23,16 @@ const getSubjectModel = (subjectinput) => {
 };
 
 // Helper function to safely get subject data and handle errors with case insensitivity
-const getSubjectData = async (subjectinput, res) => {
+const getSubjectData = async (subjectinput, forClass, res) => {
   try {
-    
-    
     // First try exact match
-    let currentSubject = await subjectlist.find({'subject': `${subjectinput}`});
+    let currentSubject = await subjectlist.find({'subject': `${subjectinput}`, forClass: forClass})
     
     // If no results, try case-insensitive search
     if (!currentSubject || currentSubject.length === 0) {
       // Try case-insensitive search using a regular expression
       currentSubject = await subjectlist.find({
-        'subject': { $regex: new RegExp(`^${subjectinput}$`, 'i') }
+        'subject': { $regex: new RegExp(`^${subjectinput}$`, 'i') }, forClass: forClass
       });
     }
     
@@ -297,9 +295,9 @@ exports.findData = async (req, res) => {
   
     
    
-    const subjectData = await getSubjectData(subjectinput, res);
-    
-    
+    const subjectData = await getSubjectData(subjectinput,studentClass,section, res);
+
+
     if (!subjectData) {
       console.log(`No subject data found for ${subjectinput}`);
       return;
@@ -338,20 +336,27 @@ exports.findData = async (req, res) => {
     let result = [];
     // let obtained=[];
     let Correct=[], inCorrect=[], fifty=[], CorrectAbove50=[], CorrectBelow50=[];
+    avg = [];
     const max = parseInt(subjectData.max)
-
+let s= 0;
     for (let i = 1; i <= max; i++) {
       let n = subjectData[i][0]
       if(subjectData[i]===0){n=1}
       for (j = 0; j < n; j++) {
           
            let fullMarks=parseFloat(subjectData[i.toString()][j+1]) 
-             let s= 0;
- const data = await model.find({}, { _id: 0, __v: 0 }).lean();
- data.forEach((item) => {
-  
-    s=s+item[`q${i}${String.fromCharCode(97+j)}`];
- })
+           
+             
+            //       const data = await model.find({subject: `${subjectinput}`,studentClass: `${studentClass}`, section: `${section}`, terminal: `${terminal}`}, { _id: 0, __v: 0 }).lean();
+            //         data.forEach((item) => {
+            //         s=s+item[`q${i}${String.fromCharCode(97+j)}`];
+            //  });
+            //  avg.push({
+            //   qno: `q${i}${String.fromCharCode(97+j)}`,
+              
+            //   average: (s / data.length),
+            // });
+            
 
  const inCorrectData = await model.find({
   subject: `${subjectinput}`,studentClass: `${studentClass}`, section: `${section}`, terminal: `${terminal}`,
@@ -604,8 +609,8 @@ const {subjectinput,studentClass,section,status} = req.params;
 const model = getSubjectModel(subjectinput);
  
   // Use the helper function to safely get subject data
-  const subjectData = await getSubjectData(subjectinput, res);
-  
+  const subjectData = await getSubjectData(subjectinput,studentClass,res);
+
   // If subject data is null, the helper function has already sent a response
   if (!subjectData) {
     return;
@@ -795,8 +800,11 @@ exports.studentData = async (req, res, next) => {
     
     try {
       // Use the helper function to safely get subject data
-      const subjectData = await getSubjectData(subjectinput, res);
-      
+      const subjectData = await getSubjectData(subjectinput,studentClass,section, res);
+      if (!subjectData) {
+        console.log(`No subject data found for ${subjectinput}`);
+        return;
+      } 
       // If subject data is null, the helper function has already sent a response
       if (!subjectData) {
         return;

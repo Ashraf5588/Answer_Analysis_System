@@ -138,7 +138,7 @@ exports.adminloginpost = async (req, res, next) => {
       password: `${password}`,
     });
     if (!user) {
-      res.send("invalid credentials");
+      res.render("<center>invalid credentials. Username or Password Does not Match</center>");
     } else {
       const token = jwt.sign(
         { user: user.username, role: user.role },
@@ -171,7 +171,7 @@ exports.teacherloginpost = async (req, res, next) => {
       password: `${password}`,
     });
     if (!user) {
-      res.send("invalid credentials. Username or Password Does not Match");
+      res.send("<center>invalid credentials. Username or Password Does not Match</center>");
     } else {
       const teachertoken = jwt.sign(
         { user: user.username, role: user.role },
@@ -202,7 +202,7 @@ exports.studentloginpost = async (req, res, next) => {
       password: `${password}`,
     });
     if (!user) {
-      res.send("invalid credentials");
+      res.send("<center>invalid credentials. Username or Password Does not Match</center>");
     } else {
       const studenttoken = jwt.sign(
         { user: user.username, role: user.role },

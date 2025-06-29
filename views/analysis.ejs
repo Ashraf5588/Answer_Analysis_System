@@ -674,6 +674,9 @@
     CorrectBelow50.forEach(student => {
       addToQuestionMap(student.qno, 'correctBelow50', student);
     });
+    CorrectAbove50.forEach(student => {
+      addToQuestionMap(student.qno, 'correctAbove50', student);
+    });
     
     // Sort the questions by question number
     const sortedQuestionData = Array.from(questionMap.values()).sort((a, b) => {
@@ -748,14 +751,14 @@
           </div>
         </div>
         
-        <!-- Column 3: 50% Correct -->
+             <!-- Column 3: 50% Correct -->
         <div class="col">
           <div class="student-list-column fifty-column h-100">
             <div class="column-header bg-primary text-white p-2">
               <i class="fas fa-percentage me-1"></i> 50% Correct
               <span class="badge bg-light text-dark float-end">
                 <%= questionData.categories.fifty ? questionData.categories.fifty.total : 0 %>
-              </span>
+              </span>  
             </div>
             <div class="column-body p-3">
               <% if (questionData.categories.fifty) { %>
@@ -801,17 +804,31 @@
         </div>
         
         <!-- Column 5: Not Attempted (Empty placeholder since we don't have this data) -->
-        <div class="col">
-          <div class="student-list-column not-attempted-column h-100">
-            <div class="column-header bg-secondary text-white p-2">
-              <i class="fas fa-minus-circle me-1"></i> Not Attempted
-              <span class="badge bg-light text-dark float-end">0</span>
+       <div class="col">
+          <div class="student-list-column below50-column h-100">
+            <div class="column-header bg-warning text-dark p-2">
+              <i class="fas fa-arrow-up me-1"></i> Above 50%
+              <span class="badge bg-light text-dark float-end">
+                <%= questionData.categories.correctAbove50 ? questionData.categories.correctAbove50.total : 0 %>
+              </span>
             </div>
             <div class="column-body p-3">
-              <div class="text-muted text-center py-3">No data available</div>
+              <% if (questionData.categories.correctAbove50) { %>
+                <% questionData.categories.correctAbove50.studentName.forEach((name, idx) => { %>
+                  <div class="student-item">
+                    <span class="student-name"><%= name %></span>
+                    <span class="student-marks badge bg-light text-warning">
+                      <%= questionData.categories.correctAbove50.obtainedMarks[idx] %>
+                    </span>
+                  </div>
+                <% }) %>
+              <% } else { %>
+                <div class="text-muted text-center py-3">No students in this category</div>
+              <% } %>
             </div>
           </div>
         </div>
+        
       </div>
     </div>
   </div>
