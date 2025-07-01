@@ -472,14 +472,21 @@
  
 <div class="form-group">
     <label for="questionPaper">Question Paper:</label>
-    <input type="file" <%= editing ? '' : '' %> name="questionPaperOfClass" id="questionPaper" class="form-control mb-3" 
+    <input type="file" name="questionPaperOfClass" id="questionPaper" class="form-control mb-3" 
          accept=".pdf, .doc, .docx, .txt" 
          title="Upload Question Paper">
     <% if (editing && subjectedit.questionPaperOfClass) { %>
       <div class="mt-2">
-        <small class="text-muted">Current file: <%= subjectedit.questionPaperOfClass %></small>
+        <div class="alert alert-info py-2">
+          <i class="fas fa-info-circle me-2"></i>
+          <strong>Current file:</strong> <%= subjectedit.questionPaperOfClass %>
+          <br>
+          <small class="text-muted">Select a new file above to replace the current question paper, or leave empty to keep the existing file.</small>
+        </div>
         <input type="hidden" name="currentQuestionPaper" value="<%= subjectedit.questionPaperOfClass %>">
       </div>
+    <% } else { %>
+      <small class="text-muted">Supported formats: PDF, DOC, DOCX, TXT</small>
     <% } %>
   </div>
 
@@ -610,6 +617,39 @@ document.getElementById('sameas').addEventListener('change', function() {
   }
     });
 
+// Add file selection feedback for editing mode
+if (editing === 'true') {
+  const fileInput = document.getElementById('questionPaper');
+  const currentFileAlert = document.querySelector('.alert-info');
+  
+  fileInput.addEventListener('change', function() {
+    if (this.files.length > 0) {
+      const fileName = this.files[0].name;
+      
+      // Update the alert to show new file selection
+      if (currentFileAlert) {
+        currentFileAlert.innerHTML = `
+          <i class="fas fa-upload me-2"></i>
+          <strong>New file selected:</strong> ${fileName}
+          <br>
+          <small class="text-muted">This will replace the current question paper when you save.</small>
+        `;
+        currentFileAlert.className = 'alert alert-warning py-2';
+      }
+    } else {
+      // Reset to original state if no file selected
+      if (currentFileAlert && typeof subjectedit !== 'undefined' && subjectedit.questionPaperOfClass) {
+        currentFileAlert.innerHTML = `
+          <i class="fas fa-info-circle me-2"></i>
+          <strong>Current file:</strong> ${subjectedit.questionPaperOfClass}
+          <br>
+          <small class="text-muted">Select a new file above to replace the current question paper, or leave empty to keep the existing file.</small>
+        `;
+        currentFileAlert.className = 'alert alert-info py-2';
+      }
+    }
+  });
+}
 
   </script>
 

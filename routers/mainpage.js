@@ -40,6 +40,7 @@ student.post('/student/login/home',admincontrol.studentloginpost)
 
 student.get('/admin/term/:terminal',authenticateToken,admincontrol.admin)
 
+
 student.get('/admin/subject/:subId?',authenticateToken,admincontrol.showSubject)
 
 student.post('/admin/subjectadd/:subId?',authenticateToken,upload.single('questionPaperOfClass'),admincontrol.addSubject)
@@ -47,7 +48,10 @@ student.get('/admin/get_subject_data',authenticateToken,admincontrol.subjectData
 
 student.get('/admin/class/:classId?',authenticateToken,admincontrol.showClass)
 student.post('/admin/class/:classId?',authenticateToken,admincontrol.addClass)
-
+student.get('/admin/terminal',authenticateToken,admincontrol.addTerminal)
+student.post('/admin/terminal/:terminalId?',authenticateToken,admincontrol.addTerminalpost)
+student.get('/admin/terminal/:terminalId/:editing?',authenticateToken,admincontrol.editTerminal)
+student.get('/delete/terminal/:terminalId',authenticateToken,admincontrol.deleteTerminal)
 student.get('/delete/subject/:subjectId/:subjectname?',authenticateToken,admincontrol.deleteSubject)
 student.get('/delete/class/:classId',authenticateToken,admincontrol.deleteStudentClass)
 student.get('/admin/editsub/:subId/:editing?',authenticateToken,admincontrol.editSub)

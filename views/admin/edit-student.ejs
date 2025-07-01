@@ -142,7 +142,7 @@
           </div>
         <% }});
         %>
-        <input type="number" name="totalMarks" id="totalmarks" class="form-container" placeholder="Total Marks" step="0.01"> <br>
+        <input type="number" name="totalMarks" id="totalmarks" class="form-container" placeholder="Total Marks" step="0.01" value="<%= student.totalMarks %>"> <br>
          <script>
            allinput = document.querySelectorAll('.box');
            allinput.forEach(element => {

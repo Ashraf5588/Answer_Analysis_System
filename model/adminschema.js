@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const subjectSchema = new mongoose.Schema({
 "subject":{ type: String,required: false},
 "forClass":{ type: String,required: false},
+"max":{ type: String,required: false},
+"questionPaperOfClass":{ type: String,required: false},
 
     '1': { type: [String], required: false },
   '2': { type: [String], required: false },
@@ -50,4 +52,5 @@ const studentrecordschema = new mongoose.Schema({
   "section":{ type: String,required: false},
   "roll":{ type: Number,required: false},
 })
+
 module.exports = {subjectSchema,classSchema,terminalSchema,studentrecordschema};

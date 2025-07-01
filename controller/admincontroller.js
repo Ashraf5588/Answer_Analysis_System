@@ -11,7 +11,7 @@ const { classSchema, subjectSchema, terminalSchema } = require("../model/adminsc
 const { adminSchema } = require("../model/admin");
 const { studentSchema } = require("../model/schema");
 const student = require("../routers/mainpage");
-const { terminal } = require("./controller");
+const terminal = mongoose.model("terminal", terminalSchema, "terminal");
 app.set("view engine", "ejs");
 app.set("view", path.join(rootDir, "views"));
 
@@ -320,13 +320,15 @@ exports.showSubject = async (req, res, next) => {
 };
 exports.addSubject = async (req, res, next) => {  try {
 
- 
-
     const { subId} = req.params;
-      const className = req.query.className;
+    const className = req.query.className;
     
+    console.log("=== ADDSUBJECT FUNCTION START ===");
+    console.log("Subject ID (editing):", subId);
     console.log("File uploaded:", req.file);
     console.log("Form data:", req.body);
+    console.log("Form has currentQuestionPaper:", req.body.currentQuestionPaper);
+    console.log("=====================================");
 
     // Process the form data
     const formData = req.body;
@@ -344,42 +346,43 @@ exports.addSubject = async (req, res, next) => {  try {
 
 
 
-    // Handle file upload
+    // Handle file upload logic
+    // default.pdf serves as a shared placeholder file for subjects without specific question papers
     if (req.file) {
+      // New file uploaded - process and save it
       const {rootDir} = require("../utils/path");
   
-      console.log(req.file);
+      console.log("Processing uploaded file:", req.file);
        docxConverter(`${rootDir}/uploads/${req.file.filename}`,`${rootDir}/uploads/${req.file.filename.replace('.docx', '.pdf')}`,function(err,result){
   if(err){
-    console.log(err);
+    console.log("Error converting docx to pdf:", err);
+  } else {
+    console.log("Successfully converted docx to pdf");
   }
   fs.unlink(`${rootDir}/uploads/${req.file.filename.replace('.pdf', '.docx')}`, (err) => {
     if (err) {
-      console.error(`Error deleting file: ${err.message}`);
+      console.error(`Error deleting temporary docx file: ${err.message}`);
     } else {
-      console.log(`File deleted successfully: ${req.file.filename}`);
+      console.log(`Temporary docx file deleted successfully: ${req.file.filename}`);
     }
   });
 });
 
-req.file.filename = req.file.filename.replace('.docx', '.pdf'); // Convert filename to PDF
-
-      processedData.questionPaperOfClass = req.file.filename;
-
-      // Store the file path in the processed data
-      // Store the file path in exports for later use
-      // Ensure the file exists before logging
-      console.log(`New file uploaded: ${req.file.filename}`);
+      // Convert filename to PDF if it was a DOCX file
+      const finalFileName = req.file.filename.replace('.docx', '.pdf');
+      processedData.questionPaperOfClass = finalFileName;
+      console.log(`NEW FILE SET: ${finalFileName}`);
+      console.log("processedData.questionPaperOfClass =", processedData.questionPaperOfClass);
+    } else if (formData.currentQuestionPaper) {
+      // Editing mode: Keep existing file (could be default.pdf or a specific file)
+      processedData.questionPaperOfClass = formData.currentQuestionPaper;
+      console.log(`KEEPING EXISTING FILE: ${formData.currentQuestionPaper}`);
+    } else {
+      // Creating new subject with no file: Use default.pdf as placeholder
+      // default.pdf is shared across multiple subjects and should never be deleted
+      processedData.questionPaperOfClass = "default.pdf";
+      console.log("NO FILE PROVIDED - USING DEFAULT: default.pdf");
     }
-    if(!req.file)
-{
-  req.file = { filename: "default.pdf" };
-  processedData.questionPaperOfClass = req.file.filename; // Fallback if no file uploaded
-}
-  else if (formData.currentQuestionPaper) {
-    processedData.questionPaperOfClass = formData.currentQuestionPaper;
-    console.log(`Keeping existing file: ${formData.currentQuestionPaper}`);
-  }
 
   // We don't need to delete or filter anything since we're building a new object
 
@@ -408,6 +411,11 @@ req.file.filename = req.file.filename.replace('.docx', '.pdf'); // Convert filen
       }
     }
 
+    console.log("=== FINAL PROCESSED DATA ===");
+    console.log("Complete processedData object:", JSON.stringify(processedData, null, 2));
+    console.log("questionPaperOfClass specifically:", processedData.questionPaperOfClass);
+    console.log("============================");
+
     if (subId) {
       // Edit mode
       console.log("Edit mode - updating subject");
@@ -415,12 +423,61 @@ req.file.filename = req.file.filename.replace('.docx', '.pdf'); // Convert filen
       if (!oldSubject) {
         return res.status(404).send("Subject not found");
       }
-      // Update the subject
-      await subject.findByIdAndUpdate(
+      
+      // File cleanup logic when editing a subject
+      // When a new file is uploaded, delete the old file BUT protect default.pdf
+      // default.pdf is a shared placeholder used by multiple subjects - never delete it
+      if (req.file && oldSubject.questionPaperOfClass && 
+          oldSubject.questionPaperOfClass !== processedData.questionPaperOfClass) {
+        
+        console.log(`Old file: ${oldSubject.questionPaperOfClass}`);
+        console.log(`New file: ${processedData.questionPaperOfClass}`);
+        
+        // Only delete the old file if it's NOT default.pdf
+        if (oldSubject.questionPaperOfClass !== "default.pdf") {
+          try {
+            const {rootDir} = require("../utils/path");
+            const oldFilePath = `${rootDir}/uploads/${oldSubject.questionPaperOfClass}`;
+            
+            fs.unlink(oldFilePath, (err) => {
+              if (err) {
+                console.error(`Error deleting old file: ${err.message}`);
+              } else {
+                console.log(`✅ Old file deleted successfully: ${oldSubject.questionPaperOfClass}`);
+              }
+            });
+          } catch (error) {
+            console.error("Error handling old file deletion:", error);
+          }
+        } else {
+          console.log("🛡️ Protected: default.pdf is a shared system file - NOT deleting from uploads folder");
+        }
+      } else if (oldSubject.questionPaperOfClass === "default.pdf" && req.file) {
+        console.log("📝 Replacing default.pdf placeholder with new uploaded file:", processedData.questionPaperOfClass);
+        console.log("🛡️ default.pdf remains in uploads folder for other subjects to use");
+      }
+      
+      // Update the subject in database
+      console.log("BEFORE DATABASE UPDATE:");
+      console.log("Subject ID:", subId);
+      console.log("Processed Data:", processedData);
+      console.log("Old questionPaperOfClass:", oldSubject.questionPaperOfClass);
+      console.log("New questionPaperOfClass:", processedData.questionPaperOfClass);
+      
+      const updatedSubject = await subject.findByIdAndUpdate(
         subId,
         processedData,
         { new: true, runValidators: true }
       );
+      
+      console.log("AFTER DATABASE UPDATE:");
+      console.log("Updated subject questionPaperOfClass:", updatedSubject.questionPaperOfClass);
+      
+      if (updatedSubject.questionPaperOfClass === processedData.questionPaperOfClass) {
+        console.log("✅ Database update successful - file path updated correctly");
+      } else {
+        console.log("❌ Database update failed - file path not updated");
+      }
 
       // Handle collection rename if subject name changed
       if (oldSubject.subject !== processedData.subject) {
@@ -499,7 +556,6 @@ exports.subjectData = async (req, res, next) => {
 
 exports.addClass = async (req, res, next) => {
   const { classId } = req.params;
-
   const updateClass = req.body.studentClass;
   const updateSection = req.body.section;
   console.log(updateClass)
@@ -521,22 +577,101 @@ exports.addClass = async (req, res, next) => {
     res.redirect("/admin/class");
   }
 };
+exports.addTerminal = async (req, res, next) => {
+  const terminalList = await terminal.find({},{ __v: 0 }).lean();
+  res.render("admin/terminal", { terminalList, editing: false });
+}
+exports.addTerminalpost = async (req, res, next) => {
+  try {
+    const { terminalId } = req.params;
+    updatedterminal = req.body.terminal;
+    if(terminalId)
+    {
+      
+      await terminal.findByIdAndUpdate(
+        terminalId,
+        { terminal: `${updatedterminal}` },
+        { new: true, runValidators: true }
+       
+      );
+    
+    }
+    else
+    {
+    await terminal.create(req.body);
+    }
+     res.redirect("/admin/terminal");
+  } catch (err) {
+    console.error("Error in addTerminalpost:", err);
+    res.status(500).send("Error adding terminal: " + err.message);
+  }
+}
+exports.editTerminal = async (req, res, next) => {
+  try {
+    const { terminalId } = req.params;
+      const terminalList = await terminal.find({},{ __v: 0 }).lean();
+    const editing = req.query.editing === "true";
+    const terminalData = await terminal.findOne({ _id: terminalId });
+
+    if (!terminalData) {
+      return res.status(404).send("Terminal not found");
+    }
+    res.render("admin/terminal", {
+      editing,
+      terminalData,
+      terminalList
+    });
+  } catch (err) {
+    console.error("Error in addTerminalpost:", err);
+    res.status(500).send("Error adding terminal: " + err.message);
+  }
+}
+exports.deleteTerminal = async (req, res, next) => {
+  const {terminalId} = req.params;
+  await terminal.findByIdAndDelete(terminalId);
+  res.redirect("/admin/terminal");
+}
+
 
 exports.deleteSubject = async (req, res, next) => {
-  const { subjectId,subjectname } = req.params;
-  try
-  {
+  const { subjectId, subjectname } = req.params;
+  try {
+    // Get the subject data before deletion to handle file cleanup
+    const subjectData = await subject.findById(subjectId);
+    
+    // Clean up question paper file, but protect the shared default.pdf
+    // default.pdf serves as a placeholder for multiple subjects and should never be deleted
+    if (subjectData && subjectData.questionPaperOfClass && 
+        subjectData.questionPaperOfClass !== "default.pdf") {
+      try {
+        const {rootDir} = require("../utils/path");
+        const filePath = `${rootDir}/uploads/${subjectData.questionPaperOfClass}`;
+        
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.error(`Error deleting question paper file: ${err.message}`);
+          } else {
+            console.log(`Question paper file deleted successfully: ${subjectData.questionPaperOfClass}`);
+          }
+        });
+      } catch (error) {
+        console.error("Error handling question paper file deletion:", error);
+      }
+    } else if (subjectData && subjectData.questionPaperOfClass === "default.pdf") {
+      console.log("Protected: default.pdf is a shared placeholder file used by multiple subjects - not deleted");
+    }
 
- 
-  await mongoose.connection.db.dropCollection(`${subjectname}`);
- 
-
-  await subject.findByIdAndDelete(subjectId);
-  res.redirect("/admin/subject");
- } catch (err) {
-  console.error("Error deleting subject collection:", err);
-  res.status(500).send("Error deleting subject: " + err.message);
- }
+    // Drop the MongoDB collection for this subject
+    await mongoose.connection.db.dropCollection(`${subjectname}`);
+    
+    // Delete the subject document from the database
+    await subject.findByIdAndDelete(subjectId);
+    
+    res.redirect("/admin/subject");
+  } catch (err) {
+    console.error("Error deleting subject collection:", err);
+    res.status(500).send("Error deleting subject: " + err.message);
+  }
 };
 
 exports.deleteStudentClass = async (req, res, next) => {

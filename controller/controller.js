@@ -141,11 +141,12 @@ exports.deleteStudent = async (req, res, next) => {
   
   const { studentId,subjectinput,studentClass,section,terminal} = req.params;
   const model = getSubjectModel(subjectinput);
+  const {controller} = req.query;
   try {
    
     // Delete the student record
     await model.findByIdAndDelete(studentId);
-    res.redirect(`/totalStudent/${subjectinput}/${studentClass}/${section}/${terminal}`);  // Redirect to admin dashboard or any page you prefer
+    res.redirect(`/${controller}/${subjectinput}/${studentClass}/${section}/${terminal}`);  // Redirect to admin dashboard or any page you prefer
   } catch (err) {
     console.error(err);
     next(err);
@@ -337,7 +338,83 @@ exports.findData = async (req, res) => {
     // let obtained=[];
     let Correct=[], inCorrect=[], fifty=[], CorrectAbove50=[], CorrectBelow50=[];
     avg = [];
+    let total=[];
+let sub = await model.find({ subject: `${subjectinput}`, studentClass: `${studentClass}`, section: `${section}`, terminal: `${terminal}` }, { _id: 0, __v: 0 }).lean();
+if (sub && sub.length > 0) {
+ total = Object.keys(sub[0]).slice(7).map(qno=>
+{
+  const t = sub.reduce((sum,obtainedmarks)=>{
+      return sum + (obtainedmarks[qno] ?? 0);
+  },0)
+  return {qno,t};
+}
+
+);
+}
+
+
     const max = parseInt(subjectData.max)
+
+// Build result array for DataTable with question-wise statistics
+for (let i = 1; i <= max; i++) {
+  let n = subjectData[i][0]
+  if(subjectData[i]===0){n=1}
+  for (j = 0; j < n; j++) {
+    const questionKey = `q${i}${String.fromCharCode(97+j)}`;
+    const fullMarks = parseFloat(subjectData[i.toString()][j+1]);
+    
+    // Get the total marks for this question
+    const questionTotal = total.find(t => t.qno === questionKey);
+    const totalMarksForQuestion = questionTotal ? questionTotal.t : 0;
+    
+    // Calculate average percentage
+    const averagePercentage = totalStudent > 0 ? (totalMarksForQuestion / (totalStudent * fullMarks)) * 100 : 0;
+    
+    // Count students in each category
+    const correctCount = await model.countDocuments({
+      subject: `${subjectinput}`,studentClass: `${studentClass}`, section: `${section}`, terminal: `${terminal}`,
+      [questionKey]: fullMarks
+    });
+    
+    const incorrectCount = await model.countDocuments({
+      subject: `${subjectinput}`,studentClass: `${studentClass}`, section: `${section}`, terminal: `${terminal}`,
+      [questionKey]: 0
+    });
+    
+    const fiftyCount = await model.countDocuments({
+      subject: `${subjectinput}`,studentClass: `${studentClass}`, section: `${section}`, terminal: `${terminal}`,
+      [questionKey]: 0.5 * fullMarks
+    });
+    
+    const above50Count = await model.countDocuments({
+      subject: `${subjectinput}`,studentClass: `${studentClass}`, section: `${section}`, terminal: `${terminal}`,
+      [questionKey]: { $gt: 0.5 * fullMarks, $lt: fullMarks }
+    });
+    
+    const below50Count = await model.countDocuments({
+      subject: `${subjectinput}`,studentClass: `${studentClass}`, section: `${section}`, terminal: `${terminal}`,
+      [questionKey]: { $lt: 0.5 * fullMarks, $gt: 0 }
+    });
+    
+   
+    
+    result.push({
+      questionNo: questionKey,
+      correct: correctCount,
+      wrong: incorrectCount,
+     
+      correctabove50: above50Count,
+      correctbelow50: below50Count,
+      fifty: fiftyCount,
+      averagePercentage: averagePercentage.toFixed(2),
+      totalMarks: totalMarksForQuestion,
+      fullMarks: fullMarks
+    });
+  }
+}
+
+// Sort result by wrong count (most wrong first)
+result.sort((a, b) => b.wrong - a.wrong);
 let s= 0;
     for (let i = 1; i <= max; i++) {
       let n = subjectData[i][0]
@@ -417,108 +494,14 @@ CorrectBelow50.push({
   obtainedMarks:CorrectBelow50Data.map(item=>item[`q${i}${String.fromCharCode(97+j)}`]),
 });
 
-       const analysis = await model.aggregate([
-         {
-           $facet: {
-             correct: [
-               {
-                 $match: {
-                   $and: [
-                      { [`q${i}${String.fromCharCode(97+j)}`]: fullMarks },
-                      { section: `${section}` },
-                      { terminal: `${terminal}` },
-                    ],
-                  },
-                },
-                { $count: "count" },
-              ],
-              incorrect: [
-                {
-                  $match: {
-                    $and: [
-                      { [`q${i}${String.fromCharCode(97+j)}`]: 0 },
-                      { section: `${section}` },
-                      { terminal: `${terminal}` },
-                    ],
-                  },
-                },
-                { $count: "count" },
-              ],
-              averageMarks: [
-                {
-                  $match: {
-                    $and: [
-                      { [`q${i}${String.fromCharCode(97+j)}`]: "notattempt" },
-                      { section: section },
-                      { terminal: `${terminal}` },
-                    ],
-                  },
-                },
-                { $count: "count" },
-              ],
-              correctabove50: [
-                {
-                  $match: {
-                    $and: [
-                      { [`q${i}${String.fromCharCode(97+j)}`]: { $gt: 0.5 * fullMarks, $lt: fullMarks } },
-                      { section: section },
-                      { terminal: `${terminal}` },
-                    ],
-                  },
-                },
-                { $count: "count" },
-              ],
-              correctbelow50: [
-                {
-                  $match: {
-                    $and: [
-                      { [`q${i}${String.fromCharCode(97+j)}`]: { $lt: 0.5 * fullMarks, $gt: 0 } },
-                      { section: section },
-                      { terminal: `${terminal}` },
-                    ],
-                  },
-                },
-                { $count: "count" },
-              ],
-              
-            },
-          },
-          {
-            $project: {
-              correct: {
-                $ifNull: [{ $arrayElemAt: ["$correct.count", 0] }, 0],
-              },
-              incorrect: {
-                $ifNull: [{ $arrayElemAt: ["$incorrect.count", 0] }, 0],
-              },
-              notattempt: {
-                $ifNull: [{ $arrayElemAt: ["$notattempt.count", 0] }, 0],
-              },
-              correctabove50: {
-                $ifNull: [{ $arrayElemAt: ["$correctabove50.count", 0] }, 0],
-              },
-              correctbelow50: {
-                $ifNull: [{ $arrayElemAt: ["$correctbelow50.count", 0] }, 0],
-              },
-             
-            },
-          },
-        ]);
+       
 
-        result.push({
-          questionNo: `q${i}${String.fromCharCode(97+j)}`,
-          correct: analysis[0].correct,
-          wrong: analysis[0].incorrect,
-          notattempt: analysis[0].notattempt,
-          correctabove50: analysis[0].correctabove50,
-          correctbelow50: analysis[0].correctbelow50,
-          fullMarks
-        });
+       
        
       }
     }
 
-    result.sort((a, b) => b.wrong - a.wrong);
+  
     
    
 // showing q1a = incorrect student name
@@ -548,23 +531,40 @@ allArr.push({
 try {
 
 const paper = await subjectlist.findOne({ subject: `${subjectinput}`, forClass: `${studentClass}` }, { questionPaperOfClass: 1,_id:0 });
-if(paper.questionPaperOfClass===null || paper.questionPaperOfClass===undefined || paper.questionPaperOfClass===''){
-const file =''
-console.log(file);
-}
-else
-{
-  const file = paper.questionPaperOfClass;
 
+let file = 'default.pdf'; // Default fallback
+let fileStatus = 'default'; // 'default', 'found', 'missing'
+
+if(paper && paper.questionPaperOfClass && paper.questionPaperOfClass !== '') {
+  const requestedFile = paper.questionPaperOfClass;
   
-
-
+  // Check if the file actually exists in uploads folder
+  const {rootDir} = require("../utils/path");
+  const filePath = `${rootDir}/uploads/${requestedFile}`;
+  
+  try {
+    if (fs.existsSync(filePath)) {
+      file = requestedFile;
+      fileStatus = 'found';
+      console.log(`✅ Question paper found: ${requestedFile}`);
+    } else {
+      console.log(`⚠️ Question paper file missing: ${requestedFile}, falling back to default.pdf`);
+      file = 'default.pdf';
+      fileStatus = 'missing';
+    }
+  } catch (err) {
+    console.log(`❌ Error checking file existence: ${err.message}, using default.pdf`);
+    file = 'default.pdf';
+    fileStatus = 'missing';
+  }
+} else {
+  console.log(`📝 No question paper specified, using default.pdf`);
+  fileStatus = 'default';
+}
 
 const totalcountmarks = await model.find({ subject: `${subjectinput}`, section: `${section}`, terminal: `${terminal}`, studentClass: `${studentClass}` },
-      { roll: 1, name: 1 ,totalMarks: 1,_id:0,studentClass:1,section:1,subject:1}).lean();
+      { roll: 1, name: 1 ,totalMarks: 1,_id:1,studentClass:1,section:1,subject:1}).lean();
 module.exports = totalcountmarks;
-
-
 
 inCorrect.sort((a, b) => parseInt(b.total) - parseInt(a.total));
 
@@ -582,8 +582,10 @@ inCorrect.sort((a, b) => parseInt(b.total) - parseInt(a.total));
       CorrectAbove50,
       CorrectBelow50,
       file, 
+      fileStatus, // Pass file status to view
+      originalFile: paper?.questionPaperOfClass || '', // Pass original filename for display
+      total,
     });
-  }
 } catch (err) {
   console.error(`Error fetching question paper for ${subjectinput} in class ${studentClass}: ${err.message}`);
   return;
