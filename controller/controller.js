@@ -8,10 +8,12 @@ const bodyParser = require("body-parser");
 const { rootDir } = require("../utils/path");
 const { studentSchema } = require("../model/schema");
 const { studentrecordschema } = require("../model/adminschema");
-const { classSchema, subjectSchema } = require("../model/adminschema");
+const { classSchema, subjectSchema,terminalSchema } = require("../model/adminschema");
 const subjectlist = mongoose.model("subjectlist", subjectSchema, "subjectlist");
 const studentClass = mongoose.model("studentClass", classSchema, "classlist");
 const studentRecord = mongoose.model("studentRecord", studentrecordschema, "studentrecord");
+
+const terminal = mongoose.model("terminal", terminalSchema, "terminal");
 app.set("view engine", "ejs");
 app.set("view", path.join(rootDir, "views"));
 const getSubjectModel = (subjectinput) => {
@@ -166,9 +168,10 @@ exports.studentclass = async (req, res, next) => {
 
   res.render("class", { subject, controller, studentClassdata });
 };
-exports.terminal = (req, res, next) => {
+exports.terminal = async (req, res, next) => {
   const { controller, subject, studentClass, section } = req.params;
-  res.render("terminal", { subject, controller, studentClass, section });
+  const terminalList = await terminal.find({}).lean();
+  res.render("terminal", { subject, controller, studentClass, section, terminalList });
 };
 
 
