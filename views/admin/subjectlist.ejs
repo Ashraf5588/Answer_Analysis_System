@@ -451,17 +451,20 @@
 
 <form action="<%= editing ? `/admin/subjectadd/${subId}` : '/admin/subjectadd' %>" method="post" class="subject-form" enctype="multipart/form-data">
   <div class="form-group">
-    <label for="subject">Subject:</label> 
+    <label for="subject">Enter Subject Name:</label> 
     <input type="text" id="subject" name="subject" required placeholder="Add New Subject here" 
            value="<%= editing ? subjectedit.subject : '' %>" class="form-control"> 
   </div>
 
   <div class="form-group">
-    <label for="studentclass">Class:</label>
+    <label for="studentclass">Question Format For Class:</label>
     <select name="forClass" id="studentclass" class="form-select" >
     <%
+        studentClassdata.sort((a,b)=>(Number(a.studentClass)-Number(b.studentClass)))
       const uniqueClass = new Set(studentClassdata.map(item => item.studentClass));
+      
     %>
+    <option value="" disabled selected>--Select for Class--</option>
     <% for (const uniqsub of uniqueClass) { %>
       <option   value="<%= uniqsub %>" <%= editing && subjectedit.forClass === uniqsub ? 'selected' : '' %> >
         <%= uniqsub %>
@@ -471,7 +474,7 @@
   </div>
  
 <div class="form-group">
-    <label for="questionPaper">Question Paper:</label>
+    <label for="questionPaper">Upload Question Paper:</label>
     <input type="file" name="questionPaperOfClass" id="questionPaper" class="form-control mb-3" 
          accept=".pdf, .doc, .docx, .txt" 
          title="Upload Question Paper">
@@ -492,17 +495,18 @@
 
 
   <div class="form-group">
-    <label for="max">Maximum Questions:</label>    <div class="d-flex align-items-center mb-2">
+
       <span class="me-2"><b>Copy format of class:</b> </span>
       
     <select name="sameas" id="sameas">
-   <option value=""  disabled selected>--Copy format of class--</option>
+   <option value=""  disabled selected>--If same format then click here--</option>
     <% for (const uniqsub of uniqueClass) { %>
     <option value="<%= uniqsub %>"><%= uniqsub %></option>
         <% } %>
       </select>
 
     </div>
+        <label for="max">Maximum Questions:</label>    <div class="d-flex align-items-center mb-2"></div>
     <input type="number" id="max" name="max" required oninput="generateInput()" 
            value="<%= editing ? subjectedit.max : '' %>" placeholder="Enter Maximum Question Number" 
            class="form-control" min="1"> 
