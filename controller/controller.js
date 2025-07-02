@@ -65,7 +65,8 @@ const getSubjectData = async (subjectinput, forClass, res) => {
 };
 exports.homePage = async (req, res, next) => {
   const subject = await subjectlist.find({}).lean();
-  res.render("index", { currentPage: "home",subjects:subject});
+  const studentClassdata = await studentClass.find({}).lean();
+  res.render("index", { currentPage: "home",subjects:subject, studentClassdata });
 };
 // Edit student (get data for the form)
 exports.editStudent = async (req, res, next) => {

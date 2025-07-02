@@ -4,10 +4,74 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nav</title>
+  <link rel="stylesheet" href="/sidenav.css">
 </head>
 <body>
-  <a href="/teacher" class="nav-link">Teacher Dashboard</a>
-  <a href="/student" class="nav-link">Student Dashboard</a>
-  <a href="/admin" class="nav-link">Admin Dashboard</a>
+  <nav>
+    <ul>
+      <li><b>Teacher</b>
+           
+              
+                 <ul>
+                   <li id="enterdata">Enter Data
+                   <div class="dropdown">
+                     <ul>
+                       <li>
+                            <div class="subjectlist">
+                              <ul> <% const uniqueSubjects = [...new Set(subjects.map(item => item.subject))]; %>
+                            <% uniqueSubjects.forEach((sub)=>{ %><li value="<%= sub.trim() %>"><%= sub %>
+                            
+                            <div class="forclass">
+                              <ul><% studentClassdata.forEach((studentclass, index) => { %><li value="<%= studentclass%>/"><%= studentclass.studentClass %>-<%= studentclass.section %></li><% }) %></ul>
+                            </div>
+                            
+                            
+                            </li>
+                          <% }) %>
+
+                        </ul>
+                            </div>
+                          
+                        </li>
+                       
+                     </ul>
+                   </div>
+                   </li>
+                   <li>Show Report</li>
+                   <li>Edit Student</li>
+                   <li>Add New Subject</li>
+                   <li>Add New Class</li>
+                 </ul>
+              
+
+</div>
+
+                   </li>
+                   <li>Show Report</li>
+                   <li>Edit Student</li>
+                   <li>Add New Subject</li>
+                   <li>Add New Class</li>
+                 </ul>
+              
+            
+          
+      </li>
+
+      <li><b>Admin</b>
+        <div class="dropdown2">
+        <ul>
+          <li>Add new Terminal</li>
+          <li>See total entries</li>
+          <li>view Report</li>
+          <li>Generate marks slip</li>
+          <li>Add New Class and Section</li>
+          <li>Upload Question Paper</li>
+        </ul>
+        </div>
+      </li>
+         
+
+    </ul>
+  </nav>
 </body>
 </html>
