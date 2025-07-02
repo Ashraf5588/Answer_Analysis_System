@@ -148,7 +148,7 @@ exports.adminloginpost = async (req, res, next) => {
       console.log("Generated Token:", token); // Log the generated token
 
       res.cookie("token", token, { httpOnly: true, secure: false });
-      res.redirect("/admin/term/first");
+      res.redirect("/admin/term/FIRST");
     }
   } catch (err) {
     console.log(err);
