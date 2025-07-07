@@ -199,6 +199,12 @@
 </head>
 <body>
  
+  <%- include('../partials/sidenav', { 
+      subjects: subjects, 
+      studentClassdata: studentClassdata,
+      terminals: terminals 
+  }) %>
+ 
   <!-- Header Section -->
   <header class="page-header">
     <div class="container">
@@ -446,11 +452,7 @@ $('#crossSheetTable').on('click', 'thead th:eq(4)', function () {
   var columnIndex = 4;
   var columnData = [];
 
-  // Add header
-  var headerText = $(this).text().trim();
-  columnData.push(headerText);
-
-  // Add all cell data from this column
+  // Add all cell data from this column (excluding header)
   table.column(columnIndex).nodes().each(function (cell) {
     columnData.push($(cell).text().trim());
   });
