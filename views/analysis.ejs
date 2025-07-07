@@ -35,22 +35,44 @@
         var classInfo = "<%= terminal %> Terminal Examination\n" +
                     "Class: <%= studentClass %> (<%= section %>)\n" +
                     "Subject: <%= subjectname %>";
+        
+        // Add custom sorting function for question numbers
+        $.fn.dataTable.ext.type.order['question-number-pre'] = function (data) {
+            // Extract question number and letter from strings like "q1a", "q2b", "q10c"
+            var match = data.match(/^q(\d+)([a-z])$/i);
+            if (match) {
+                var questionNum = parseInt(match[1], 10);
+                var letterCode = match[2].toLowerCase().charCodeAt(0) - 97; // Convert a=0, b=1, etc.
+                // Create a sortable number: question number * 100 + letter code
+                // This ensures q1a=100, q1b=101, q2a=200, q2b=201, q10a=1000, etc.
+                return questionNum * 100 + letterCode;
+            }
+            return 0; // fallback for non-matching data
+        };
+        
+        // Register the custom type detection
+        $.fn.dataTable.ext.type.detect.unshift(function (data) {
+            return data && typeof data === 'string' && data.match(/^q\d+[a-z]$/i) ? 'question-number' : null;
+        });
                     
         $("#example").DataTable({
             data: persons,
             responsive: true,
             columns: [
-                { data: "questionNo", title: "Question No" },
+                { 
+                    data: "questionNo", 
+                    title: "Question No",
+                    type: "question-number" // Apply custom sorting to this column
+                },
                 { data: "correct", title: "Correct" },
-
                 { data: "wrong", title: "Wrong" },
-                { data: null, title: "Current",defaultContent: "" },
+                { data: null, title: "Not Attempted", defaultContent: "0" },
                 { data: "fifty", title: "50% Correct" },
-                { data: null, title: "Current",defaultContent: "" },
+                { data: null, title: "Partial Credit", defaultContent: "0" },
                 { data: "correctabove50", title: "Above 50%" },
-                { data: null, title: "Current",defaultContent: "" },
+                { data: null, title: "Below Average", defaultContent: "0" },
                 { data: "correctbelow50", title: "Below 50%" },
-                { data: null, title: "Current",defaultContent: "" },
+                { data: null, title: "Needs Help", defaultContent: "0" },
                 { 
                     data: "averagePercentage", 
                     title: "Average %",
@@ -63,7 +85,7 @@
                     title: "Wrong Percentage", 
                     render: function (data, type, row) {
                         var totalStudents = <%= totalStudent %>;
-                        return (row.wrong / totalStudents * 100).toFixed(2) + "%";
+                        return totalStudents > 0 ? (row.wrong / totalStudents * 100).toFixed(2) + "%" : "0%";
                     }
                 },
                 { data: "totalMarks", title: "Total Obtained" },
@@ -73,7 +95,13 @@
                  "<'row'<'col-sm-12'tr>>" +
                  "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>" +
                  "<'row'<'col-sm-12'B>>",
-            order: [[2, 'desc']], // Sort by Wrong column (index 2) in descending order
+            order: [[0, 'asc']], // Sort by Question No column in ascending order (q1a, q1b, q2a, etc.)
+            columnDefs: [
+                {
+                    targets: 0, // Question No column
+                    type: 'question-number'
+                }
+            ],
             buttons: [
                 {
                     extend: "copy",
