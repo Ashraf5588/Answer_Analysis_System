@@ -21,6 +21,27 @@ const fs = require('fs')
 
 // Configure storage with better file naming
 
+// Helper function to fetch sidenav data
+const getSidenavData = async () => {
+  try {
+    const subjects = await subject.find({}).lean();
+    const studentClassdata = await studentClass.find({}).lean();
+    const terminals = await terminal.find({}).lean();
+    
+    return {
+      subjects,
+      studentClassdata,
+      terminals
+    };
+  } catch (error) {
+    console.error('Error fetching sidenav data:', error);
+    return {
+      subjects: [],
+      studentClassdata: [],
+      terminals: []
+    };
+  }
+};
 
 // Create mongoose models
 const subject = mongoose.model("subject", subjectSchema, "subjectlist");
@@ -290,6 +311,9 @@ exports.admin = async (req, res, next) => {
       pivotedData = { subjects: [], headers: [], pivotTable: {} };
     }
 const studentClassdata = await studentClass.find({});
+    // Get sidenav data
+    const sidenavData = await getSidenavData();
+    
     // Render with entryArray and pivotedData
     res.render("admin/adminpannel", {
       editing: false,
@@ -298,7 +322,8 @@ const studentClassdata = await studentClass.find({});
       entryArray,
       pivotedData,
       terminal, 
-      studentClassdata// Ensure entryArray is passed to the template
+      studentClassdata,// Ensure entryArray is passed to the template
+      ...sidenavData
     });
   } catch (err) {
     console.error(err);
@@ -310,12 +335,17 @@ exports.showSubject = async (req, res, next) => {
   const subjects = await subject.find({}).lean();
   const studentClassdata = await studentClass.find({});
     const className = req.query.className;
+  
+  // Get sidenav data
+  const sidenavData = await getSidenavData();
+  
   res.render("admin/subjectlist", { 
     subjects, 
     editing: false,
     currentPage: 'adminSubject',
     studentClassdata,
-    className
+    className,
+    ...sidenavData
   });
 };
 exports.addSubject = async (req, res, next) => {  try {
@@ -508,10 +538,15 @@ exports.addSubject = async (req, res, next) => {  try {
 
 exports.showClass = async (req, res, next) => {
   const studentClasslist = await studentClass.find({});
+  
+  // Get sidenav data
+  const sidenavData = await getSidenavData();
+  
   res.render("admin/classlist", {
     editing: false,
     studentClasslist,
-    currentPage: 'adminClass'
+    currentPage: 'adminClass',
+    ...sidenavData
   });
 };
 
@@ -579,7 +614,15 @@ exports.addClass = async (req, res, next) => {
 };
 exports.addTerminal = async (req, res, next) => {
   const terminalList = await terminal.find({},{ __v: 0 }).lean();
-  res.render("admin/terminal", { terminalList, editing: false });
+  
+  // Get sidenav data
+  const sidenavData = await getSidenavData();
+  
+  res.render("admin/terminal", { 
+    terminalList, 
+    editing: false,
+    ...sidenavData
+  });
 }
 exports.addTerminalpost = async (req, res, next) => {
   try {
@@ -619,7 +662,8 @@ exports.editTerminal = async (req, res, next) => {
     res.render("admin/terminal", {
       editing,
       terminalData,
-      terminalList
+      terminalList,
+      ...(await getSidenavData())
     });
   } catch (err) {
     console.error("Error in addTerminalpost:", err);
@@ -695,6 +739,8 @@ exports.editSub = async (req, res, next) => {
     console.log("Editing subject:", subjectedit);
       const className = req.query.className;
     // Get student class data for form dropdown
+    const sidenavData = await getSidenavData();
+    
     res.render("admin/subjectlist", {
       editing,
       subId,
@@ -702,6 +748,7 @@ exports.editSub = async (req, res, next) => {
       subjects,
       studentClassdata,
       className,
+      ...sidenavData
     });
   } catch (err) {
     console.error("Error in editSub function:", err);
@@ -714,12 +761,17 @@ exports.editClass = async (req, res, next) => {
   const classedit = await studentClass.findOne({ _id: `${classId}` });
   console.log(classedit)
   const studentClasslist = await studentClass.find({});
+  
+  // Get sidenav data
+  const sidenavData = await getSidenavData();
+  
    res.render("admin/classlist", {
       editing,
       classedit,
       classId,
       studentClasslist,
-      currentPage: 'adminClass'
+      currentPage: 'adminClass',
+      ...sidenavData
     });
   }
 
@@ -774,11 +826,16 @@ const sortedMarkslip = markslip.sort((a, b) => {
 });
 
 console.log(sortedMarkslip)
+
+// Get sidenav data
+const sidenavData = await getSidenavData();
+
 res.render("admin/crosssheet", {
     editing: false,
     sortedMarkslip,
     currentPage: 'crossSheet',
     sortedsubjectlist,
-    sortedClassList
+    sortedClassList,
+    ...sidenavData
   });
 }

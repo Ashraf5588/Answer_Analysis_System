@@ -197,6 +197,13 @@
   <div class="wholecontainer">
     <header>
       <%- include('./partials/nav', { currentPage: 'teacher' }) %>
+      
+      <%- include('partials/sidenav', { 
+          subjects: subjects, 
+          studentClassdata: studentClassdata,
+          terminals: terminals 
+      }) %>
+      
       <div class="hero-section">
         <h1 id="firstheading">Student <span id="firstspan">Records</span></h1>
         <span class="subheading">Complete list of all students in <%= subjectinput %> Class <%= studentClass %>-<%= section %></span>

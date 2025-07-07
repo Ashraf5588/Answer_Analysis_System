@@ -98,6 +98,13 @@
 </head>
 <body>
     <%- include("./partials/nav",{currentPage:"teacher"}) %>
+  
+  <%- include('partials/sidenav', { 
+      subjects: subjects, 
+      studentClassdata: studentClassdata,
+      terminals: terminals 
+  }) %>
+  
   <center><h1 id="firstheading" style="font-weight: 900;">Student <span id="firstspan">Detail</span></h1></center></header>
    <center>  <h1><center>Question Number:(<%= qno %>)</center></h1></center>
    <span style="font-size: 35px; display: flex;justify-content: flex-end;padding: 0 10% 0 0;cursor:pointer;">

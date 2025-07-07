@@ -263,6 +263,12 @@
 <body>
   <%- include('./partials/nav',{currentPage:'home'}) %>
   
+  <%- include('partials/sidenav', { 
+      subjects: subjects, 
+      studentClassdata: studentClassdata,
+      terminals: terminals 
+  }) %>
+  
     <div class="container">
     <div class="row mb-5">
       <div class="col-md-8 offset-md-2">

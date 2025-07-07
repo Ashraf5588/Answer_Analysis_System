@@ -11,6 +11,13 @@
 </head>
 <body>
   <%- include('../partials/nav',{currentPage:'admin'}) %>
+  
+  <%- include('../partials/sidenav', { 
+      subjects: subjects, 
+      studentClassdata: studentClassdata,
+      terminals: terminals 
+  }) %>
+  
   <div class="subject-container">
   <h1 class="subject-title">Welcome to <span>Subject Management,</span></h1>
     <!-- Creating form dynamically popup input fields -->  <script>

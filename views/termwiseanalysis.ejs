@@ -10,6 +10,13 @@
 </head>
 <body>
   <%- include('partials/nav',{currentPage:'teacher'}) %>
+  
+  <%- include('partials/sidenav', { 
+      subjects: subjects, 
+      studentClassdata: studentClassdata,
+      terminals: terminals 
+  }) %>
+  
   <center><h1>Report</h1></center> <br>
 
   <div class="reportcontainer">

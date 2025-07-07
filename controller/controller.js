@@ -16,6 +16,29 @@ const studentRecord = mongoose.model("studentRecord", studentrecordschema, "stud
 const terminal = mongoose.model("terminal", terminalSchema, "terminal");
 app.set("view engine", "ejs");
 app.set("view", path.join(rootDir, "views"));
+
+// Helper function to fetch sidenav data
+const getSidenavData = async () => {
+  try {
+    const subjects = await subjectlist.find({}).lean();
+    const studentClassdata = await studentClass.find({}).lean();
+    const terminals = await terminal.find({}).lean();
+    
+    return {
+      subjects,
+      studentClassdata,
+      terminals
+    };
+  } catch (error) {
+    console.error('Error fetching sidenav data:', error);
+    return {
+      subjects: [],
+      studentClassdata: [],
+      terminals: []
+    };
+  }
+};
+
 const getSubjectModel = (subjectinput) => {
   // to Check if model already exists
   if (mongoose.models[subjectinput]) {
@@ -92,7 +115,10 @@ exports.editStudent = async (req, res, next) => {
     }
 
 
-    res.render("admin/edit-student", { student: studentToEdit  });
+    res.render("admin/edit-student", { 
+      student: studentToEdit,
+      ...(await getSidenavData())
+    });
   } catch (err) {
     console.error(`Error editing student: ${err.message}`);
     res.status(500).render('404', {
@@ -165,7 +191,16 @@ exports.deleteStudent = async (req, res, next) => {
 exports.teacherPage = async (req, res, next) => {
   const subjects = await subjectlist.find({});
   const { controller } = req.params;
-  res.render("teacher", { controller, currentPage: "teacher", subjects });
+  
+  // Get sidenav data
+  const sidenavData = await getSidenavData();
+  
+  res.render("teacher", { 
+    controller, 
+    currentPage: "teacher", 
+    subjects,
+    ...sidenavData 
+  });
 };
 
 exports.studentclass = async (req, res, next) => {
@@ -173,12 +208,31 @@ exports.studentclass = async (req, res, next) => {
 
   const { subject, controller } = req.params;
 
-  res.render("class", { subject, controller, studentClassdata });
+  // Get sidenav data
+  const sidenavData = await getSidenavData();
+
+  res.render("class", { 
+    subject, 
+    controller, 
+    studentClassdata,
+    ...sidenavData 
+  });
 };
 exports.terminal = async (req, res, next) => {
   const { controller, subject, studentClass, section } = req.params;
   const terminalList = await terminal.find({}).lean();
-  res.render("terminal", { subject, controller, studentClass, section, terminalList });
+  
+  // Get sidenav data
+  const sidenavData = await getSidenavData();
+  
+  res.render("terminal", { 
+    subject, 
+    controller, 
+    studentClass, 
+    section, 
+    terminalList,
+    ...sidenavData 
+  });
 };
 
 
@@ -244,7 +298,8 @@ terminal = terminal?.trim();
       studentClass,
       terminal,
       subjects,
-      totalEntries
+      totalEntries,
+      ...(await getSidenavData())
     });
   }
 };
@@ -269,6 +324,7 @@ exports.saveForm = async (req, res, next) => {
         studentClass,
         section,
         terminal,
+        ...(await getSidenavData())
       });
     } catch (err) {
       console.log(err);
@@ -595,6 +651,7 @@ inCorrect.sort((a, b) => parseInt(b.total) - parseInt(a.total));
       fileStatus, // Pass file status to view
       originalFile: paper?.questionPaperOfClass || '', // Pass original filename for display
       total,
+      ...(await getSidenavData())
     });
 } catch (err) {
   console.error(`Error fetching question paper for ${subjectinput} in class ${studentClass}: ${err.message}`);
@@ -612,7 +669,8 @@ inCorrect.sort((a, b) => parseInt(b.total) - parseInt(a.total));
 
 
 exports.termwisestatus = async (req,res,next)=>{
-  res.render('termstatus')
+  const sidenavData = await getSidenavData();
+  res.render('termstatus', { ...sidenavData });
 };
 
 exports.termwisedata = async (req,res,next)=>{
@@ -683,7 +741,7 @@ const model = getSubjectModel(subjectinput);
         });
       }
     }
-    res.render('termwiseanalysis',{term,status})
+    res.render('termwiseanalysis',{term,status,...(await getSidenavData())})
   }catch(err)
   {
     console.log(err)
@@ -746,7 +804,7 @@ exports.termdetail = async (req,res,next)=>
           });
           
           
-      res.render('termdetail',{term,subjectinput,studentClass,section,status,qno,terminal,questionNo})
+      res.render('termdetail',{term,subjectinput,studentClass,section,status,qno,terminal,questionNo,...(await getSidenavData())})
     }catch(err)
     {
       console.log(err)
@@ -780,6 +838,7 @@ exports.search = async (req, res, next) => {
     studentClass,
     section,
     terminal,
+    ...(await getSidenavData())
   });
 };
 exports.studentData = async (req, res, next) => {
@@ -802,6 +861,7 @@ exports.studentData = async (req, res, next) => {
     studentClass,
     section,
     terminal,
+    ...(await getSidenavData())
   });
 };
 
@@ -857,6 +917,7 @@ exports.studentData = async (req, res, next) => {
         section,
         terminal,
         incorrectdata,  // Pass incorrect answers list to the frontend
+        ...(await getSidenavData())
       });
   
     } catch (error) {

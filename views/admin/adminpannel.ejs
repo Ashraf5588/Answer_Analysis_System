@@ -431,6 +431,12 @@
 <body>
   <%- include('../partials/nav',{currentPage:'admin'}) %>
 
+ <%- include('../partials/sidenav', { 
+     subjects: subjects, 
+     studentClassdata: studentClassdata,
+     terminals: terminals 
+ }) %>
+
  <a href="/crossheet"><div class="btns"><li>Generate Markslip</li></div></a> 
   
   <div class="admin-greeting">

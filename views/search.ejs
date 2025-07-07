@@ -128,6 +128,12 @@
   </style>
 </head>
 <body>
+  <%- include('partials/sidenav', { 
+      subjects: subjects, 
+      studentClassdata: studentClassdata,
+      terminals: terminals 
+  }) %>
+  
   <div class="container">
     <div class="header-container text-center">
       <h1>Student <span>Records</span></h1>

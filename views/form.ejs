@@ -19,6 +19,12 @@
         <span class="subheading">A professional system designed to analyze and evaluate student performance</span>
     </div>
     
+    <%- include('partials/sidenav', { 
+        subjects: subjects, 
+        studentClassdata: studentClassdata,
+        terminals: terminals 
+    }) %>
+    
     <div class="container">
         <div class="row">
             <div class="col-md-6">
