@@ -237,24 +237,10 @@ exports.terminal = async (req, res, next) => {
 
 
 exports.showForm = async (req, res, next) => {
-  const { studentClass } = req.params;
-  console.log(studentClass)
-
-  const subjects = await subjectlist.find({ forClass: `${studentClass}` }).lean();
-
-  console.log(subjects);
- 
-  global.availablesubject = subjects.map((sub) => sub.subject);
-
-  console.log()
-
-let { subjectinput, section, terminal } = req.params;
-subjectinput = subjectinput?.trim();
-section = section?.trim();
-terminal = terminal?.trim();
-
-
-
+  const { subjectinput,studentClass, section, terminal } = req.params;
+const subjects = await subjectlist.find({ forClass: `${studentClass}`, subject: `${subjectinput}` })
+console.log(subjects)
+ global.availablesubject = subjects.map((sub) => sub.subject);
   if(!terminal || terminal === "''" || terminal=== '"')
   {
     terminal=''
@@ -299,6 +285,7 @@ terminal = terminal?.trim();
       terminal,
       subjects,
       totalEntries,
+      forClass: studentClass,
       ...(await getSidenavData())
     });
   }
@@ -308,7 +295,7 @@ exports.saveForm = async (req, res, next) => {
   const { subjectinput } = req.params;
   const { studentClass, section, terminal } = req.params;
 
-  const subjects = await subjectlist.find({ forClass: `${studentClass}` }).lean();
+  const subjects = await subjectlist.find({ forClass: `${studentClass}` ,subject:`${subjectinput}`}).lean();
 
   console.log(subjects);
  
